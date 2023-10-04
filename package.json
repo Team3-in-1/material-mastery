@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "chay-di-khai": "next dev"
   },
   "dependencies": {
     "@mantine/core": "^7.1.2",
