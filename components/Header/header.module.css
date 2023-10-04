@@ -7,3 +7,7 @@
         cursor: pointer;
     }
 }
+
+.zi1000{
+    z-index: 1000;
+}
