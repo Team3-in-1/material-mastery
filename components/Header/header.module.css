@@ -1,0 +1,9 @@
+.hoverIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--mantine-color-gray-6);
+    &:hover{
+        color: var(--mantine-color-turquoise-5);
+        cursor: pointer;
+    }
+}
