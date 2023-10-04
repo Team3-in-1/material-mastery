@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <head>
-        <link rel="shortcut icon" href="/icon.svg" />
+        <link rel="shortcut icon" href="/display-icon.svg" />
       </head>
       <body className={inter.className} style={{backgroundColor: 'var(--mantine-color-gray-1)'}}>
         <MantineProvider theme={theme} defaultColorScheme="light">

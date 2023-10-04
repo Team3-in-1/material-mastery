@@ -4,8 +4,8 @@ import { IconChevronDown } from '@tabler/icons-react'
 import { Combobox, Group, CheckIcon, useCombobox, Button } from "@mantine/core";
 
 const data = [
-  'EN',
-  'VN'
+  'VN',
+  'EN'
 ];
 export default function LanguagePicker() {
   const combobox = useCombobox({
