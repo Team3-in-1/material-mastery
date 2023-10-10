@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google'
 import { MantineProvider } from '@mantine/core'
 import { theme } from '@/theme'
 import Header from '@/components/Header/header'
+import Footer from '@/components/Footer/footer';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -22,10 +23,11 @@ export default function RootLayout({
       <head>
         <link rel="shortcut icon" href="/display-icon.svg" />
       </head>
-      <body className={inter.className} style={{backgroundColor: 'var(--mantine-color-gray-1)'}}>
+      <body className={inter.className} style={{ backgroundColor: 'var(--mantine-color-gray-1)' }}>
         <MantineProvider theme={theme} defaultColorScheme="light">
-          <Header></Header>
+          <Header />
           {children}
+          <Footer />
         </MantineProvider>
       </body>
     </html>

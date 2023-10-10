@@ -14,6 +14,7 @@ export default function Search({ content }: SearchText) {
       placeholder='Search'
       radius='xl'
       size='sm'
+      ml='md'
     />
   )
 }

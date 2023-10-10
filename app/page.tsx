@@ -1,8 +1,15 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import { ScrollArea } from '@mantine/core'
 
 export default function Home() {
   return (
-    <div>Root</div>
+    <div style={{
+      minHeight: '100vh',
+      position: 'relative',
+      zIndex: 1,
+      backgroundColor: 'var(--mantine-color-gray-1)',
+      boxShadow: 'var(--mantine-shadow-md)'
+      }}>
+
+    </div>
   )
 }
