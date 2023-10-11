@@ -7,7 +7,7 @@ export default function Home() {
       position: 'relative',
       zIndex: 1,
       backgroundColor: 'var(--mantine-color-gray-1)',
-      boxShadow: 'var(--mantine-shadow-md)'
+      // boxShadow: 'var(--mantine-shadow-md)'
       }}>
 
     </div>

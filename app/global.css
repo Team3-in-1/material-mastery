@@ -1,0 +1,16 @@
+.hidden-mobile{
+    /* Mobile */
+    @media (max-width: 38.625rem) {
+        display: none!important;
+    }
+}
+.hidden-desktop{
+    /* Desktop  */
+    @media (min-width: 38.5625rem) {
+        display: none!important;
+    }
+}
+
+.z-1000{
+    z-index: 1000;
+}

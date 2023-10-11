@@ -1,11 +1,13 @@
 import '@mantine/core/styles.css';
+import './global.css'
 
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { MantineProvider } from '@mantine/core'
 import { theme } from '@/theme'
 import Header from '@/components/Header/header'
-import Footer from '@/components/Footer/footer';
+import Footer from '@/components/Footer/footer'
+import BottomNavBar from '@/components/Mobile/BottomNavBar/bottomNavBar';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -28,6 +30,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <BottomNavBar />
         </MantineProvider>
       </body>
     </html>

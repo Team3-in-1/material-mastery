@@ -10,20 +10,20 @@ export default function Header() {
   const appName = 'Material Mastery'
 
   return (
-      <Flex justify='space-between' align='center' py='1rem' px='6rem' bg='white' pos='fixed' top='0' left='0' right='0' className={classes.header} maw='100%'>
-        <Anchor href="#" underline="never" >
-          <Group wrap='nowrap'>
-            <Image component={NextImage} src={logo} alt='Logo' w='2.5rem' h='2.5rem' fit='fill'></Image>
-            <Text size='1rem' fw='900' c='turquoise.6' lh='1.1875rem'>{appName}</Text>
-          </Group>
-        </Anchor>
-        <Search content='' />
-        <Flex gap='1rem' align='center'>
-          <LanguagePicker />
-          <IconShoppingCart className={classes.hoverIcon} />
-          <IconUserCircle className={classes.hoverIcon} />
-        </Flex>
+    <Flex justify='space-between' align='center' bg='white' pos='fixed' top='0' left='0' right='0' className={`z-1000 ${classes.header}`} maw='100%'>
+      <Anchor href="#" underline="never" >
+        <Group wrap='nowrap'>
+          <Image component={NextImage} src={logo} alt='Logo' w='2.5rem' h='2.5rem' fit='fill'></Image>
+          <Text className='hidden-mobile' size='1rem' fw='900' c='turquoise.6' lh='1.1875rem'>{appName}</Text>
+        </Group>
+      </Anchor>
+      <Search content='' />
+      <Flex gap='1rem' align='center' className='hidden-mobile'>
+        <LanguagePicker />
+        <IconShoppingCart className={classes.hoverIcon} />
+        <IconUserCircle className={classes.hoverIcon} />
       </Flex>
+    </Flex>
 
   )
 }
