@@ -76,7 +76,7 @@ export default function Footer() {
       <Group justify='center' align='center' gap='8rem' py='4rem' bg='white' maw='100%' pos='fixed' bottom='0' right='0' left='0'>
         <Stack gap='3rem' align='center'>
           <Image component={NextImage} src={logo} alt='Logo' w='4rem' h='4rem' fit='fill'></Image>
-          <Text className='tx__body--md' c='gray.5'>© 2023 Material Mastery, Tất cả quyền được bảo lưu</Text>
+          <Text c='gray.5'>© 2023 Material Mastery, Tất cả quyền được bảo lưu</Text>
         </Stack>
         <Group gap='4rem' align='flex-start'>
           <LinkGroupWrapper title={linkData.at(0)?.title} child={linkData.at(0)?.child} />
