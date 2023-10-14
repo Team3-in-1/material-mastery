@@ -34,6 +34,7 @@ export function SignUpForm() {
           placeholder="Nhập tên của bạn"
           withAsterisk
           {...form.getInputProps('name')}
+          size="md"
         />
         <TextInput
           name='phone'
@@ -41,6 +42,7 @@ export function SignUpForm() {
           placeholder="Nhập số điện thoại"
           withAsterisk
           {...form.getInputProps('phone')}
+          size="md"
         />
         <TextInput
           name='email'
@@ -48,6 +50,7 @@ export function SignUpForm() {
           placeholder="Nhập email"
           withAsterisk
           {...form.getInputProps('email')}
+          size="md"
         />
         <PasswordInput
           name='password'
@@ -55,6 +58,7 @@ export function SignUpForm() {
           placeholder="Nhập mật khẩu"
           withAsterisk
           {...form.getInputProps('password')}
+          size="md"
         />
         <Checkbox
           mt="md"
@@ -62,7 +66,7 @@ export function SignUpForm() {
           {...form.getInputProps('termsOfService', { type: 'checkbox' })}
         />
       </Stack>
-      <Button fullWidth mt='1.5rem' type="submit" >Đăng ký</Button>
+      <Button fullWidth h='3rem' mt='1.5rem' type="submit" >Đăng ký</Button>
     </form>
   )
 }

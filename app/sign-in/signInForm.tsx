@@ -23,6 +23,7 @@ export function SignInForm() {
           placeholder="Nhập số điện thoại"
           withAsterisk
           {...form.getInputProps('phone')}
+          size="md"
         />
         <PasswordInput
           name='password'
@@ -30,9 +31,10 @@ export function SignInForm() {
           placeholder="Nhập mật khẩu"
           withAsterisk
           {...form.getInputProps('password')}
+          size="md"
         />
       </Stack>
-      <Button fullWidth mt='1.5rem' type="submit" >Đăng nhập</Button>
+      <Button fullWidth h='3rem' mt='1.5rem' type="submit" >Đăng nhập</Button>
     </form>
   )
 }
