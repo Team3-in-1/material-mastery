@@ -1,72 +1,83 @@
-'use client'
-import { Button, Stack, TextInput, PasswordInput, Checkbox } from "@mantine/core"
-import { useForm } from "@mantine/form"
+"use client";
+import {
+  Button,
+  Stack,
+  TextInput,
+  PasswordInput,
+  Checkbox,
+} from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { actionSignUp } from "../action";
+import { phoneRegex, emailRegex, checkPasswordFormat } from "@/utils/regex";
 
-const re =
-  /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 export function SignUpForm() {
   const form = useForm({
     // validateInputOnChange: true,
     initialValues: {
-      name: '',
-      phone: '',
-      email: '',
-      password: '',
+      name: "",
+      phone: "",
+      email: "",
+      password: "",
       termsOfService: false,
     },
     validate: {
-      name: (value) => (value.length < 2 ? 'Name must have at least 2 letters' : null),
-      email: (value) => (re.test(value) ? null : 'Invalid email')
-    }
-  })
+      name: (value) =>
+        value.length < 2 ? "Name must have at least 2 letters" : null,
+      phone: (value) =>
+        phoneRegex.test(value) ? null : "Invalid phone number",
+      email: (value) => (emailRegex.test(value) ? null : "Invalid email"),
+      password: (value) => checkPasswordFormat(value),
+    },
+  });
 
   const handleSubmit = async (formData: any) => {
-    await actionSignUp(formData)
-  }
+    await actionSignUp(formData);
+  };
 
   return (
-    <form onSubmit={form.onSubmit(handleSubmit)} >
-      <Stack gap='1rem'>
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <Stack gap="1rem">
         <TextInput
-          name='name'
+          name="name"
           label="Tên"
           placeholder="Nhập tên của bạn"
           withAsterisk
-          {...form.getInputProps('name')}
+          {...form.getInputProps("name")}
           size="md"
         />
         <TextInput
-          name='phone'
+          name="phone"
           label="Số điện thoại"
           placeholder="Nhập số điện thoại"
           withAsterisk
-          {...form.getInputProps('phone')}
+          {...form.getInputProps("phone")}
           size="md"
         />
         <TextInput
-          name='email'
+          name="email"
           label="Email"
           placeholder="Nhập email"
           withAsterisk
-          {...form.getInputProps('email')}
+          {...form.getInputProps("email")}
           size="md"
         />
         <PasswordInput
-          name='password'
+          name="password"
           label="Mật khẩu"
           placeholder="Nhập mật khẩu"
           withAsterisk
-          {...form.getInputProps('password')}
+          {...form.getInputProps("password")}
           size="md"
         />
         <Checkbox
           mt="md"
           label="Tôi đồng ý với các chính sách và điều khoản"
-          {...form.getInputProps('termsOfService', { type: 'checkbox' })}
+          {...form.getInputProps("termsOfService", { type: "checkbox" })}
         />
       </Stack>
-      <Button fullWidth h='3rem' mt='1.5rem' type="submit" >Đăng ký</Button>
+      <Button fullWidth h="3rem" mt="1.5rem" type="submit">
+        Đăng ký
+      </Button>
     </form>
-  )
+  );
 }
