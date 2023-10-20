@@ -17,9 +17,12 @@
     "@mantine/notifications": "^7.1.2",
     "@tabler/icons-react": "^2.38.0",
     "dayjs": "^1.11.10",
+    "install": "^0.13.0",
     "next": "latest",
+    "npm": "^10.2.1",
     "react": "latest",
     "react-dom": "latest",
+    "rxjs": "^7.8.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

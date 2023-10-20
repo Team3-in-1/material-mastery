@@ -7,9 +7,8 @@ import {
   Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { checkPasswordFormat } from "@/utils/regex";
-
-const phoneRegex = /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/;
+import { phoneRegex, checkPasswordFormat } from "@/utils/regex";
+import { userService } from "@/services/userServices";
 
 export function SignInForm() {
   const form = useForm({
@@ -18,14 +17,17 @@ export function SignInForm() {
       password: "",
     },
     validate: {
-      phone: (value) =>
-        phoneRegex.test(value) ? null : "Invalid phone number",
-      password: (value) => checkPasswordFormat(value),
+      // phone: (value) =>
+      //   phoneRegex.test(value) ? null : "Invalid phone number",
+      //password: (value) => checkPasswordFormat(value),
     },
   });
 
   const handleSubmit = async (formData: any) => {
-    // await create(formData)
+    console.log(JSON.stringify(formData));
+    if (formData.phone && formData.password) {
+      const res = await userService.login(formData);
+    }
   };
 
   return (
