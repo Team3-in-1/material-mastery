@@ -26,7 +26,7 @@ export function SignInForm() {
   const handleSubmit = async (formData: any) => {
     console.log(JSON.stringify(formData));
     if (formData.phone && formData.password) {
-      const res = await userService.login(formData);
+      await userService.login(formData);
     }
   };
 

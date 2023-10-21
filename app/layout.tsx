@@ -8,7 +8,6 @@ import { theme } from "@/theme";
 import Header from "@/components/Header/header";
 import Footer from "@/components/Footer/footer";
 import BottomNavBar from "@/components/Mobile/BottomNavBar/bottomNavBar";
-import { createContext, useState } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

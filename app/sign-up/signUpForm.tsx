@@ -7,8 +7,8 @@ import {
   Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { actionSignUp } from "../action";
 import { phoneRegex, emailRegex, checkPasswordFormat } from "@/utils/regex";
+import { userService } from "@/services/userServices";
 
 export function SignUpForm() {
   const form = useForm({
@@ -21,17 +21,26 @@ export function SignUpForm() {
       termsOfService: false,
     },
     validate: {
-      name: (value) =>
-        value.length < 2 ? "Name must have at least 2 letters" : null,
-      phone: (value) =>
-        phoneRegex.test(value) ? null : "Invalid phone number",
-      email: (value) => (emailRegex.test(value) ? null : "Invalid email"),
-      password: (value) => checkPasswordFormat(value),
+      // name: (value) =>
+      //   value.length < 2 ? "Name must have at least 2 letters" : null,
+      // phone: (value) =>
+      //   phoneRegex.test(value) ? null : "Invalid phone number",
+      // email: (value) => (emailRegex.test(value) ? null : "Invalid email"),
+      // password: (value) => checkPasswordFormat(value),
     },
   });
 
   const handleSubmit = async (formData: any) => {
-    await actionSignUp(formData);
+    //await actionSignUp(formData);
+    if (
+      formData &&
+      formData.name &&
+      formData.phone &&
+      formData.email &&
+      formData.password
+    ) {
+      await userService.register(formData);
+    }
   };
 
   return (
