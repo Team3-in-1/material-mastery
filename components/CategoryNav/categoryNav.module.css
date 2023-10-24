@@ -6,7 +6,6 @@
     justify-content: center;
     align-items: center;
     width: 200px;
-    margin-top: 120px;
     height: fit-content;
-    margin-left: 50px;
+    border-radius: 5px;
 }
