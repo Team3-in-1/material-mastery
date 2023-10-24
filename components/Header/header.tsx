@@ -20,10 +20,10 @@ import { userService } from "@/services/userServices";
 
 export default function Header() {
   const appName = "Material Mastery";
-  const [user, setUser] = useState(null);
+  const [isLogin, setIsLogin] = useState(null);
 
   useEffect(() => {
-    const subscription = userService.user.subscribe((x) => setUser(x));
+    const subscription = userService.user.subscribe((x) => setIsLogin(x));
     return () => subscription.unsubscribe();
   }, []);
 
@@ -61,7 +61,7 @@ export default function Header() {
         </Group>
       </Anchor>
       <Search content="" />
-      {user ? (
+      {isLogin ? (
         <Flex gap="1rem" align="center" className="hidden-mobile">
           <LanguagePicker />
           <IconShoppingCart className={classes.hoverIcon} />
