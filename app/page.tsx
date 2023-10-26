@@ -1,6 +1,8 @@
 import { Flex, ScrollArea } from "@mantine/core";
 import { CategoryNav } from "@/components/CategoryNav/categoryNav";
 import { CategoryCards } from "@/components/CategoryCards/categoryCards";
+import { Pagination } from "@mantine/core";
+import Pcard from "@/components/Product/pcard";
 
 export default function Home() {
   return (
@@ -17,8 +19,7 @@ export default function Home() {
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
+          paddingTop: "120px",
           height: "100%",
           width: "100%",
         }}
@@ -54,19 +55,16 @@ export default function Home() {
           <div
             style={{
               flex: 7,
-              display: "flex",
             }}
           >
-            <CategoryCards
-              data={[
-                { name: "Gạch lót sàn" },
-                { name: "Gạch lót tường" },
-                // { name: "Gạch lót tường" },
-                // { name: "Gạch lót tường" },
-                // { name: "Gạch lót tường" },
-                // { name: "Gạch lót tường" },
-              ]}
-            ></CategoryCards>
+            <CategoryCards data={[{ name: "Gạch lót sàn" }]}></CategoryCards>
+            <Pcard></Pcard>
+            <Pagination
+              total={20}
+              siblings={1}
+              defaultValue={10}
+              style={{ marginTop: "10px" }}
+            />
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import classes from "./categoryNav.module.css";
 const data = [{ label: "Gạch" }, { label: "Nội thất" }];
 
 export const CategoryNav = () => {
-  const [active, setActive] = useState(-1);
+  const [active, setActive] = useState(0);
 
   const handleOnclick = (index: number): void => {
     //do somthing here
