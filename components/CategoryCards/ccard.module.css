@@ -1,14 +1,21 @@
+.container {
+    @media (max-width: 426px) {
+            justify-content: center;
+        }
+}
+
 .category_card_container{
     background-color: white;
     width: 220px;
     height: 170px;
-    margin: 10px;
+    margin: 20px;
     margin-top: 0px;
     transition: 0.5s;
 }
 
 .category_card_container:hover {
     border: 1px solid black;
+    transform: translate(0, -5px);
 }
 
 .image {

@@ -7,12 +7,17 @@ a:link, a:visited {
   a:link:active, a:visited:active {
     color: var(--mantine-color-turquoise-6);
   }
+
+
+  /* Mobile */
 .hidden-mobile{
-    /* Mobile */
+    
     @media (max-width: $breakpoint-mobile) {
         display: none!important;
     }
 }
+
+
 .hidden-tablet{
     /* Tablet  */
     @media (max-width: $breakpoint-tablet) {

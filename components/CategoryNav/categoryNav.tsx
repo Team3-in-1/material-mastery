@@ -2,25 +2,25 @@
 import React, { useState } from "react";
 import { NavLink, Flex } from "@mantine/core";
 import classes from "./categoryNav.module.css";
+import { useRouter } from "next/navigation";
 
-const data = [{ label: "Gạch" }, { label: "Nội thất" }];
+export const CategoryNav = ({ data, name }: any) => {
+  const [active, setActive] = useState(name);
+  const router = useRouter();
 
-export const CategoryNav = () => {
-  const [active, setActive] = useState(0);
-
-  const handleOnclick = (index: number): void => {
-    //do somthing here
-    setActive(index);
+  const handleOnclick = (label: String): void => {
+    setActive(label);
+    router.push(`${label.toLowerCase()}`);
   };
 
   return (
     <Flex direction="column" className={`hidden-mobile ${classes.container}`}>
-      {data.map((item, index) => (
+      {data.map((item: any, index: any) => (
         <NavLink
           key={item.label}
-          active={index === active}
+          active={item.label.toLowerCase() === active.toLowerCase()}
           label={item.label}
-          onClick={() => handleOnclick(index)}
+          onClick={() => handleOnclick(item.label)}
         />
       ))}
     </Flex>

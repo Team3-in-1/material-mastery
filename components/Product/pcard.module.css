@@ -1,7 +1,9 @@
 .container {
     transition: 0.5s;
+    
 }
 
 .container:hover {
-    border: 1px solid black;
+    /* border: 2px solid red; */
+    transform: translate(0, -10px);
 }
