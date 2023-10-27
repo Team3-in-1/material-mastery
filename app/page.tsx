@@ -11,7 +11,7 @@ export default function Home() {
         minHeight: "100vh",
         position: "relative",
         width: "100%",
-        height: "100%",
+        height: "fit-content",
         zIndex: 1,
         backgroundColor: "var(--mantine-color-gray-1)",
         // boxShadow: 'var(--mantine-shadow-md)'
@@ -57,7 +57,15 @@ export default function Home() {
               flex: 7,
             }}
           >
-            <CategoryCards data={[{ name: "Gạch lót sàn" }]}></CategoryCards>
+            <CategoryCards
+              data={[
+                { name: "Gạch lót sàn" },
+                { name: "Gạch lót sàn" },
+                { name: "Gạch lót sàn" },
+                { name: "Gạch lót sàn" },
+                { name: "Gạch lót sàn" },
+              ]}
+            ></CategoryCards>
             <Pcard></Pcard>
             <Pagination
               total={20}

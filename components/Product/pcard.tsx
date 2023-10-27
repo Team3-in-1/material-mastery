@@ -14,11 +14,12 @@ import NImage from "next/image";
 import url from "@/public/pic/gach.jpg";
 import { IconShoppingCartPlus } from "@tabler/icons-react";
 import { useState } from "react";
+import Styles from "./pcard.module.css";
 
 export default function Pcard() {
   const [value, setValue] = useState(2);
   return (
-    <Card w={200} h={245}>
+    <Card w={200} h={245} className={`${Styles.container}`}>
       <Card.Section>
         <Image alt="product" src={url} component={NImage} height={145}></Image>
       </Card.Section>

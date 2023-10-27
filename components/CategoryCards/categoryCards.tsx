@@ -6,7 +6,13 @@ export const CategoryCards = ({ data }: any) => {
   const d = data;
   const url = gachImage;
   return (
-    <div style={{ flexWrap: "wrap", display: "flex" }}>
+    <div
+      style={{
+        flexWrap: "wrap",
+        display: "flex",
+        alignContent: "center",
+      }}
+    >
       {d.map((item: any) => (
         <CCard name={item.name} url={url}></CCard>
       ))}

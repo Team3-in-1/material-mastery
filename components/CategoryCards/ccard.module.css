@@ -4,8 +4,12 @@
     height: 170px;
     margin: 10px;
     margin-top: 0px;
+    transition: 0.5s;
 }
 
+.category_card_container:hover {
+    border: 1px solid black;
+}
 
 .image {
     flex: 8;

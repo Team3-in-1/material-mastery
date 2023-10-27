@@ -1,0 +1,7 @@
+.container {
+    transition: 0.5s;
+}
+
+.container:hover {
+    border: 1px solid black;
+}
