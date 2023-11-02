@@ -1,9 +1,10 @@
-.container {
+.containerCard {
     transition: 0.5s;
     
 }
 
-.container:hover {
+.containerCard:hover {
     /* border: 2px solid red; */
     transform: translate(0, -10px);
 }
+

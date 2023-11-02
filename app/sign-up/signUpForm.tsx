@@ -7,7 +7,12 @@ import {
   Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { phoneRegex, emailRegex, checkPasswordFormat } from "@/utils/regex";
+import {
+  checkNameFormat,
+  checkEmailFormat,
+  checkPhoneFormat,
+  checkPasswordFormat,
+} from "@/utils/regex";
 import { userService } from "@/services/userServices";
 
 export function SignUpForm() {
@@ -21,11 +26,9 @@ export function SignUpForm() {
       termsOfService: false,
     },
     validate: {
-      // name: (value) =>
-      //   value.length < 2 ? "Name must have at least 2 letters" : null,
-      // phone: (value) =>
-      //   phoneRegex.test(value) ? null : "Invalid phone number",
-      // email: (value) => (emailRegex.test(value) ? null : "Invalid email"),
+      name: (value) => checkNameFormat(value),
+      phone: (value) => checkPhoneFormat(value),
+      email: (value) => checkEmailFormat(value),
       // password: (value) => checkPasswordFormat(value),
     },
   });

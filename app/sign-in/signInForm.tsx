@@ -7,7 +7,7 @@ import {
   Checkbox,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { phoneRegex, checkPasswordFormat } from "@/utils/regex";
+import { checkPhoneFormat, checkPasswordFormat } from "@/utils/regex";
 import { userService } from "@/services/userServices";
 
 export function SignInForm() {
@@ -17,8 +17,7 @@ export function SignInForm() {
       password: "",
     },
     validate: {
-      // phone: (value) =>
-      //   phoneRegex.test(value) ? null : "Invalid phone number",
+      phone: (value) => checkPhoneFormat(value),
       //password: (value) => checkPasswordFormat(value),
     },
   });

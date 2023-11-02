@@ -1,6 +1,7 @@
 import { Flex, ScrollArea } from "@mantine/core";
 import { CategoryNav } from "@/components/CategoryNav/categoryNav";
 import { FC } from "react";
+import { findIndex } from "@/utils/array";
 
 const data = [{ label: "Gach men" }, { label: "Gach lot tuong" }];
 
@@ -57,7 +58,10 @@ export default function ProductsLayout({
               justifyContent: "center",
             }}
           >
-            <CategoryNav data={data} name={params.name}></CategoryNav>
+            <CategoryNav
+              data={data}
+              id={findIndex(data, params.name)}
+            ></CategoryNav>
           </div>
           <div
             style={{
