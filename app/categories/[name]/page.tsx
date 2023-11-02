@@ -1,6 +1,5 @@
 import { CategoryCards } from "@/components/CategoryCards/categoryCards";
-import { Pagination } from "@mantine/core";
-import Pcard from "@/components/Product/pcard";
+import { Flex, Pagination } from "@mantine/core";
 
 export default function CategoriesPage({
   params,
@@ -8,31 +7,38 @@ export default function CategoriesPage({
   params: { name: String };
 }) {
   return (
-    <>
-      {params.name == "brick" ? (
-        <CategoryCards
-          data={[
-            { name: "Gạch lót sàn" },
-            { name: "Gạch lót sàn" },
-            { name: "Gạch lót sàn" },
-            { name: "Gạch lót sàn" },
-            { name: "Gạch lót sàn" },
-          ]}
-          category={params.name}
-        ></CategoryCards>
-      ) : (
-        <CategoryCards
-          data={[{ name: "Ghế" }]}
-          category={params.name}
-        ></CategoryCards>
-      )}
-      {/* <Pcard></Pcard> */}
-      <Pagination
-        total={20}
-        siblings={1}
-        defaultValue={10}
-        style={{ marginTop: "10px" }}
-      />
-    </>
+    <Flex direction={"column"}>
+      <Flex>
+        {params.name == "brick" ? (
+          <CategoryCards
+            data={[
+              { name: "Gạch lót sàn" },
+              { name: "Gạch lót sàn" },
+              { name: "Gạch lót sàn" },
+              { name: "Gạch lót sàn" },
+              { name: "Gạch lót sàn" },
+              { name: "Gạch lót sàn" },
+              { name: "Gạch lót sàn" },
+              { name: "Gạch lót sàn" },
+            ]}
+            category={params.name}
+          ></CategoryCards>
+        ) : (
+          <CategoryCards
+            data={[{ name: "Ghế" }]}
+            category={params.name}
+          ></CategoryCards>
+        )}
+      </Flex>
+
+      <Flex
+        align={"center"}
+        justify={"center"}
+        className="hidden-mobile"
+        style={{ marginBottom: "20px", marginTop: "20px" }}
+      >
+        <Pagination total={20} siblings={1} defaultValue={10} />
+      </Flex>
+    </Flex>
   );
 }

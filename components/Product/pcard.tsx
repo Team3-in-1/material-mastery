@@ -15,34 +15,43 @@ import url from "@/public/pic/gach.jpg";
 import { IconShoppingCartPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import Styles from "./pcard.module.css";
+import Link from "next/link";
 
-export default function Pcard() {
+export const PCard = () => {
   const [value, setValue] = useState(2);
+  const name = "gạch lót sàn loại 1";
   return (
-    <Card w={200} h={245} className={`${Styles.container}`}>
-      <Card.Section>
-        <Image alt="product" src={url} component={NImage} height={145}></Image>
-      </Card.Section>
-      <Flex justify={"space-around"} direction={"column"} h={100} w={"100%"}>
-        <Text size="17px">Nothing to show</Text>
-        <Group justify="space-between">
-          <Group>
-            <Text size="20px">00.00</Text>
-            <Text>đ</Text>
-          </Group>
+    <Link href={`/details/${name}`}>
+      <Card w={200} h={245} className={`${Styles.containerCard}`}>
+        <Card.Section>
+          <Image
+            alt="product"
+            src={url}
+            component={NImage}
+            height={145}
+          ></Image>
+        </Card.Section>
+        <Flex justify={"space-around"} direction={"column"} h={100} w={"100%"}>
+          <Text size="17px">Nothing to show</Text>
+          <Group justify="space-between">
+            <Group>
+              <Text size="20px">00.00</Text>
+              <Text>đ</Text>
+            </Group>
 
-          <ActionIcon color="#E9F9F8" variant="filled" aria-label="Add">
-            <IconShoppingCartPlus color="#02B1AB"></IconShoppingCartPlus>
-          </ActionIcon>
-        </Group>
-        <Group justify="space-between">
-          <Rating value={value} onChange={setValue} />
-          <Group>
-            <Divider size="sm" orientation="vertical" />
-            <Text c="dimmed">12k</Text>
+            <ActionIcon color="#E9F9F8" variant="filled" aria-label="Add">
+              <IconShoppingCartPlus color="#02B1AB"></IconShoppingCartPlus>
+            </ActionIcon>
           </Group>
-        </Group>
-      </Flex>
-    </Card>
+          <Group justify="space-between">
+            <Rating value={value} onChange={setValue} />
+            <Group>
+              <Divider size="sm" orientation="vertical" />
+              <Text c="dimmed">12k</Text>
+            </Group>
+          </Group>
+        </Flex>
+      </Card>
+    </Link>
   );
-}
+};
