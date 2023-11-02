@@ -51,7 +51,7 @@ export function SignInForm() {
           size="md"
         />
       </Stack>
-      <Button fullWidth h="3rem" mt="1.5rem" type="submit">
+      <Button id="signin-form-btn" fullWidth h="3rem" mt="1.5rem" type="submit">
         Đăng nhập
       </Button>
     </form>
