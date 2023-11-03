@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "cypress:open": "cypress open",
     "chay-di-khai": "next dev"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
     "@mantine/hooks": "^7.1.2",
     "@mantine/notifications": "^7.1.2",
     "@tabler/icons-react": "^2.38.0",
+    "cypress": "^12.10.0",
     "dayjs": "^1.11.10",
     "install": "^0.13.0",
     "next": "latest",

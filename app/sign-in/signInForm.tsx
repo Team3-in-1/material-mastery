@@ -33,6 +33,7 @@ export function SignInForm() {
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack gap="1rem">
         <TextInput
+          id="signin-form-phone-input"
           name="phone"
           label="Số điện thoại"
           placeholder="Nhập số điện thoại"
@@ -41,6 +42,7 @@ export function SignInForm() {
           size="md"
         />
         <PasswordInput
+          id="signin-form-password-input"
           name="password"
           label="Mật khẩu"
           placeholder="Nhập mật khẩu"
@@ -49,7 +51,7 @@ export function SignInForm() {
           size="md"
         />
       </Stack>
-      <Button fullWidth h="3rem" mt="1.5rem" type="submit">
+      <Button id="signin-form-btn" fullWidth h="3rem" mt="1.5rem" type="submit">
         Đăng nhập
       </Button>
     </form>
