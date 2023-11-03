@@ -52,8 +52,10 @@ const checkPasswordFormat = (value: string) : any => {
     // if(!/(?=.*[a-z].*[a-z].*[a-z])/.test(value))
     //     return "Password must contain lowercase letters"
 
-    if(value.length > 30 || value.length < 8)
-        return "Invalid password";
+    if(value.length > 30)
+        return "Password must not exceed 30 characters";
+    if(value.length < 8)
+        return "Password must have at least 8 characters";
     
     return null;
 }
