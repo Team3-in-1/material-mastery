@@ -29,7 +29,7 @@ export function SignUpForm() {
       name: (value) => checkNameFormat(value),
       phone: (value) => checkPhoneFormat(value),
       email: (value) => checkEmailFormat(value),
-      // password: (value) => checkPasswordFormat(value),
+      password: (value) => checkPasswordFormat(value),
     },
   });
 

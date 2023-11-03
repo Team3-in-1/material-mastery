@@ -18,7 +18,7 @@ export function SignInForm() {
     },
     validate: {
       phone: (value) => checkPhoneFormat(value),
-      //password: (value) => checkPasswordFormat(value),
+      password: (value) => checkPasswordFormat(value),
     },
   });
 
