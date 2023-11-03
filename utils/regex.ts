@@ -33,7 +33,7 @@ const checkEmailFormat = (value: string) : any => {
     //     return "Invalid email"
 
 
-    if(!emailRegex.test(value) || value.length < 6)
+    if(!emailRegex.test(value) || value.length < 6 || value.length > 100)
         return "Invalid email"    
     return null;
 }
@@ -61,3 +61,5 @@ const checkPasswordFormat = (value: string) : any => {
 }
 
 export {checkNameFormat, checkPhoneFormat, checkEmailFormat, checkPasswordFormat};
+
+
