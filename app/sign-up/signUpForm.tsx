@@ -30,6 +30,7 @@ export function SignUpForm() {
       phone: (value) => checkPhoneFormat(value),
       email: (value) => checkEmailFormat(value),
       password: (value) => checkPasswordFormat(value),
+      termsOfService: (value) => value ? null : 'Not accept term of service'
     },
   });
 
@@ -50,6 +51,7 @@ export function SignUpForm() {
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack gap="1rem">
         <TextInput
+          id='signup-form-name-input'
           name="name"
           label="Tên"
           placeholder="Nhập tên của bạn"
@@ -58,6 +60,7 @@ export function SignUpForm() {
           size="md"
         />
         <TextInput
+          id='signup-form-phone-input'
           name="phone"
           label="Số điện thoại"
           placeholder="Nhập số điện thoại"
@@ -66,6 +69,7 @@ export function SignUpForm() {
           size="md"
         />
         <TextInput
+          id='signup-form-email-input'
           name="email"
           label="Email"
           placeholder="Nhập email"
@@ -74,6 +78,7 @@ export function SignUpForm() {
           size="md"
         />
         <PasswordInput
+          id='signup-form-password-input'
           name="password"
           label="Mật khẩu"
           placeholder="Nhập mật khẩu"
@@ -82,12 +87,13 @@ export function SignUpForm() {
           size="md"
         />
         <Checkbox
+          id='signup-form-term-cbx'
           mt="md"
           label="Tôi đồng ý với các chính sách và điều khoản"
           {...form.getInputProps("termsOfService", { type: "checkbox" })}
         />
       </Stack>
-      <Button fullWidth h="3rem" mt="1.5rem" type="submit">
+      <Button id='signup-form-btn' fullWidth h="3rem" mt="1.5rem" type="submit">
         Đăng ký
       </Button>
     </form>
