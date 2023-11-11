@@ -4,6 +4,7 @@ import "./global.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { MantineProvider } from "@mantine/core";
+import TanStackProvider from "@/services/TanStackProvider";
 import { theme } from "@/theme";
 import Header from "@/components/Header/header";
 import Footer from "@/components/Footer/footer";
@@ -30,12 +31,14 @@ export default function RootLayout({
         className={inter.className}
         style={{ backgroundColor: "var(--mantine-color-gray-1)" }}
       >
-        <MantineProvider theme={theme} defaultColorScheme="light">
-          <Header />
-          {children}
-          <Footer />
-          <BottomNavBar />
-        </MantineProvider>
+        <TanStackProvider>
+          <MantineProvider theme={theme} defaultColorScheme="light">
+            <Header />
+            {children}
+            <Footer />
+            <BottomNavBar />
+          </MantineProvider>
+        </TanStackProvider>
       </body>
     </html>
   );

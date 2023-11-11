@@ -1,6 +1,6 @@
 import getConfig from 'next/config';
 
-import { userService } from '../services/userServices';
+import { userService } from '../services/userService';
 // import { publicRuntimeConfig } from '../next.config.js';
 
 
