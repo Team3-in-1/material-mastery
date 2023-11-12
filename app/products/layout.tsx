@@ -1,7 +1,8 @@
 import { Flex, ScrollArea } from "@mantine/core";
 import { CategoryNav } from "@/components/CategoryNav/categoryNav";
 import { FC } from "react";
-import { findIndex } from "@/utils/array";
+
+import "../global.css";
 
 const data = [{ label: "Gach men" }, { label: "Gach lot tuong" }];
 
@@ -13,17 +14,7 @@ export default function ProductsLayout({
   params: { name: String };
 }) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        width: "100%",
-        height: "fit-content",
-        zIndex: 1,
-        backgroundColor: "var(--mantine-color-gray-1)",
-        // boxShadow: 'var(--mantine-shadow-md)'
-      }}
-    >
+    <div className={`page-container`}>
       <div
         style={{
           paddingTop: "120px",
@@ -49,26 +40,7 @@ export default function ProductsLayout({
             display: "flex",
           }}
         >
-          <div
-            className="hidden-mobile"
-            style={{
-              flex: 3,
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <CategoryNav
-              data={data}
-              id={findIndex(data, params.name)}
-            ></CategoryNav>
-          </div>
-          <div
-            style={{
-              flex: 7,
-            }}
-          >
-            {children}
-          </div>
+          {children}
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export const CCard = ({ name, url, category }: any) => {
   return (
-    <Link href={`/products/${name}`}>
+    <Link href={`/products`}>
       <Flex
         direction={"column"}
         className={`${classes.category_card_container}`}

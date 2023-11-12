@@ -22,16 +22,11 @@ export const PCard = () => {
   const name = "gạch lót sàn loại 1";
   return (
     <Card w={200} h={245} className={`${Styles.containerCard}`}>
-      <Card.Section component={Link} href={`/details/${name}`}>
+      <Card.Section component={Link} href={`/products/${name}`}>
         <Image alt="product" src={url} component={NImage} height={145}></Image>
       </Card.Section>
       <Flex justify={"space-around"} direction={"column"} h={100} w={"100%"}>
-        <Text
-          tt="capitalize"
-          style={{ marginTop: 5, fontWeight: "bold", fontSize: "1rem" }}
-        >
-          Nothing to show
-        </Text>
+        <Text style={{ marginTop: 5, fontSize: "1rem" }}>Nothing to show</Text>
         <Group justify="space-between">
           <Group gap={0} align="start" justify="flex-start">
             <Text size="20px">1000.00</Text>

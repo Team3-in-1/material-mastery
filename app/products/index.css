@@ -1,0 +1,33 @@
+.c-1-lg {
+    @media (min-width: $breakpoint-mobile) {}
+}
+
+.c-1-md {
+    @media (max-width: $breakpoint-tablet) {}
+}
+
+.c-1-sm {
+    @media (max-width: $breakpoint-mobile) {}
+}
+
+.i-1-sm {
+    @media (max-width: $breakpoint-mobile) {
+        height: 80px;
+        width: 80px;
+    }
+}
+
+.t-2-sm {
+    @media (max-width: $breakpoint-mobile) {
+        font-size: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.l-2-sm {
+    @media (max-width: $breakpoint-mobile) {
+        font-size: 5px;
+
+    }
+}
