@@ -22,7 +22,7 @@ export const PCard = () => {
   const name = "gạch lót sàn loại 1";
   return (
     <Card w={200} h={245} className={`${Styles.containerCard}`}>
-      <Card.Section component={Link} href={`/details/${name}`}>
+      <Card.Section component={Link} href={`/products/${name}`}>
         <Image alt="product" src={url} component={NImage} height={145}></Image>
       </Card.Section>
       <Flex justify={"space-around"} direction={"column"} h={100} w={"100%"}>
