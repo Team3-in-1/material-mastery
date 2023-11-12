@@ -4,41 +4,57 @@ import {
   Stack,
   TextInput,
   PasswordInput,
-  Checkbox,
+  LoadingOverlay,
+  Alert,
 } from "@mantine/core";
+import { IconInfoCircle } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
-import { checkPhoneFormat, checkPasswordFormat } from "@/utils/regex";
-import { userService } from "@/services/userServices";
+import { checkNameFormat, checkPasswordFormat } from "@/utils/regex";
+import { userService } from "@/services/userService";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export function SignInForm() {
+
+  const router = useRouter()
+
   const form = useForm({
     initialValues: {
-      phone: "",
+      userInfo: "",
       password: "",
     },
     validate: {
-      phone: (value) => checkPhoneFormat(value),
+      userInfo: (value) => checkNameFormat(value),
       password: (value) => checkPasswordFormat(value),
     },
-  });
+  })
+
+  const loginMutation = useMutation({
+    mutationFn: async (formdata: FormData) => {
+      await userService.login(formdata)
+    },
+    onSuccess: () => {
+      router.push('/')
+    },
+    onError(error) {
+      console.log(error)
+    },
+  })
 
   const handleSubmit = async (formData: any) => {
-    console.log(JSON.stringify(formData));
-    if (formData.phone && formData.password) {
-      await userService.login(formData);
-    }
-  };
+    await loginMutation.mutateAsync(formData)
+  }
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack gap="1rem">
         <TextInput
-          id="signin-form-phone-input"
-          name="phone"
-          label="Số điện thoại"
-          placeholder="Nhập số điện thoại"
+          id="signin-form-username-input"
+          name="userInfo"
+          label="Tên đăng nhập"
+          placeholder="Nhập tên đăng nhập"
           withAsterisk
-          {...form.getInputProps("phone")}
+          {...form.getInputProps("userInfo")}
           size="md"
         />
         <PasswordInput
@@ -54,6 +70,12 @@ export function SignInForm() {
       <Button id="signin-form-btn" fullWidth h="3rem" mt="1.5rem" type="submit">
         Đăng nhập
       </Button>
+      {loginMutation.isPending && <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
+      {
+        loginMutation.isError && <Alert variant="light" color="red" title="Error" icon={<IconInfoCircle />} withCloseButton>
+          {loginMutation.failureReason?.message}
+        </Alert>
+      }
     </form>
   );
 }

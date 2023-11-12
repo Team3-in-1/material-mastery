@@ -13,7 +13,7 @@ import {
   checkPhoneFormat,
   checkPasswordFormat,
 } from "@/utils/regex";
-import { userService } from "@/services/userServices";
+import { userService } from "@/services/userService";
 
 export function SignUpForm() {
   const form = useForm({

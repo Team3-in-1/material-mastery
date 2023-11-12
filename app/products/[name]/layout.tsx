@@ -13,7 +13,6 @@ export default function ProductsLayout({
   children: React.ReactNode;
   params: { name: String };
 }) {
-  console.log(params.name);
   return (
     <div className={`page-container`}>
       <div

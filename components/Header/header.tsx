@@ -16,8 +16,9 @@ import { IconShoppingCart, IconUserCircle } from "@tabler/icons-react";
 import classes from "./header.module.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { userService } from "@/services/userServices";
+
 import { useLocalStorage } from "@mantine/hooks";
+import { userService } from "@/services/userService";
 
 export default function Header() {
   const appName = "Material Mastery";
