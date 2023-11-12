@@ -2,6 +2,8 @@ import { Center, Flex, Image, Text, Rating } from "@mantine/core";
 import exampleImage from "@/public/pic/gach.jpg";
 import NImage from "next/image";
 import Link from "next/link";
+import "./index.css";
+import "../../global.css";
 
 export default function ProductDetails({
   params,
@@ -9,16 +11,7 @@ export default function ProductDetails({
   params: { name: String };
 }) {
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        width: "100%",
-        height: "fit-content",
-        zIndex: 1,
-        backgroundColor: "var(--mantine-color-gray-1)",
-      }}
-    >
+    <div className={`page-container`}>
       {/* 1 */}
       <Flex style={{ marginTop: 120 }} w={"100%"} h={"100%"}>
         <Flex
@@ -30,6 +23,7 @@ export default function ProductDetails({
             marginRight: "100px ",
           }}
         >
+          {/* 1 */}
           <Flex
             justify={"center"}
             align={"center"}
@@ -45,6 +39,7 @@ export default function ProductDetails({
               src={exampleImage}
               component={NImage}
               height={150}
+              className={`i-1-sm`}
             ></Image>
           </Flex>
           <Flex
@@ -57,37 +52,18 @@ export default function ProductDetails({
               padding: "5px",
             }}
           >
+            {/* 2 */}
             <Flex direction={"column"}>
               <Link href={"/"}>Brand: CMC</Link>
-              <Text size="15px">
+              <Text size="15px" className={`n-t-2-sm`}>
                 Gạch Porcelain lát nền kim cương CMC KC89005Gạch Porcelain lát
                 nền kim cương CMC KC89005
               </Text>
               <Rating value={3.5} fractions={2} readOnly />
             </Flex>
             <Flex>
-              <div
-                style={{
-                  color: "#252525",
-                  fontSize: 32,
-                  fontFamily: "Inter",
-                  fontWeight: "700",
-                  wordWrap: "break-word",
-                }}
-              >
-                00.00
-              </div>
-              <div
-                style={{
-                  color: "#252525",
-                  fontSize: 16,
-                  fontFamily: "Inter",
-                  fontWeight: "700",
-                  wordWrap: "break-word",
-                }}
-              >
-                đ
-              </div>
+              <Text className={`m-t-2 m-t-2-sm`}>00.00</Text>
+              <Text className={`s-t-2 s-t-2-sm`}>đ</Text>
             </Flex>
             <Flex></Flex>
             <Flex></Flex>
@@ -96,7 +72,7 @@ export default function ProductDetails({
         <div></div>
         <div></div>
       </Flex>
-      {/* 2 */}
+      {/* 3 */}
       <Flex
         style={{ marginTop: 30 }}
         w={"100%"}
@@ -131,13 +107,13 @@ export default function ProductDetails({
           </p>
         </Flex>
       </Flex>
-      {/* 3 */}
+      {/* 4 */}
       <Flex direction={"column"}>
-        {/* 3.1 */}
+        {/* 4.1 */}
 
-        {/* 3.2 */}
+        {/* 4.2 */}
 
-        {/* 3.3 */}
+        {/* 4.3 */}
       </Flex>
     </div>
   );

@@ -53,3 +53,12 @@ a:link, a:visited {
         width: 100%;
     };
 }
+
+.page-container {
+   min-height: 100vh;
+   position: relative;
+   width: 100%;
+   height: fit-content;
+   z-index: 1;
+   background-color: var(--mantine-color-gray-1);
+}

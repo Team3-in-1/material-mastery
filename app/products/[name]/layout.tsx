@@ -2,6 +2,7 @@ import { Flex, ScrollArea } from "@mantine/core";
 import { CategoryNav } from "@/components/CategoryNav/categoryNav";
 import { FC } from "react";
 import { findIndex } from "@/utils/array";
+import "../../global.css";
 
 const data = [{ label: "Gach men" }, { label: "Gach lot tuong" }];
 
@@ -14,17 +15,7 @@ export default function ProductsLayout({
 }) {
   console.log(params.name);
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        position: "relative",
-        width: "100%",
-        height: "fit-content",
-        zIndex: 1,
-        backgroundColor: "var(--mantine-color-gray-1)",
-        // boxShadow: 'var(--mantine-shadow-md)'
-      }}
-    >
+    <div className={`page-container`}>
       <div
         style={{
           paddingTop: "120px",

@@ -17,15 +17,14 @@ import classes from "./header.module.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { userService } from "@/services/userServices";
+import { useLocalStorage } from "@mantine/hooks";
 
 export default function Header() {
   const appName = "Material Mastery";
-  const [isLogin, setIsLogin] = useState(null);
-
-  useEffect(() => {
-    const subscription = userService.user.subscribe((x) => setIsLogin(x));
-    return () => subscription.unsubscribe();
-  }, []);
+  const [isLogin, setIsLogin] = useLocalStorage({
+    key: "user",
+    defaultValue: null,
+  });
 
   return (
     <Flex
