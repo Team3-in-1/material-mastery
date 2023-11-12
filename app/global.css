@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 a:link, a:visited {
     color: var(--mantine-color-turquoise-6);
@@ -13,7 +16,7 @@ a:link, a:visited {
   /* Mobile */
 .hidden-mobile{
     
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: 38.625em) {
         display: none!important;
     }
 }
@@ -21,20 +24,20 @@ a:link, a:visited {
 
 .hidden-tablet{
     /* Tablet  */
-    @media (max-width: $breakpoint-tablet) {
+    @media (max-width: 48em) {
         display: none!important;
     }
 }
 
 .hidden-desktop{    /* Desktop  */
-    @media (min-width: $breakpoint-mobile) {
+    @media (min-width: 38.625em) {
         display: none!important;
     }
 }
 
 .overlay{
     z-index: 1;
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: 38.625em) {
         z-index: 1001;
     }
 }
@@ -46,10 +49,10 @@ a:link, a:visited {
 }
 .form {
     width: 30vw;
-    @media (max-width: $breakpoint-tablet) {
+    @media (max-width: 48em) {
         width: 75vw;
     };
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: 38.625em) {
         width: 100%;
     };
 }

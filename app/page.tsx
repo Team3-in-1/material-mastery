@@ -14,24 +14,7 @@ export default function Home() {
   })
 
   return (
-    // <div
-    //   style={{
-    //     minHeight: "100vh",
-    //     position: "relative",
-    //     width: "100%",
-    //     height: "fit-content",
-    //     zIndex: 1,
-    //     backgroundColor: "var(--mantine-color-gray-1)",
-    //     display: "flex",
-    //     alignItems: "center",
-    //     justifyContent: "center",
-    //     // boxShadow: 'var(--mantine-shadow-md)'
-    //   }}
-    // >
-    //   <Link href="/categories/brick">Products</Link>
-    // </div>
-
-    <Container mt={80} px={50} pt={20} fluid mih='100vh' pos='relative' style={{
+    <Container mt={70} px={50} pt={30} fluid mih='100vh' pos='relative' style={{
       backgroundColor: "var(--mantine-color-gray-1)",
       'zIndex': 1
     }}>
@@ -42,12 +25,12 @@ export default function Home() {
             borderRadius: '10px',
           }}>
             <Text size='md' pt={10}>Trang chủ</Text>
-            <Divider/>
+            <Divider />
             {
-              categories.isSuccess && categories.data.map((category) => (
-                <Link key={category._id} href="/categories/brick" style={{
+              categories.isSuccess && categories.data.map(category => (
+                <Link key={category._id} href={`/categories/${category._id}`} style={{
                   color: '#8E8E8E',
-                  padding: '20px',
+                  padding: '8px',
                   fontSize: '13px'
                 }}>
                   {category.category_name}
@@ -62,5 +45,5 @@ export default function Home() {
       </Grid>
       {categories.isPending && <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
     </Container>
-  );
+  )
 }
