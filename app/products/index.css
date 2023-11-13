@@ -1,24 +1,24 @@
 .c-1-lg {
-    @media (min-width: $breakpoint-mobile) {}
+    @media (min-width: 38.625em) {}
 }
 
 .c-1-md {
-    @media (max-width: $breakpoint-tablet) {}
+    @media (max-width: 48em) {}
 }
 
 .c-1-sm {
-    @media (max-width: $breakpoint-mobile) {}
+    @media (max-width: 38.625em) {}
 }
 
 .i-1-sm {
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: 38.625em) {
         height: 80px;
         width: 80px;
     }
 }
 
 .t-2-sm {
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: 38.625em) {
         font-size: 10px;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -26,8 +26,9 @@
 }
 
 .l-2-sm {
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: 38.625em) {
         font-size: 5px;
 
     }
 }
+
