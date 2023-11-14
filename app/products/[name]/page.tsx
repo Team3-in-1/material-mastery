@@ -80,7 +80,9 @@ export default function ProductDetails({
 
   return (
     <div className="min-h-max relative h-fit z-1">
-      <Breadcrumbs mt={30}>{items}</Breadcrumbs>
+      <Breadcrumbs mt={30} className="ml-[100px] mr-[100px] mb-[5px]">
+        {items}
+      </Breadcrumbs>
       {/* 1 */}
       <Flex className=" w-full h-full">
         <Flex className=" ml-[100px] mr-[100px] h-[279px] w-full flex-row">
