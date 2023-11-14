@@ -7,6 +7,8 @@ import {
   Rating,
   Stack,
   Group,
+  Breadcrumbs,
+  Anchor,
   Button,
   NumberInput,
   ActionIcon,
@@ -19,6 +21,16 @@ import NImage from "next/image";
 import Link from "next/link";
 import "./index.css";
 import "@/app/global.css";
+
+const items = [
+  { title: "Mantine", href: "#" },
+  { title: "Mantine hooks", href: "#" },
+  { title: "use-id", href: "#" },
+].map((item, index) => (
+  <Anchor href={item.href} key={index}>
+    {item.title}
+  </Anchor>
+));
 import { useRef, useState } from "react";
 
 // min-height: 100vh;
@@ -68,6 +80,7 @@ export default function ProductDetails({
 
   return (
     <div className="min-h-max relative h-fit z-1">
+      <Breadcrumbs mt={30}>{items}</Breadcrumbs>
       {/* 1 */}
       <Flex className=" w-full h-full">
         <Flex className=" ml-[100px] mr-[100px] h-[279px] w-full flex-row">

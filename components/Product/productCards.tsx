@@ -2,15 +2,20 @@
 import { Grid } from "@mantine/core";
 import { PCard } from "./pcard";
 import styles from "./pcard.module.css";
+import { Product } from "@/utils/response";
 
-export const ProductCards = ({ data }: any) => {
-  return (
-    <Grid className={`${styles.container}`}>
-      {data.map((item: any) => (
-        <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <PCard></PCard>
-        </Grid.Col>
-      ))}
-    </Grid>
-  );
-};
+export const ProductCards = ({ data }: ProductCardsProps) => {
+	return (
+		<Grid w='100%' columns={15}>
+			{data.map((item: Product) => (
+				<Grid.Col span={{ base: 15, md: 5, lg: 3, sm: 15 }}>
+					<PCard data={item} />
+				</Grid.Col>
+			))}
+		</Grid>
+	)
+}
+
+interface ProductCardsProps {
+	data: Product[]
+}

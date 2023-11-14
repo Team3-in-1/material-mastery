@@ -7,3 +7,20 @@ export interface Category {
     updatedAt: string
     __v: number
 }
+
+export interface Product {
+    _id: string
+    product_name: string
+    product_thumb: string
+    product_description: string
+    product_price: number
+    product_quantity: number
+    product_brand: string
+    product_unit: string
+    product_ratingAverage: number
+    product_categories: string[]
+    createdAt: string
+    updatedAt: string
+    product_slug: string
+    __v: number
+}

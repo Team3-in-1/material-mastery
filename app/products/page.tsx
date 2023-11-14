@@ -1,33 +1,61 @@
+'use client'
+
 import { ProductCards } from "@/components/Product/productCards";
 import { CategoryNav } from "@/components/CategoryNav/categoryNav";
-import { findIndex } from "@/utils/array";
 import "../global.css";
-const data1 = [{ label: "Gach men" }, { label: "Gach lot tuong" }];
+import { Grid } from "@mantine/core";
+// const data1 = [{ label: "Gach men" }, { label: "Gach lot tuong" }];
 const data2 = [1, 2, 3, 4, 5, 6];
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { categoryService } from "@/services/categoryService"
+import { productService } from "@/services/productService";
+import { LoadingOverlay, Anchor, Breadcrumbs, Container } from '@mantine/core'
+import { useSearchParams } from 'next/navigation'
 
-export default function ProductsPage({ params }: { params: { name: String } }) {
-  return (
-    <>
-      <div
-        className="hidden-mobile"
-        style={{
-          flex: 3,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <CategoryNav
-          data={data1}
-          id={findIndex(data1, params.name)}
-        ></CategoryNav>
-      </div>
-      <div
-        style={{
-          flex: 7,
-        }}
-      >
-        <ProductCards data={data2}></ProductCards>
-      </div>{" "}
-    </>
-  );
+export default function ProductsPage() {
+
+	const searchParams = useSearchParams()
+
+	const queryClient = useQueryClient()
+
+	const categories = useQuery({
+		queryKey: ['categories'],
+		queryFn: categoryService.getAllCategories,
+		initialData: queryClient.getQueryData(['categories'])
+	})
+
+	const products = useQuery({
+		queryKey: ['products'],
+		queryFn: productService.getAllProducts
+	})
+
+	return (
+		<Container fluid>
+			<Breadcrumbs my={30}>
+				<Anchor href='/' key={0}>
+					Trang chủ
+				</Anchor>
+				<Anchor key={1}>
+					{searchParams.get('category') ?
+						categories.data?.find(category => category._id == searchParams.get('category'))?.category_name
+						: categories.data?.[0].category_name}
+				</Anchor>
+			</Breadcrumbs>
+			<Grid w='100%'>
+				<Grid.Col span={2}>
+					{
+						categories.isSuccess &&
+						<CategoryNav
+							data={categories.data || []}
+						/>
+					}
+				</Grid.Col>
+				<Grid.Col span={10}>
+					<ProductCards data={products.data || []} />
+				</Grid.Col>
+				{(categories.isPending || products.isPending)
+					&& <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />}
+			</Grid>
+		</Container>
+	)
 }

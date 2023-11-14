@@ -3,6 +3,9 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  images: {
+    domains: ['biiibo.com'],
+  }
   //   publicRuntimeConfig: {
   //     apiUrl:
   //       process.env.NODE_ENV === "development"
