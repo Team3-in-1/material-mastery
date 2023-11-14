@@ -4,8 +4,6 @@ import { ProductCards } from "@/components/Product/productCards";
 import { CategoryNav } from "@/components/CategoryNav/categoryNav";
 import "../global.css";
 import { Grid } from "@mantine/core";
-// const data1 = [{ label: "Gach men" }, { label: "Gach lot tuong" }];
-const data2 = [1, 2, 3, 4, 5, 6];
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { categoryService } from "@/services/categoryService"
 import { productService } from "@/services/productService";
@@ -20,8 +18,7 @@ export default function ProductsPage() {
 
 	const categories = useQuery({
 		queryKey: ['categories'],
-		queryFn: categoryService.getAllCategories,
-		initialData: queryClient.getQueryData(['categories'])
+		queryFn: categoryService.getAllCategories
 	})
 
 	const products = useQuery({

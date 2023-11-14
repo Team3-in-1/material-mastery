@@ -1,7 +1,6 @@
 "use client";
 import {
 	Card,
-	CardSection,
 	Image,
 	Group,
 	Text,
@@ -9,7 +8,6 @@ import {
 	ActionIcon,
 	Divider,
 	Rating,
-	Stack,
 } from "@mantine/core";
 import { IconShoppingCartPlus } from "@tabler/icons-react";
 import { useState } from "react";
@@ -53,11 +51,11 @@ export const PCard = ({ data }: PCardProps) => {
 					</Group>
 
 					<ActionIcon color="#E9F9F8" variant="filled" aria-label="Add">
-						<IconShoppingCartPlus color="#02B1AB"></IconShoppingCartPlus>
+						<IconShoppingCartPlus color="#02B1AB" />
 					</ActionIcon>
 				</Group>
 				<Group justify="space-between" className="justify-between">
-					<Rating value={value} onChange={setValue} />
+					<Rating value={value} readOnly onChange={setValue} />
 					<Group>
 						<Divider size="sm" orientation="vertical" />
 						<Text c="dimmed">{data.product_quantity}</Text>

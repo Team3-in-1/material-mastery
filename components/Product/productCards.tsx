@@ -1,7 +1,6 @@
 "use client";
 import { Grid } from "@mantine/core";
 import { PCard } from "./pcard";
-import styles from "./pcard.module.css";
 import { Product } from "@/utils/response";
 
 export const ProductCards = ({ data }: ProductCardsProps) => {
