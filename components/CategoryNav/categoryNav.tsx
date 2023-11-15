@@ -5,6 +5,7 @@ import classes from "./categoryNav.module.css"
 import { Category } from "@/utils/response";
 import { useSearchParams, useRouter } from 'next/navigation'
 
+
 export const CategoryNav = ({ data }: CategoryNavProps) => {
 
   const searchParams = useSearchParams()
@@ -22,8 +23,8 @@ export const CategoryNav = ({ data }: CategoryNavProps) => {
     <Stack className={`hidden-mobile ${classes.container} rounded-lg`} px={15} py={20}>
       {data?.map(item => (
         <NavLink
-          className={active == item._id ? 'text-center rounded-lg text-[0.9rem] text-[#02B1AB]' 
-          : 'text-center rounded-md text-sm text-[#8E8E8E]'}
+          className={active == item._id ? 'text-left rounded-lg text-[0.9rem] text-[#02B1AB]' 
+          : 'text-left rounded-md text-sm text-[#8E8E8E]'}
           key={item._id}
           active={item._id == active}
           label={item.category_name}

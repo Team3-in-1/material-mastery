@@ -1,12 +1,11 @@
-function findIndex(array: any, label: String = "Gach men"){
-    const name = label.replaceAll("%20", " ").toLowerCase();
-    for(let i = 0; i < array.length; i++){
-        if(array[i].label.toLowerCase() === name){
-            return i;
+function splitArray<T>(array: T[], chunkSize: number) {
+    return array.reduce<T[][]>((result, _, index) => {
+        if (index % chunkSize === 0) {
+            result.push(array.slice(index, index + chunkSize));
         }
-    }
-    return 0;
+        return result;
+    }, []);
 }
 
 
-export {findIndex};
+export { splitArray };

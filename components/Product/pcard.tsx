@@ -8,6 +8,7 @@ import {
 	ActionIcon,
 	Divider,
 	Rating,
+	Badge,
 } from "@mantine/core";
 import { IconShoppingCartPlus } from "@tabler/icons-react";
 import { useState } from "react";
@@ -17,13 +18,16 @@ import { Product } from "@/utils/response";
 
 export const PCard = ({ data }: PCardProps) => {
 	const [value, setValue] = useState(2);
-	const name = "gạch lót sàn loại 1";
 	return (
-		<Card w={200} h={245} className={`${Styles.containerCard}`}>
+		<Card className={`${Styles.containerCard}`} style={{
+			position: 'relative',
+			border: '1px solid #E2E2E2',
+			borderRadius: '5px'
+		}}>
 			<Card.Section component={Link} href={`/products/${data._id}`}>
 				<Image
 					alt="product"
-					height={9}
+					// height={9}
 					src={data.product_thumb}
 				/>
 			</Card.Section>
@@ -34,7 +38,7 @@ export const PCard = ({ data }: PCardProps) => {
 				w={"100%"}
 				className="h-[100px] justify-around w-[100%] flex-col"
 			>
-				<Text className="mt-2 text-[1rem]">{data.product_name}</Text>
+				<Text className="my-2 text-[1rem]">{data.product_name}</Text>
 				<Group justify="space-between" className=" justify-between">
 					<Group
 						gap={0}
@@ -54,7 +58,7 @@ export const PCard = ({ data }: PCardProps) => {
 						<IconShoppingCartPlus color="#02B1AB" />
 					</ActionIcon>
 				</Group>
-				<Group justify="space-between" className="justify-between">
+				<Group justify="space-between" className="justify-between mt-2">
 					<Rating value={value} readOnly onChange={setValue} />
 					<Group>
 						<Divider size="sm" orientation="vertical" />
@@ -62,6 +66,7 @@ export const PCard = ({ data }: PCardProps) => {
 					</Group>
 				</Group>
 			</Flex>
+			<Badge className='absolute top-3 right-1 text-sx font-light' color='#F76D6D'>-12 %</Badge>
 		</Card>
 	)
 }

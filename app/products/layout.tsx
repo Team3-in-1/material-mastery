@@ -9,7 +9,7 @@ export default function ProductsLayout({
 }) {
 	return (
 		<div className={`page-container`}>
-			<Container fluid py={70} px={100}>
+			<Container fluid py={70} px={80}>
 				<div className='mt-4'>
 					{children}
 				</div>
