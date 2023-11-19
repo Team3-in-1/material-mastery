@@ -1,9 +1,9 @@
-"use client";
-import React, { useState } from "react";
-import { NavLink, Stack } from "@mantine/core";
-import classes from "./categoryNav.module.css";
-import { Category } from "@/utils/response";
-import { useSearchParams, useRouter } from "next/navigation";
+'use client';
+import React, { useState } from 'react';
+import { NavLink, Stack } from '@mantine/core';
+import classes from './categoryNav.module.css';
+import { Category } from '@/utils/response';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 export const CategoryNav = ({ data }: CategoryNavProps) => {
   const searchParams = useSearchParams();
@@ -11,7 +11,7 @@ export const CategoryNav = ({ data }: CategoryNavProps) => {
   const router = useRouter();
 
   const [active, setActive] = useState(
-    searchParams.get("category") || data[0]._id
+    searchParams.get('category') || data[0]._id
   );
 
   const handleOnclick = (id: string): void => {
@@ -29,8 +29,8 @@ export const CategoryNav = ({ data }: CategoryNavProps) => {
         <NavLink
           className={
             active == item._id
-              ? "text-center rounded-lg text-sm text-[#02B1AB]"
-              : "text-center rounded-md text-sm text-[#8E8E8E]"
+              ? 'text-left rounded-lg text-[0.9rem] text-[#02B1AB]'
+              : 'text-left rounded-md text-sm text-[#8E8E8E]'
           }
           key={item._id}
           active={item._id == active}

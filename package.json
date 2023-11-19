@@ -11,6 +11,7 @@
     "chay-di-khai": "next dev"
   },
   "dependencies": {
+    "@mantine/carousel": "^7.1.2",
     "@mantine/core": "^7.1.2",
     "@mantine/dates": "^7.1.2",
     "@mantine/form": "^7.1.3",
