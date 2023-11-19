@@ -24,3 +24,16 @@ export interface Product {
     product_slug: string
     __v: number
 }
+
+export interface Comment {
+    _id: string
+    comment_productId: string
+    comment_userId: string
+    comment_content: string
+    comment_left: number
+    comment_right: number
+    comment_parentId: string
+    createdAt: string
+    updatedAt: string
+    __v: number        
+}

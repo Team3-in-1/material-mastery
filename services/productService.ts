@@ -12,6 +12,8 @@ const getAllProducts = async (): Promise<Product[]> => {
     .catch(error => {throw new Error(error.response.data.message)})
 }
 
+
+
 export const productService = {
     getAllProducts
 }
