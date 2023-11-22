@@ -54,8 +54,8 @@ const checkPasswordFormat = (value: string) : any => {
 
     if(value.length > 30)
         return "Password must not exceed 30 characters";
-    if(value.length < 8)
-        return "Password must have at least 8 characters";
+    // if(value.length < 8)
+    //     return "Password must have at least 8 characters";
     
     return null;
 }
