@@ -8,6 +8,12 @@ export interface Category {
     __v: number
 }
 
+export interface Product_Category {
+  _id: string
+  category_name: string
+}
+
+
 export interface Product {
     _id: string
     product_name: string
@@ -18,7 +24,7 @@ export interface Product {
     product_brand: string
     product_unit: string
     product_ratingAverage: number
-    product_categories: string[]
+    product_categories: Product_Category[]
     createdAt: string
     updatedAt: string
     product_slug: string

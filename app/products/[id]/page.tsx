@@ -19,11 +19,10 @@ import { IconPlus, IconMinus } from '@tabler/icons-react';
 import exampleImage from '@/public/pic/gach.jpg';
 import NImage from 'next/image';
 import Link from 'next/link';
-import './index.css';
-import '@/app/global.css';
 import CommentService from '@/services/commentService';
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { productService } from '@/services/productService';
 
 const items = [
   { title: 'Mantine', href: '#' },
@@ -35,16 +34,17 @@ const items = [
   </Anchor>
 ));
 
-export default function ProductDetails({
-  params,
-}: {
-  params: { name: String };
-}) {
+export default function ProductDetails({ params }: { params: { id: string } }) {
   const handlersRef = useRef<NumberInputHandlers>(null);
 
   const comments = useQuery({
-    queryKey: ['Comment'],
+    queryKey: ['Comments'],
     queryFn: CommentService.getAllComments,
+  });
+
+  const product = useQuery({
+    queryKey: ['Product'],
+    queryFn: () => productService.getProductById(params.id),
   });
 
   const people = comments.data;
@@ -65,35 +65,47 @@ export default function ProductDetails({
   return (
     <div className='min-h-max relative h-fit z-1'>
       <Breadcrumbs mt={30} className='ml-[100px] mr-[100px] mb-[5px]'>
-        {items}
+        <Anchor href='/' key={0}>
+          Trang chủ
+        </Anchor>
+        <Anchor
+          href={`/products?category=${product.data?.product_categories[0].category_name}`}
+        >
+          {product.data?.product_categories[0].category_name}
+        </Anchor>
+        <Anchor href={`/products/${product.data?._id}`}>
+          {product.data?.product_name}
+        </Anchor>
       </Breadcrumbs>
-      {/* 1 */}
+
       <Flex className=' w-full h-full'>
-        <Flex className=' ml-[100px] mr-[100px] h-[279px] w-full md:flex-row'>
-          {/* 1 */}
+        <Flex className=' ml-[100px] mr-[100px] h-fit h-min-[279px] w-full md:flex-row'>
           <Flex className=' justify-center items-center bg-white mr-[10px] rounded-[10px] flex-[4]'>
             <Image
               alt='img'
               src={exampleImage}
               component={NImage}
               height={150}
-              // className={`i-1-sm`}
               className=' h-[80px] md:h-[250px] '
             />
           </Flex>
-          <Flex className=' p-5 flex-[6] ml-[5px] bg-white rounded-[10px] flex-col h-fit md:h-full'>
-            {/* 2 */}
-            <Flex direction={'column'}>
+          <Flex className=' p-5 flex-[6] ml-[5px] px-[32px] py-[16px] bg-white rounded-[10px] flex-col h-fit md:h-full'>
+            <Flex direction={'column'} className='gap-1'>
               <Link href={'/'}>Brand: CMC</Link>
-              <Text size='15px' className={`n-t-2-sm`}>
+              <Text
+                size='15px'
+                className=' text-[15px] overflow-hidden text-ellipsis'
+              >
                 Gạch Porcelain lát nền kim cương CMC KC89005Gạch Porcelain lát
                 nền kim cương CMC KC89005
               </Text>
               <Rating value={3.5} fractions={2} readOnly />
             </Flex>
             <Flex>
-              <Text className={`m-t-2 m-t-2-sm`}>00.00</Text>
-              <Text className={`s-t-2 s-t-2-sm`}>đ</Text>
+              <Text className=' font-bold md:text-[30px] text-[20px]'>
+                00.00
+              </Text>
+              <Text className=' font-bold md:text-[16px] text-[10px]'>đ</Text>
             </Flex>
             <Flex>
               <Stack gap={2}>
@@ -139,7 +151,7 @@ export default function ProductDetails({
           </Flex>
         </Flex>
       </Flex>
-      {/* 3 */}
+
       <Flex className=' mt-[10px] w-full h-full items-center justify-center'>
         <Flex className=' w-full h-full flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] box-content'>
           <Text className=' font-bold'>Thông tin sản phẩm</Text>

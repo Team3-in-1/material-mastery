@@ -12,8 +12,17 @@ const getAllProducts = async (): Promise<Product[]> => {
     .catch(error => {throw new Error(error.response.data.message)})
 }
 
-
+const getProductById = async (id: string): Promise<Product> => {
+    return await axios.get(`${constant.BASE_URL}/product/${id}`, {
+        headers: {
+            'x-api-key': constant.API_KEY
+        }
+    })
+    .then(res => res.data.metadata)
+    .catch(error => {throw new Error(error.response.data.message)})
+}
 
 export const productService = {
-    getAllProducts
+    getAllProducts,
+    getProductById
 }

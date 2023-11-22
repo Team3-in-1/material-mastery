@@ -1,9 +1,9 @@
-import { Flex, ScrollArea } from "@mantine/core";
-import { CategoryNav } from "@/components/CategoryNav/categoryNav";
-import { FC } from "react";
-import { findIndex } from "@/utils/array";
+import { Flex, ScrollArea } from '@mantine/core';
+import { CategoryNav } from '@/components/CategoryNav/categoryNav';
+import { FC } from 'react';
+import { findIndex } from '@/utils/array';
 
-const data = [{ label: "Brick" }, { label: "Furniture" }];
+const data = [{ label: 'Brick' }, { label: 'Furniture' }];
 
 export default function CategoriesLayout({
   children,
@@ -15,46 +15,46 @@ export default function CategoriesLayout({
   return (
     <div
       style={{
-        minHeight: "100vh",
-        position: "relative",
-        width: "100%",
-        height: "fit-content",
+        minHeight: '100vh',
+        position: 'relative',
+        width: '100%',
+        height: 'fit-content',
         zIndex: 1,
-        backgroundColor: "var(--mantine-color-gray-1)",
+        backgroundColor: 'var(--mantine-color-gray-1)',
         // boxShadow: 'var(--mantine-shadow-md)'
       }}
     >
       <div
         style={{
-          paddingTop: "120px",
-          height: "100%",
-          width: "100%",
+          paddingTop: '120px',
+          height: '100%',
+          width: '100%',
         }}
       >
         <div
-          className="hidden-mobile"
+          className='hidden-mobile'
           style={{
-            flex: "2",
-            display: "flex",
-            alignItems: "flex-end",
-            paddingLeft: "100px",
-            paddingBottom: "10px",
+            flex: '2',
+            display: 'flex',
+            alignItems: 'flex-end',
+            paddingLeft: '100px',
+            paddingBottom: '10px',
           }}
         >
           <div>Trang chủ</div>
         </div>
         <div
           style={{
-            flex: "9",
-            display: "flex",
+            flex: '9',
+            display: 'flex',
           }}
         >
           <div
-            className="hidden-mobile"
+            className='hidden-mobile'
             style={{
               flex: 3,
-              display: "flex",
-              justifyContent: "center",
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
             <CategoryNav
