@@ -1,10 +1,17 @@
 'use client';
 import NextImage from 'next/image';
-import { Flex, Group, Image, Text, Anchor } from '@mantine/core';
+import { Flex, Group, Image, Text, Anchor, Menu, rem } from '@mantine/core';
 import logo from '@/public/icon.svg';
 import Search from '../Search/search';
 import LanguagePicker from '../LanguagePicker/languagePicker';
-import { IconShoppingCart, IconUserCircle } from '@tabler/icons-react';
+import {
+  IconShoppingCart,
+  IconUserCircle,
+  IconLogout,
+  IconUser,
+  IconChecklist,
+  IconTicket,
+} from '@tabler/icons-react';
 import classes from './header.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,8 +21,9 @@ import useLogin from '@/helpers/useLogin';
 
 export default function Header() {
   const appName = 'Material Mastery';
-  const [isLogin] = useLogin();
+  const [user, setUser] = useLogin();
   const router = useRouter();
+
   return (
     <Flex
       justify='space-between'
@@ -50,19 +58,59 @@ export default function Header() {
         </Group>
       </Anchor>
       <Search content='' />
-      {isLogin ? (
+
+      {user ? (
         <Flex gap='1rem' align='center' className='hidden-mobile'>
-          <LanguagePicker />
+          {/* <LanguagePicker /> */}
           <IconShoppingCart
             onClick={() => router.push('/cart')}
             className={classes.hoverIcon}
           />
-          <IconUserCircle className={classes.hoverIcon} />
+          <Menu trigger='hover' openDelay={100} closeDelay={400} zIndex={1002}>
+            <Menu.Target>
+              <IconUserCircle className={classes.hoverIcon} />
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={
+                  <IconUser style={{ width: rem(14), height: rem(14) }} />
+                }
+                onClick={() => {}}
+              >
+                Thông tin tài khoản
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconChecklist style={{ width: rem(14), height: rem(14) }} />
+                }
+                onClick={() => {}}
+              >
+                Đơn hàng
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconTicket style={{ width: rem(14), height: rem(14) }} />
+                }
+                onClick={() => {}}
+              >
+                Kho voucher
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconLogout style={{ width: rem(14), height: rem(14) }} />
+                }
+                onClick={() => {
+                  setUser();
+                }}
+              >
+                Đăng xuất
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Flex>
       ) : (
         <Flex gap='1rem' align='center' className='hidden-mobile'>
           <LanguagePicker />
-
           <Link href='/sign-up'>Sign-up</Link>
           <Link href='/sign-in'>Sign-in</Link>
         </Flex>

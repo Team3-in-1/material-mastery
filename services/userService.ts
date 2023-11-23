@@ -3,17 +3,6 @@ import axios from 'axios';
 import { constant } from '@/utils/constant';
 
 
-// const { publicRuntimeConfig } = getConfig();
-
-const publicRuntimeConfig = {
-    apiUrl:
-        process.env.NODE_ENV === "development"
-            ? "https://reqres.in/api" // development api
-            : "https://reqres.in/api", // production api
-};
-// const baseUrl = `${publicRuntimeConfig.apiUrl}`;
-
-const userSubject = new BehaviorSubject(process.browser && JSON.parse(localStorage.getItem('user') || 'null'));
 
 const login = async (request: FormData) => {
     await axios.post(`${constant.BASE_URL}/signIn`, request, {
@@ -28,10 +17,14 @@ const login = async (request: FormData) => {
     .catch(error => {throw new Error(error.response.data.message)})
 }
 
-// function logout() {
-//     localStorage.removeItem('user');
-//     userSubject.next(null);
-//     Router.push('/account/login');
+// const logout = () => {
+//     //const router = useRouter();
+//     const [isLogin, setIsLogin] = useLogin();
+//     console.log('1')
+//     console.log(setIsLogin);
+//     // setIsLogin(isLogin);
+//     // localStorage.removeItem('user');
+//     //router.replace('/sign-in');
 // }
 
 // function register(formData: any) {
@@ -68,8 +61,6 @@ const login = async (request: FormData) => {
 // }
 
 export const userService = {
-    user: userSubject.asObservable(),
-    get userValue() { return userSubject.value },
     login,
     // logout,
     // register,

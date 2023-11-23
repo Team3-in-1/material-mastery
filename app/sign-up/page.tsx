@@ -18,10 +18,10 @@ import useLogin from '@/helpers/useLogin';
 import { useRouter } from 'next/navigation';
 
 export default function page() {
-  const [isLogin] = useLogin();
+  const [user, setUser] = useLogin();
   const router = useRouter();
-  if (isLogin) {
-    router.replace('/');
+  if (user) {
+    router.push('/');
   }
 
   return (

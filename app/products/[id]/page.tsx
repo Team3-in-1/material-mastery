@@ -38,12 +38,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   const handlersRef = useRef<NumberInputHandlers>(null);
 
   const comments = useQuery({
-    queryKey: ['Comments'],
+    queryKey: ['comments'],
     queryFn: CommentService.getAllComments,
   });
 
   const product = useQuery({
-    queryKey: ['Product'],
+    queryKey: ['product'],
     queryFn: () => productService.getProductById(params.id),
   });
 
@@ -52,10 +52,11 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
 
   const data = [
     { id: 0, label: 'Tất cả' },
-    { id: 1, label: '1 sao' },
-    { id: 2, label: '2 sao' },
-    { id: 3, label: '3 sao' },
+    { id: 5, label: '5 sao' },
     { id: 4, label: '4 sao' },
+    { id: 3, label: '3 sao' },
+    { id: 2, label: '2 sao' },
+    { id: 1, label: '1 sao' },
   ];
   const [isChoosing, setIschoosing] = useState(0);
   const handleOnclick = (id: number) => {
@@ -80,30 +81,38 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
 
       <Flex className=' w-full h-full'>
         <Flex className=' ml-[100px] mr-[100px] h-fit h-min-[279px] w-full md:flex-row'>
-          <Flex className=' justify-center items-center bg-white mr-[10px] rounded-[10px] flex-[4]'>
+          <Flex className=' justify-center items-center bg-white mr-[10px] rounded-[10px] flex-[4] p-[30px]'>
             <Image
               alt='img'
-              src={exampleImage}
+              src={product.data?.product_thumb}
               component={NImage}
               height={150}
-              className=' h-[80px] md:h-[250px] '
+              width={150}
+              className=' h-[80px] md:h-[150px] '
             />
           </Flex>
           <Flex className=' p-5 flex-[6] ml-[5px] px-[32px] py-[16px] bg-white rounded-[10px] flex-col h-fit md:h-full'>
             <Flex direction={'column'} className='gap-1'>
-              <Link href={'/'}>Brand: CMC</Link>
+              {product.data?.product_brand != 'empty' ? (
+                <Link href={'/'}>Brand: {product.data?.product_brand}</Link>
+              ) : (
+                <></>
+              )}
               <Text
                 size='15px'
                 className=' text-[15px] overflow-hidden text-ellipsis'
               >
-                Gạch Porcelain lát nền kim cương CMC KC89005Gạch Porcelain lát
-                nền kim cương CMC KC89005
+                {product.data?.product_name}
               </Text>
-              <Rating value={3.5} fractions={2} readOnly />
+              <Rating
+                value={product.data?.product_ratingAverage}
+                fractions={2}
+                readOnly
+              />
             </Flex>
             <Flex>
               <Text className=' font-bold md:text-[30px] text-[20px]'>
-                00.00
+                {product.data?.product_price}
               </Text>
               <Text className=' font-bold md:text-[16px] text-[10px]'>đ</Text>
             </Flex>
@@ -155,7 +164,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       <Flex className=' mt-[10px] w-full h-full items-center justify-center'>
         <Flex className=' w-full h-full flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] box-content'>
           <Text className=' font-bold'>Thông tin sản phẩm</Text>
-          <Text className=' text-[20vm]'>
+          {/* <Text className=' text-[20vm]'>
             Gạch lát nền Porcelain kim cương siêu bóng CMC KC89005 Hưng Gia Bình
             - Nhà phân phối sỉ và lẻ các loại gạch men lát nền, gạch đá bóng
             kiếng, gạch trang trí với giá tốt nhất tại Đà Nẵng, Hội An, Quảng
@@ -168,16 +177,29 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             <br /> - Bề mặt: Phẳng - bóng
             <br /> - Công nghệ: Châu Âu - Sản xuất tại Việt Nam.
             <br /> - Chất liệu: Gạch Granite bán sứ - Siêu bóng
-          </Text>
+          </Text> */}
+          {product.data?.product_description ? (
+            <Text className=' text-[20vm]'>
+              {product.data.product_description}
+            </Text>
+          ) : (
+            <Text className=' text-[20vm]'>Không có</Text>
+          )}
         </Flex>
       </Flex>
 
       <Flex className=' flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] mt-[10px] mb-[20px]'>
         <Text className=' font-bold'>Đánh giá sản phẩm</Text>
         <Group className='ml-[100px] mr-[100px] justify-center align-middle'>
-          <Stack className=' gap-1'>
-            <Text className=' font-bold text-[50px]'>3/5</Text>
-            <Rating defaultValue={3} readOnly />
+          <Stack className=' gap-1 justify-center items-center'>
+            <Text className=' font-bold text-[50px]'>
+              {product.data?.product_ratingAverage}/5
+            </Text>
+            <Rating
+              value={product.data?.product_ratingAverage}
+              fractions={2}
+              readOnly
+            />
             <Text className=' font-normal'>{number}</Text>
           </Stack>
           <Group>
@@ -198,32 +220,37 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             ))}
           </Group>
         </Group>
+
+        {/* load comments base on rating score */}
         <Stack>
-          {people?.map((person) => (
-            <Stack key={person._id}>
-              <Stack className=' gap-1'>
-                <Group>
-                  <Image
-                    alt='avt'
-                    src={exampleImage}
-                    component={NImage}
-                    className=' rounded-full w-[35px]'
-                  />
-                  <Stack className=' gap-0'>
-                    <Text className='ml-[5px]'>Khai</Text>
-                    <Rating defaultValue={3} readOnly />
+          {people?.map(
+            (person) =>
+              (isChoosing == 0 || isChoosing == 3) && (
+                <Stack key={person._id}>
+                  <Stack className=' gap-1'>
+                    <Group>
+                      <Image
+                        alt='avt'
+                        src={exampleImage}
+                        component={NImage}
+                        className=' rounded-full w-[35px]'
+                      />
+                      <Stack className=' gap-0'>
+                        <Text className='ml-[5px]'>Khai</Text>
+                        <Rating defaultValue={3} readOnly />
+                      </Stack>
+                    </Group>
+                    <Text className=' ml-[55px] text-[#BBB] text-[12px]'>
+                      {person.createdAt}
+                    </Text>
                   </Stack>
-                </Group>
-                <Text className=' ml-[55px] text-[#BBB] text-[12px]'>
-                  {person.createdAt}
-                </Text>
-              </Stack>
-              <Text className=' ml-[60px] text-overflow: ellipsis;'>
-                {person.comment_content}
-              </Text>
-              <Divider my='sm' />
-            </Stack>
-          ))}
+                  <Text className=' ml-[60px] text-overflow: ellipsis;'>
+                    {person.comment_content}
+                  </Text>
+                  <Divider my='sm' />
+                </Stack>
+              )
+          )}
         </Stack>
       </Flex>
     </div>
