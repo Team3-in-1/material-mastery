@@ -31,6 +31,8 @@ export const PCard = ({ data }: PCardProps) => {
         <Image
           alt='product'
           // height={9}
+          h={147}
+          w={200}
           src={data.product_thumb}
         />
       </Card.Section>
@@ -41,7 +43,19 @@ export const PCard = ({ data }: PCardProps) => {
         w={'100%'}
         className='h-[100px] justify-around w-[100%] flex-col'
       >
-        <Text className='my-2 text-[1rem]'>{data.product_name}</Text>
+        <Divider />
+        <div className='h-[60px]'>
+          {data.product_name.length <= 35 ? (
+            <Text className='my-2 text-[1rem] text-ellipsis gap-0 tracking-tighter'>
+              {data.product_name}
+            </Text>
+          ) : (
+            <Text className='my-2 text-[0.7rem] text-ellipsis'>
+              {data.product_name}
+            </Text>
+          )}
+        </div>
+
         <Group justify='space-between' className=' justify-between'>
           <Group
             gap={0}
@@ -71,7 +85,7 @@ export const PCard = ({ data }: PCardProps) => {
         className='absolute top-3 right-1 text-sx font-light'
         color='#F76D6D'
       >
-        -12 %
+        -99 %
       </Badge>
     </Card>
   );

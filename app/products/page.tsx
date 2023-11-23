@@ -95,7 +95,12 @@ export default function ProductsPage() {
           <Container fluid py={10} className='bg-white rounded'>
             <ProductCards data={products.data || []} />
             <Flex className='w-full items-center justify-center p-[10px]'>
-              <Pagination total={10} color='cyan' withControls={false} />
+              <Pagination
+                total={10}
+                color='cyan'
+                withControls={false}
+                className='text-black'
+              />
             </Flex>
           </Container>
         </Grid.Col>
