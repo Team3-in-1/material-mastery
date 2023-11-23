@@ -15,9 +15,12 @@ import { useState } from 'react';
 import Styles from './pcard.module.css';
 import Link from 'next/link';
 import { Product } from '@/utils/response';
+import useRQGlobalState from '@/helpers/useRQGlobalState';
+import useCard from '@/helpers/useCard';
 
 export const PCard = ({ data }: PCardProps) => {
   const [value, setValue] = useState(2);
+  const [card, setCard] = useCard();
   return (
     <Card
       className={`${Styles.containerCard}`}
@@ -69,7 +72,14 @@ export const PCard = ({ data }: PCardProps) => {
             </Text>
           </Group>
 
-          <ActionIcon color='#E9F9F8' variant='filled' aria-label='Add'>
+          <ActionIcon
+            color='#E9F9F8'
+            variant='filled'
+            aria-label='Add'
+            onClick={() => {
+              setCard([{ id: 'hello', price: 5000, quantity: 5 }, ...card]);
+            }}
+          >
             <IconShoppingCartPlus color='#02B1AB' />
           </ActionIcon>
         </Group>

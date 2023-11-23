@@ -18,10 +18,13 @@ import { useRouter } from 'next/navigation';
 
 import { useLocalStorage } from '@mantine/hooks';
 import useLogin from '@/helpers/useLogin';
+import useRQGlobalState from '@/helpers/useRQGlobalState';
+import useCard from '@/helpers/useCard';
 
 export default function Header() {
   const appName = 'Material Mastery';
   const [user, setUser] = useLogin();
+  const [card, setCard] = useCard();
   const router = useRouter();
 
   return (
@@ -62,10 +65,17 @@ export default function Header() {
       {user ? (
         <Flex gap='1rem' align='center' className='hidden-mobile'>
           {/* <LanguagePicker /> */}
-          <IconShoppingCart
-            onClick={() => router.push('/cart')}
-            className={classes.hoverIcon}
-          />
+          <div className=' relative w-[25px] h-[25px]'>
+            <IconShoppingCart
+              onClick={() => router.push('/cart')}
+              className={classes.hoverIcon}
+            />
+            {card.length != 0 && (
+              <Text className=' absolute top-[-10px] right-[-10px] text-red-500 font-bold'>
+                {card.length}
+              </Text>
+            )}
+          </div>
           <Menu trigger='hover' openDelay={100} closeDelay={400} zIndex={1002}>
             <Menu.Target>
               <IconUserCircle className={classes.hoverIcon} />
