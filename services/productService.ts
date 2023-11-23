@@ -22,7 +22,19 @@ const getProductById = async (id: string): Promise<Product> => {
     .catch(error => {throw new Error(error.response.data.message)})
 }
 
+const getAllProductsByCategory = async (id: string, limit = 5, page = 1, sortType = 'product_price', isAscending = true) : Promise<Product[]> => {
+    console.log(`${constant.BASE_URL}/product/category/${id}?limit=${limit}&page=${page}&sorted[]=${sortType}&isAscending=${isAscending}`)
+    return await axios.get(`${constant.BASE_URL}/product/category/${id}?limit=${limit}&page=${page}&sorted[]=${sortType}&isAscending=${isAscending}`, {
+        headers: {
+            'x-api-key': constant.API_KEY
+        }
+    })
+    .then(res => res.data.metadata)
+    .catch(error => {throw new Error(error.response.data.message)})
+}
+
 export const productService = {
     getAllProducts,
-    getProductById
+    getProductById,
+    getAllProductsByCategory,
 }
