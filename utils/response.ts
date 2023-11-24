@@ -44,3 +44,26 @@ export interface Comment {
     __v: number        
 }
 
+export interface CartInterface {
+  _id: string
+  cart_userId: string
+  __v: number
+  cart_count_products: number
+  cart_products: CartProduct[]
+  cart_state: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CartProduct {
+  product_name: string
+  product_thumb: string | null
+  product_description: string | null
+  product_price: number
+  product_quantity: number
+  product_brand: string | null
+  product_unit: string | null
+  product_ratingAverage: number | null
+  product_categories: string[] | null
+  productId: string | null
+}

@@ -12,7 +12,6 @@ class CommentService {
     }
 
     async getAllComments(): Promise<Comment[]>{
-        console.log(`${constant.BASE_URL}/comment/product`)
         return await axios.post(`${constant.BASE_URL}/comment/product`,{
                 'productId': "6543acc62a89e59dd2bf8731",
                 'parentId': null

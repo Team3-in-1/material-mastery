@@ -20,12 +20,31 @@ import { useRouter } from 'next/navigation';
 import { useLocalStorage } from '@mantine/hooks';
 import useLogin from '@/helpers/useLogin';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
-import useCard from '@/helpers/useCard';
+import useCart from '@/helpers/useCart';
+import cartService from '@/services/cartService';
+import { useQuery } from '@tanstack/react-query';
+import queryClient from '@/helpers/client';
 
 export default function Header() {
   const appName = 'Material Mastery';
+
   const [user, setUser] = useLogin();
-  const [card, setCard] = useCard();
+
+  const cart = useQuery({
+    queryKey: ['cart'],
+    queryFn: () =>
+      cartService.getCart(user.user._id, user.tokenPair.accessToken),
+  });
+
+  // const [cart, setCart] = useCart();
+  // if (user) {
+  //   setCart(cartService.getCart(user.user._id, user.tokenPair.accessToken));
+  // }
+
+  // const useJSON = JSON.parse(localStorage.getItem('user') || 'empty');
+
+  // const [cart, setCart] = useCart(products.data?.cart_products);
+
   const router = useRouter();
 
   return (
@@ -71,9 +90,9 @@ export default function Header() {
               onClick={() => router.push('/cart')}
               className={classes.hoverIcon}
             />
-            {card.length != 0 && (
+            {cart.isSuccess && cart.data?.cart_products.length != 0 && (
               <Text className='absolute top-[-10px] right-[-10px] text-[red] font-bold'>
-                {card.length}
+                {cart.data?.cart_products.length}
               </Text>
             )}
           </div>

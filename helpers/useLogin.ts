@@ -2,12 +2,26 @@ import { useQuery } from "@tanstack/react-query";
 import queryClient from "./client";
 
 
-const useLogin = (initialData: any = null ): any => [
-    useQuery({queryKey: ['user'], queryFn: () => initialData || localStorage.getItem('user')}).data,
+const useLogin = (initialData: any = queryClient.getQueryData(['user']) ): any => [
+    useQuery({queryKey: ['user'], queryFn: () => {
+        if(initialData){
+            return initialData;
+        }
+        const userString = localStorage.getItem('user');
+        if(userString){
+            return JSON.parse(userString);
+        }
+        return null;
+        
+    }}).data,
     (value: any = null) => {
-        value == null ? 
-        localStorage.removeItem('user') 
-        : localStorage.setItem('user', value); 
+        // when value is null that is logout
+        if(!value){
+            localStorage.removeItem('user');
+            }
+        else {
+            localStorage.setItem('user', value)
+        }
         return queryClient.setQueryData(['user'], value)}
 ]
 

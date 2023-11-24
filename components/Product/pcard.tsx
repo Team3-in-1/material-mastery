@@ -16,12 +16,15 @@ import Styles from './pcard.module.css';
 import Link from 'next/link';
 import { Product } from '@/utils/response';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
-import useCard from '@/helpers/useCard';
+import useCard from '@/helpers/useCart';
 import { formatMoney } from '@/utils/string';
+import { useQueryClient } from '@tanstack/react-query';
+import useCart from '@/helpers/useCart';
 
 export const PCard = ({ data }: PCardProps) => {
   const [value, setValue] = useState(2);
-  const [card, setCard] = useCard();
+  const queryClient = useQueryClient();
+  const [cart, setCart] = useCart();
 
   return (
     <Card
@@ -81,7 +84,33 @@ export const PCard = ({ data }: PCardProps) => {
             variant='filled'
             aria-label='Add'
             onClick={() => {
-              setCard([{ id: 'hello', price: 5000, quantity: 5 }, ...card]);
+              // product_name: string
+              // product_thumb: string | null
+              // product_description: string | null
+              // product_price: number
+              // product_quantity: number
+              // product_brand: string | null
+              // product_unit: string | null
+              // product_ratingAverage: number | null
+              // product_categories: string[] | null
+              // productId: string | null
+              if (cart) {
+                const newCart = structuredClone(cart);
+                newCart.cart_products.push({
+                  product_name: data.product_name,
+                  product_thumb: data.product_thumb,
+                  product_description: null,
+                  product_price: data.product_price,
+                  product_quantity: 1,
+                  product_brand: null,
+                  product_unit: null,
+                  product_ratingAverage: null,
+                  product_categories: null,
+                  productId: data._id,
+                });
+                setCart(newCart);
+              } else {
+              }
             }}
           >
             <IconShoppingCartPlus color='#02B1AB' />

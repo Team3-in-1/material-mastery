@@ -9,9 +9,9 @@ import {
 import { IconTrash } from '@tabler/icons-react';
 import GachImg from '@/public/pic/gach.jpg';
 import NextImage from 'next/image';
-import { CardInterface } from '@/helpers/useCard';
+import { CartProduct } from '@/utils/response';
 
-const CartItem = (data: CardInterface) => {
+const CartItem = (data: CartProduct) => {
   return (
     <div className='bg-white rounded-lg py-3'>
       <Grid columns={10} py={5}>
@@ -22,20 +22,22 @@ const CartItem = (data: CardInterface) => {
           <Image
             alt='product'
             component={NextImage}
-            w='6rem'
-            h='6rem'
-            src={GachImg}
+            width={30}
+            height={30}
+            src={data.product_thumb || GachImg}
           />
-          <Text className='text-[0.9rem]'>{data.id}</Text>
+          <Text className='text-[0.9rem]'>{data.product_name}</Text>
         </Grid.Col>
         <Grid.Col span={1} className='flex items-center'>
-          <Text className='text-[0.8rem]'>{data.price}</Text>
+          <Text className='text-[0.8rem]'>{data.product_price}</Text>
         </Grid.Col>
         <Grid.Col span={2} className='flex items-center'>
-          <NumberInput min={1} defaultValue={1} value={data.quantity} />
+          <NumberInput min={1} defaultValue={1} value={data.product_quantity} />
         </Grid.Col>
         <Grid.Col span={1} className='flex items-center'>
-          <Text className='text-[0.8rem]'>{data.price * data.quantity}</Text>
+          <Text className='text-[0.8rem]'>
+            {data.product_price * data.product_quantity}
+          </Text>
         </Grid.Col>
         <Grid.Col span={1} className='flex items-center'>
           <ActionIcon variant='filled' aria-label='Delete'>

@@ -11,10 +11,16 @@ import {
 } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import CartItem from '../CartItem/cartItem';
-import useCard, { CardInterface } from '@/helpers/useCard';
+import useCart from '@/helpers/useCart';
+import queryClient from '@/helpers/client';
+import { CartProduct } from '@/utils/response';
+import cartService from '@/services/cartService';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const Cart = () => {
-  const [card, setCard] = useCard();
+  const queryClient = useQueryClient();
+  const [cart, setCart] = useCart(queryClient.getQueryData(['cart']));
+
   return (
     <Grid>
       <Grid.Col span={9}>
@@ -40,12 +46,29 @@ const Cart = () => {
             </ActionIcon>
           </Grid.Col>
         </Grid>
-        {card &&
-          card.map((item: CardInterface) => (
+        {cart &&
+          cart.cart_products.map((item: CartProduct) => (
+            // product_name: string
+            // product_thumb: string | null
+            // product_description: string | null
+            // product_price: number
+            // product_quantity: number
+            // product_brand: string | null
+            // product_unit: string | null
+            // product_ratingAverage: number | null
+            // product_categories: string[] | null
+            // productId: string | null
             <CartItem
-              id={item.id}
-              price={item.price}
-              quantity={item.quantity}
+              product_name={item.product_name}
+              product_price={item.product_price}
+              product_quantity={item.product_quantity}
+              product_thumb={item.product_thumb}
+              product_brand={null}
+              productId={item.productId}
+              product_categories={null}
+              product_description={null}
+              product_ratingAverage={null}
+              product_unit={null}
             />
           ))}
       </Grid.Col>
