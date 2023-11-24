@@ -7,6 +7,7 @@ import {
   LoadingOverlay,
   Alert,
 } from '@mantine/core';
+import '@mantine/core/styles.css';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { checkNameFormat, checkPasswordFormat } from '@/utils/regex';

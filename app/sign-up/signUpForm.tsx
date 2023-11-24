@@ -9,6 +9,7 @@ import {
   Alert,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import '@mantine/core/styles.css';
 import {
   checkNameFormat,
   checkEmailFormat,

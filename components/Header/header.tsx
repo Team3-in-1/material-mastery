@@ -3,6 +3,7 @@ import NextImage from 'next/image';
 import { Flex, Group, Image, Text, Anchor, Menu, rem } from '@mantine/core';
 import logo from '@/public/icon.svg';
 import Search from '../Search/search';
+// import '../../app/global.css';
 import LanguagePicker from '../LanguagePicker/languagePicker';
 import {
   IconShoppingCart,
