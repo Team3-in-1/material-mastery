@@ -29,14 +29,14 @@ export default function RootLayout({
       </head>
 
       <body className={inter.className} style={{ backgroundColor: '#f1f2f5' }}>
-        <TanStackProvider>
-          <MantineProvider theme={theme} defaultColorScheme='light'>
+        <MantineProvider theme={theme} defaultColorScheme='light'>
+          <TanStackProvider>
             <Header />
             {children}
             <Footer />
             <BottomNavBar />
-          </MantineProvider>
-        </TanStackProvider>
+          </TanStackProvider>
+        </MantineProvider>
       </body>
     </html>
   );

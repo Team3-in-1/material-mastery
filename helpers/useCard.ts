@@ -9,9 +9,9 @@ export interface CardInterface {
 }
 
 const useCard = (initialData: CardInterface[] | [] = [] ): any => [
-    useQuery({queryKey: ['card'], queryFn: () => (initialData.length != 0) ? initialData : convertStringToOject(sessionStorage.getItem('card')) }).data,
+    useQuery({queryKey: ['card'], queryFn: () => (initialData.length != 0) ? initialData : convertStringToOject(localStorage.getItem('card')) }).data,
     (value: CardInterface[] | [] = []) => {
-        sessionStorage.setItem('card', JSON.stringify(value))
+        localStorage.setItem('card', JSON.stringify(value))
         return queryClient.setQueryData(['card'], value);
     }
 ]
