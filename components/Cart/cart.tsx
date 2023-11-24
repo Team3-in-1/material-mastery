@@ -14,16 +14,11 @@ import CartItem from '../CartItem/cartItem';
 import useCard, { CardInterface } from '@/helpers/useCard';
 
 const Cart = () => {
-  const data = sessionStorage.getItem('card');
-  var array = [];
-  if (data) {
-    var object = JSON.parse(data);
-    for (var i in object) {
-      array.push(object[i]);
-    }
-  }
-  const [card, setCard] = useCard(array);
-  console.log(array);
+  // let data = null;
+  // if (typeof window !== 'undefined') {
+  //   data = sessionStorage.getItem('card');
+  // }
+  const [card, setCard] = useCard();
   return (
     <Grid>
       <Grid.Col span={9}>

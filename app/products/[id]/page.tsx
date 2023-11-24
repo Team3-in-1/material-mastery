@@ -23,6 +23,7 @@ import CommentService from '@/services/commentService';
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { productService } from '@/services/productService';
+import { formatMoney } from '@/utils/string';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const handlersRef = useRef<NumberInputHandlers>(null);
@@ -102,7 +103,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             </Flex>
             <Flex>
               <Text className=' font-bold md:text-[30px] text-[20px]'>
-                {product.data?.product_price}
+                {formatMoney(product.data?.product_price)}
               </Text>
               <Text className=' font-bold md:text-[16px] text-[10px]'>đ</Text>
             </Flex>

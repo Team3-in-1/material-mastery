@@ -17,10 +17,12 @@ import Link from 'next/link';
 import { Product } from '@/utils/response';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import useCard from '@/helpers/useCard';
+import { formatMoney } from '@/utils/string';
 
 export const PCard = ({ data }: PCardProps) => {
   const [value, setValue] = useState(2);
   const [card, setCard] = useCard();
+
   return (
     <Card
       className={`${Styles.containerCard}`}
@@ -66,7 +68,9 @@ export const PCard = ({ data }: PCardProps) => {
             justify='flex-start'
             className=' items-start'
           >
-            <Text className='text-[1rem]'>{data.product_price}</Text>
+            <Text className='text-[1rem]'>
+              {formatMoney(data.product_price)}
+            </Text>
             <Text size='12px' className=' text-[12px]'>
               đ
             </Text>
