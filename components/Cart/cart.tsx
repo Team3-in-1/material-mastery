@@ -14,10 +14,6 @@ import CartItem from '../CartItem/cartItem';
 import useCard, { CardInterface } from '@/helpers/useCard';
 
 const Cart = () => {
-  // let data = null;
-  // if (typeof window !== 'undefined') {
-  //   data = sessionStorage.getItem('card');
-  // }
   const [card, setCard] = useCard();
   return (
     <Grid>

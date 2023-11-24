@@ -55,7 +55,7 @@ export default function Home() {
       mih='100vh'
       pos='relative'
       style={{
-        backgroundColor: 'var(--mantine-color-gray-1)',
+        backgroundColor: '#f1f3f5',
         zIndex: 1,
       }}
     >

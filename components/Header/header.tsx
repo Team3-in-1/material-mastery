@@ -71,7 +71,7 @@ export default function Header() {
               className={classes.hoverIcon}
             />
             {card.length != 0 && (
-              <Text className=' absolute top-[-10px] right-[-10px] text-red-500 font-bold'>
+              <Text className='absolute top-[-10px] right-[-10px] text-[red] font-bold'>
                 {card.length}
               </Text>
             )}
@@ -120,7 +120,7 @@ export default function Header() {
         </Flex>
       ) : (
         <Flex gap='1rem' align='center' className='hidden-mobile'>
-          <LanguagePicker />
+          {/* <LanguagePicker /> */}
           <Link href='/sign-up'>Sign-up</Link>
           <Link href='/sign-in'>Sign-in</Link>
         </Flex>

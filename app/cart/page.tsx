@@ -3,10 +3,10 @@ import Cart from '@/components/Cart/cart';
 
 const CartPage = () => {
   return (
-    <>
+    <div>
       <Title order={2}>Giỏ hàng</Title>
       <Cart />
-    </>
+    </div>
   );
 };
 
