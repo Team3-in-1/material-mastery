@@ -44,8 +44,8 @@ export default function ProductsPage() {
         <Anchor key={1}>
           {searchParams.get('category')
             ? categories.data?.find(
-                (category) => category._id == searchParams.get('category')
-              )?.category_name
+              (category) => category._id == searchParams.get('category')
+            )?.category_name
             : categories.data?.[0].category_name}
         </Anchor>
       </Breadcrumbs>
@@ -57,7 +57,7 @@ export default function ProductsPage() {
           <Group
             className='bg-white rounded-md'
             p={15}
-            my={10}
+            mb={10}
             justify='space-between'
           >
             <Group>
