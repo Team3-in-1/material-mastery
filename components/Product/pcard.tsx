@@ -26,14 +26,14 @@ export const PCard = ({ data }: PCardProps) => {
   const queryClient = useQueryClient();
   const [cart, setCart] = useCart();
 
+  const productQuantity = (data.product_quantity < 1000) ? data.product_quantity : (Math.floor(data.product_quantity / 1000) + 'K');
+
   return (
     <Card
       className={`${Styles.containerCard}`}
-      style={{
-        position: 'relative',
-        border: '1px solid #E2E2E2',
-        borderRadius: '5px',
-      }}
+      pos='relative'
+      radius='4'
+      withBorder
     >
       <Card.Section component={Link} href={`/products/${data._id}`}>
         <Image
@@ -53,15 +53,9 @@ export const PCard = ({ data }: PCardProps) => {
       >
         <Divider />
         <div className='h-[60px]'>
-          {data.product_name.length <= 35 ? (
-            <Text className='my-2 text-[1rem] text-ellipsis gap-0 tracking-tighter'>
-              {data.product_name}
-            </Text>
-          ) : (
-            <Text className='my-2 text-[0.7rem] text-ellipsis'>
-              {data.product_name}
-            </Text>
-          )}
+          <Text className='my-2 text-[0.875rem] text-ellipsis gap-0 tracking-tighter' lineClamp={2}>
+            {data.product_name}
+          </Text>
         </div>
 
         <Group justify='space-between' className=' justify-between'>
@@ -116,11 +110,11 @@ export const PCard = ({ data }: PCardProps) => {
             <IconShoppingCartPlus color='#02B1AB' />
           </ActionIcon>
         </Group>
-        <Group justify='space-between' className='justify-between mt-2'>
+        <Group justify='space-between' wrap='nowrap'>
           <Rating value={value} readOnly onChange={setValue} />
-          <Group>
-            <Divider size='sm' orientation='vertical' />
-            <Text c='dimmed'>{data.product_quantity}</Text>
+          <Group wrap='nowrap'>
+            <Divider size='xs' orientation='vertical' />
+            <Text c='dimmed'>{productQuantity}</Text>
           </Group>
         </Group>
       </Flex>
