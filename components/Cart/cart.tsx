@@ -16,11 +16,16 @@ import queryClient from '@/helpers/client';
 import { CartProduct } from '@/utils/response';
 import cartService from '@/services/cartService';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { formatMoney } from '@/utils/string';
 
 const Cart = () => {
   const queryClient = useQueryClient();
   const [cart, setCart] = useCart(queryClient.getQueryData(['cart']));
-
+  const [totalCost, setTotalCost] = useState(0);
+  const addCost = (cost: number) => {
+    setTotalCost(cost);
+  };
   return (
     <Grid>
       <Grid.Col span={9}>
@@ -59,16 +64,18 @@ const Cart = () => {
             // product_categories: string[] | null
             // productId: string | null
             <CartItem
-              product_name={item.product_name}
-              product_price={item.product_price}
-              product_quantity={item.product_quantity}
-              product_thumb={item.product_thumb}
-              product_brand={null}
-              productId={item.productId}
-              product_categories={null}
-              product_description={null}
-              product_ratingAverage={null}
-              product_unit={null}
+              // product_name={item.product_name}
+              // product_price={item.product_price}
+              // product_quantity={item.product_quantity}
+              // product_thumb={item.product_thumb}
+              // product_brand={null}
+              // productId={item.productId}
+              // product_categories={null}
+              // product_description={null}
+              // product_ratingAverage={null}
+              // product_unit={null}
+              data={item}
+              setTotalCost={addCost}
             />
           ))}
       </Grid.Col>
@@ -78,7 +85,7 @@ const Cart = () => {
             <Text>Tạm tính</Text>
             <div className='text-[#02B1AB] text-right'>
               <p>
-                00.00
+                {formatMoney(totalCost)}
                 <span>đ</span>
               </p>
               <Text size='xs' c='dimmed'>

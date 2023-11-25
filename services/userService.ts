@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { constant } from '@/utils/constant';
 import { UserAttributesRequest, UserRequest } from '@/utils/request';
+import queryClient from '@/helpers/client';
 
 
 

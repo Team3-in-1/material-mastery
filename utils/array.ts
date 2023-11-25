@@ -9,15 +9,18 @@ function splitArray<T>(array: T[], chunkSize: number) {
 
 
 const convertStringToOject = (data: string | null) => {
-    var array = [];
-    if(data){
-        var object = JSON.parse(data);
+    // var array = [];
+    // if(data){
+    //     var object = JSON.parse(data);
         
-        for (var i in object) {
-            array.push(object[i]);
-        }
-    }
-    return array;
+    //     for (var i in object) {
+    //         array.push(object[i]);
+    //     }
+    // }
+    // return array;
+    if(data)
+        return JSON.parse(data);
+    return null;
 }
 
 export { splitArray, convertStringToOject };

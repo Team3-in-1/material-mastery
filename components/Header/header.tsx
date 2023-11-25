@@ -30,20 +30,14 @@ export default function Header() {
 
   const [user, setUser] = useLogin();
 
-  const cart = useQuery({
+  const cartFromServer = useQuery({
     queryKey: ['cart'],
     queryFn: () =>
       cartService.getCart(user.user._id, user.tokenPair.accessToken),
+    retry: false,
   });
 
-  // const [cart, setCart] = useCart();
-  // if (user) {
-  //   setCart(cartService.getCart(user.user._id, user.tokenPair.accessToken));
-  // }
-
-  // const useJSON = JSON.parse(localStorage.getItem('user') || 'empty');
-
-  // const [cart, setCart] = useCart(products.data?.cart_products);
+  const [localCart, setLocalCart] = useCart(cartFromServer.data);
 
   const router = useRouter();
 
@@ -85,20 +79,21 @@ export default function Header() {
       {user ? (
         <Flex gap='1rem' align='center' className='hidden-mobile'>
           {/* <LanguagePicker /> */}
-          <div className=' relative w-[25px] h-[25px]'>
+          <div className=' relative w-[25px] h-[25px] cursor-pointer'>
             <IconShoppingCart
               onClick={() => router.push('/cart')}
+              color='#02B1AB'
               className={classes.hoverIcon}
             />
-            {cart.isSuccess && cart.data?.cart_products.length != 0 && (
+            {localCart?.cart_products.length != 0 && (
               <Text className='absolute top-[-10px] right-[-10px] text-[red] font-bold'>
-                {cart.data?.cart_products.length}
+                {localCart?.cart_products.length}
               </Text>
             )}
           </div>
           <Menu trigger='hover' openDelay={100} closeDelay={400} zIndex={1002}>
             <Menu.Target>
-              <IconUserCircle className={classes.hoverIcon} />
+              <IconUserCircle color='#02B1AB' className={classes.hoverIcon} />
             </Menu.Target>
             <Menu.Dropdown>
               <Menu.Item

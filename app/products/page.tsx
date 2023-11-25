@@ -21,8 +21,6 @@ import { useSearchParams } from 'next/navigation';
 export default function ProductsPage() {
   const searchParams = useSearchParams();
 
-  const queryClient = useQueryClient();
-
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,
