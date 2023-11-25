@@ -26,7 +26,10 @@ export const PCard = ({ data }: PCardProps) => {
   const queryClient = useQueryClient();
   const [cart, setCart] = useCart();
 
-  const productQuantity = (data.product_quantity < 1000) ? data.product_quantity : (Math.floor(data.product_quantity / 1000) + 'K');
+  const productQuantity =
+    data.product_quantity < 1000
+      ? data.product_quantity
+      : Math.floor(data.product_quantity / 1000) + 'K';
 
   return (
     <Card
@@ -53,7 +56,10 @@ export const PCard = ({ data }: PCardProps) => {
       >
         <Divider />
         <div className='h-[60px]'>
-          <Text className='my-2 text-[0.875rem] text-ellipsis gap-0 tracking-tighter' lineClamp={2}>
+          <Text
+            className='my-2 text-[0.875rem] text-ellipsis gap-0 tracking-tighter'
+            lineClamp={2}
+          >
             {data.product_name}
           </Text>
         </div>
@@ -90,18 +96,47 @@ export const PCard = ({ data }: PCardProps) => {
               // productId: string | null
               if (cart) {
                 const newCart = structuredClone(cart);
-                newCart.cart_products.push({
-                  product_name: data.product_name,
-                  product_thumb: data.product_thumb,
-                  product_description: null,
-                  product_price: data.product_price,
-                  product_quantity: 1,
-                  product_brand: null,
-                  product_unit: null,
-                  product_ratingAverage: null,
-                  product_categories: null,
-                  productId: data._id,
-                });
+                if (newCart.cart_products == 0) {
+                  newCart.cart_products.push({
+                    product_name: data.product_name,
+                    product_thumb: data.product_thumb,
+                    product_description: null,
+                    product_price: data.product_price,
+                    product_quantity: 1,
+                    product_brand: null,
+                    product_unit: null,
+                    product_ratingAverage: null,
+                    product_categories: null,
+                    productId: data._id,
+                  });
+                } else {
+                  let temp = 0;
+                  newCart.cart_products.every(
+                    (value: any, index: any, array: any) => {
+                      if (value.productId == data._id && temp == 0) {
+                        value.product_quantity++;
+                        temp = 1;
+                        return false;
+                      }
+                      return true;
+                    }
+                  );
+                  if (temp == 0) {
+                    newCart.cart_products.push({
+                      product_name: data.product_name,
+                      product_thumb: data.product_thumb,
+                      product_description: null,
+                      product_price: data.product_price,
+                      product_quantity: 1,
+                      product_brand: null,
+                      product_unit: null,
+                      product_ratingAverage: null,
+                      product_categories: null,
+                      productId: data._id,
+                    });
+                  }
+                }
+
                 setCart(newCart);
               } else {
               }

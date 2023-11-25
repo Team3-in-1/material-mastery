@@ -16,22 +16,57 @@ import queryClient from '@/helpers/client';
 import { CartProduct } from '@/utils/response';
 import cartService from '@/services/cartService';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatMoney } from '@/utils/string';
 
 const Cart = () => {
   const queryClient = useQueryClient();
   const [cart, setCart] = useCart(queryClient.getQueryData(['cart']));
   const [totalCost, setTotalCost] = useState(0);
+  const [allChecked, setAllChecked] = useState(false);
   const addCost = (cost: number) => {
-    setTotalCost(cost);
+    setTotalCost((prev) => prev + cost);
   };
+
+  useEffect(() => {
+    if (cart && cart.cart_products) {
+      let sum = 0;
+      cart.cart_products.map((item: CartProduct) => {
+        sum += item.product_price * item.product_quantity;
+      });
+      setTotalCost(sum);
+    }
+  }, [cart]);
+
+  const deleteOneProduct = (id: string) => {
+    const data = structuredClone(cart);
+
+    for (let i = 0; i < data.cart_products.length; i++) {
+      console.log(
+        'data.cart_products.productId',
+        data.cart_products[i].productId
+      );
+      console.log('id', id);
+      if (data.cart_products[i].productId == id) {
+        console.log('delete product');
+        data.cart_products.splice(i, 1);
+        break;
+      }
+    }
+
+    setCart(data);
+  };
+  console.log(1);
+
   return (
     <Grid>
       <Grid.Col span={9}>
         <Grid columns={10} my={20} py={5} className='bg-white rounded-lg'>
           <Grid.Col span={1} className='flex items-center justify-center'>
-            <Checkbox />
+            <Checkbox
+              checked={allChecked}
+              onChange={(event) => setAllChecked(event.currentTarget.checked)}
+            />
           </Grid.Col>
           <Grid.Col span={4} className='flex items-center'>
             <Text className='text-[0.8rem]'>Sản phẩm</Text>
@@ -46,38 +81,31 @@ const Cart = () => {
             <Text className='text-[0.8rem]'>Thành tiền</Text>
           </Grid.Col>
           <Grid.Col span={1} className='flex items-center'>
-            <ActionIcon variant='filled' aria-label='Delete'>
+            <ActionIcon
+              variant='filled'
+              aria-label='Delete'
+              onClick={() => {
+                setCart();
+                setTotalCost(0);
+              }}
+            >
               <IconTrash color='#000' stroke={1.5} />
             </ActionIcon>
           </Grid.Col>
         </Grid>
-        {cart &&
-          cart.cart_products.map((item: CartProduct) => (
-            // product_name: string
-            // product_thumb: string | null
-            // product_description: string | null
-            // product_price: number
-            // product_quantity: number
-            // product_brand: string | null
-            // product_unit: string | null
-            // product_ratingAverage: number | null
-            // product_categories: string[] | null
-            // productId: string | null
-            <CartItem
-              // product_name={item.product_name}
-              // product_price={item.product_price}
-              // product_quantity={item.product_quantity}
-              // product_thumb={item.product_thumb}
-              // product_brand={null}
-              // productId={item.productId}
-              // product_categories={null}
-              // product_description={null}
-              // product_ratingAverage={null}
-              // product_unit={null}
-              data={item}
-              setTotalCost={addCost}
-            />
-          ))}
+        <div className='bg-white rounded-[10px] py-[10px]'>
+          {cart &&
+            cart.cart_products.map((item: CartProduct) => (
+              <CartItem
+                key={item.productId}
+                data={item}
+                setTotalCost={addCost}
+                allChecked={allChecked}
+                setAllChecked={setAllChecked}
+                deleteItem={deleteOneProduct}
+              />
+            ))}
+        </div>
       </Grid.Col>
       <Grid.Col span={3}>
         <Container className='bg-white rounded' mt={20} py={20}>

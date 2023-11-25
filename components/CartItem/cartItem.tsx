@@ -12,18 +12,25 @@ import GachImg from '@/public/pic/gach.jpg';
 import NextImage from 'next/image';
 import { CartProduct } from '@/utils/response';
 import { formatMoney } from '@/utils/string';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 const CartItem = ({
   data,
   setTotalCost,
+  allChecked,
+  setAllChecked,
+  deleteItem,
 }: {
   data: CartProduct;
-  setTotalCost: any;
+  setTotalCost: Function;
+  allChecked: boolean;
+  setAllChecked: Function;
+  deleteItem: Function;
 }) => {
   const [quantity, setQuantity] = useState<string | number>(
     data.product_quantity
   );
+  const [isChecked, setIsChecked] = useState(allChecked);
 
   const mul = (n1: string | number, n2: string | number) => {
     const numericN1 = typeof n1 == 'string' ? parseFloat(n1) : n1;
@@ -31,17 +38,23 @@ const CartItem = ({
     return numericN1 * numericN2;
   };
 
-  const cost = mul(data.product_price, quantity);
-
-  useEffect(() => {
-    setTotalCost(cost);
-  }, [quantity]);
+  useLayoutEffect(() => {
+    setIsChecked(allChecked);
+  }, [allChecked]);
 
   return (
-    <div className='bg-white rounded-lg py-3'>
+    <div className='bg-white  py-3'>
       <Grid columns={10} py={5}>
         <Grid.Col span={1} className='flex items-center justify-center'>
-          <Checkbox />
+          <Checkbox
+            checked={isChecked || allChecked}
+            onChange={(event) => {
+              if (!event.currentTarget.checked || allChecked) {
+                setAllChecked(false);
+              }
+              setIsChecked(event.currentTarget.checked);
+            }}
+          />
         </Grid.Col>
         <Grid.Col span={4} className='flex items-center gap-[1rem]'>
           <Image
@@ -65,14 +78,27 @@ const CartItem = ({
             max={100}
             value={quantity}
             allowNegative={false}
-            onChange={setQuantity}
+            onChange={(value) => {
+              value < quantity
+                ? setTotalCost(data.product_price * -1)
+                : setTotalCost(data.product_price);
+              setQuantity(value);
+            }}
           />
         </Grid.Col>
         <Grid.Col span={1} className='flex items-center'>
-          <Text className='text-[0.8rem]'>{formatMoney(cost)}</Text>
+          <Text className='text-[0.8rem]'>
+            {formatMoney(mul(data.product_price, quantity))}
+          </Text>
         </Grid.Col>
         <Grid.Col span={1} className='flex items-center'>
-          <ActionIcon variant='filled' aria-label='Delete'>
+          <ActionIcon
+            variant='filled'
+            aria-label='Delete'
+            onClick={() => {
+              deleteItem(data.productId);
+            }}
+          >
             <IconTrash color='#000' stroke={1.5} />
           </ActionIcon>
         </Grid.Col>

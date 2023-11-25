@@ -34,7 +34,7 @@ export default function Header() {
     queryKey: ['cart'],
     queryFn: () =>
       cartService.getCart(user.user._id, user.tokenPair.accessToken),
-    retry: false,
+    // retry: false,
   });
 
   const [localCart, setLocalCart] = useCart(cartFromServer.data);

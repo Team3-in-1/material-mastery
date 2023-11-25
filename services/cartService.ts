@@ -6,7 +6,7 @@ import { constant } from '@/utils/constant';
 
 class CartService {
     async getCart(id: string, token: string): Promise<CartInterface> {
-        console.log('oke')
+        console.log('MM:::Getting user cart.')
         return await axios.get(`${constant.BASE_URL}/cart`, {
             headers: {
                 'x-api-key': constant.API_KEY,
