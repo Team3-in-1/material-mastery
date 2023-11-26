@@ -24,10 +24,14 @@ const Cart = () => {
   const [cart, setCart] = useCart(queryClient.getQueryData(['cart']));
   const [totalCost, setTotalCost] = useState(0);
   const [allChecked, setAllChecked] = useState(false);
-  const addCost = (cost: number) => {
-    setTotalCost((prev) => prev + cost);
-  };
+  let productChosen = null;
 
+  // useEffect(() => {
+  //   productChosen = structuredClone(cart);
+  //   productChosen.cart_products = [];
+  // }, [cart, allChecked]);
+
+  //this cal total cost in the first time access to cart page
   useEffect(() => {
     if (cart && cart.cart_products) {
       let sum = 0;
@@ -37,7 +41,9 @@ const Cart = () => {
       setTotalCost(sum);
     }
   }, [cart]);
-
+  const addCost = (cost: number) => {
+    setTotalCost((prev) => prev + cost);
+  };
   const deleteOneProduct = (id: string) => {
     const data = structuredClone(cart);
 
@@ -121,7 +127,7 @@ const Cart = () => {
               </Text>
             </div>
           </Group>
-          <Button fullWidth className='bg-[#02B1AB]'>
+          <Button fullWidth className='bg-[#02B1AB]' onClick={() => {}}>
             Mua hàng
           </Button>
         </Container>

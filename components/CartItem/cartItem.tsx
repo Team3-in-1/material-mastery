@@ -38,6 +38,12 @@ const CartItem = ({
     return numericN1 * numericN2;
   };
 
+  const add = (n1: string | number, n2: string | number) => {
+    const numericN1 = typeof n1 == 'string' ? parseFloat(n1) : n1;
+    const numericN2 = typeof n2 == 'string' ? parseFloat(n2) : n2;
+    return numericN1 + numericN2;
+  };
+
   useLayoutEffect(() => {
     setIsChecked(allChecked);
   }, [allChecked]);
@@ -80,8 +86,8 @@ const CartItem = ({
             allowNegative={false}
             onChange={(value) => {
               value < quantity
-                ? setTotalCost(data.product_price * -1)
-                : setTotalCost(data.product_price);
+                ? setTotalCost(-data.product_price * add(quantity, -value))
+                : setTotalCost(data.product_price * add(-quantity, value));
               setQuantity(value);
             }}
           />
