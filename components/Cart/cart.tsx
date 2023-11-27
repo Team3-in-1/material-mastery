@@ -50,15 +50,17 @@ const Cart = () => {
   useEffect(() => {
     if (cart) {
       if (
-        numberChecked != 0 &&
+        numberChecked != -1 &&
         numberChecked == cart.cart_products.length - 1
       ) {
         setAllChecked(true);
+        if (totalCost != 0) setTotalCost(0);
       }
     }
     console.log(numberChecked);
+    console.log('length', cart.cart_products.length - 1);
   }, [numberChecked]);
-
+  console.log(allChecked);
   const addCost = (cost: number) => {
     if (cost == -1) setTotalCost(0);
     else setTotalCost((prev) => prev + cost);

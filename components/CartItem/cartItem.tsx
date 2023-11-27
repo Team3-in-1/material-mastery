@@ -66,16 +66,17 @@ const CartItem = ({
             onChange={(event) => {
               if (!event.currentTarget.checked && allChecked) {
                 setAllChecked(false);
-                setNumberChecked(0);
-              }
-              if (!event.currentTarget.checked) {
-                setNumberChecked((prev: number) => --prev);
-                setTotalCost(-quantity * data.product_price);
-                setIsChecked(false);
+                setNumberChecked(-1);
               } else {
-                setNumberChecked((prev: number) => ++prev);
-                setTotalCost(mul(quantity, data.product_price));
-                setIsChecked(true);
+                if (!event.currentTarget.checked) {
+                  setNumberChecked((prev: number) => --prev);
+                  setTotalCost(-quantity * data.product_price);
+                  setIsChecked(false);
+                } else {
+                  setNumberChecked((prev: number) => ++prev);
+                  setTotalCost(mul(quantity, data.product_price));
+                  setIsChecked(true);
+                }
               }
               setIsChecked(event.currentTarget.checked);
             }}
@@ -123,6 +124,9 @@ const CartItem = ({
             aria-label='Delete'
             onClick={() => {
               deleteItem(data.productId);
+              if (isChecked) {
+                setTotalCost(-mul(quantity, data.product_price));
+              }
             }}
           >
             <IconTrash color='#000' stroke={1.5} />
