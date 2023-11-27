@@ -5,6 +5,7 @@ import logo from '@/public/icon.svg';
 import Search from '../Search/search';
 // import '../../app/global.css';
 import LanguagePicker from '../LanguagePicker/languagePicker';
+import '@mantine/core/styles.css';
 import {
   IconShoppingCart,
   IconUserCircle,
@@ -34,7 +35,7 @@ export default function Header() {
     queryKey: ['cart'],
     queryFn: () =>
       cartService.getCart(user.user._id, user.tokenPair.accessToken),
-    // retry: false,
+    retry: false,
   });
 
   const [localCart, setLocalCart] = useCart(cartFromServer.data);

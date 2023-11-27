@@ -7,6 +7,32 @@ export interface Category {
     updatedAt: string
     __v: number
 }
+export interface User {
+  _id: string
+  username: string
+  password: string
+  email: string
+  display_name: string
+  phone: string
+  status: string
+  isBlocked: boolean
+  roles: string[]
+  user_attributes: UserAttributes | {}
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export interface UserAttributes {
+  positionId: string
+  manager_start_date: string
+  salary: number
+  _id: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
 
 export interface Product_Category {
   _id: string

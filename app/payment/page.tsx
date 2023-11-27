@@ -15,54 +15,42 @@ import { IconMapPinFilled } from '@tabler/icons-react';
 import '@mantine/core/styles.css';
 import NImage from 'next/image';
 import exampleImage from '@/public/pic/gach.jpg';
-
-interface UserInfor {
-  username: string;
-  phone: string;
-  address: string;
-}
-
-interface ProductData {
-  product_name: string;
-  product_url: string;
-  product_price: number;
-  product_quantity: number;
-  product_amount: number;
-}
+import { CartProduct, User } from '@/utils/response';
+import queryClient from '@/helpers/client';
+import { formatMoney } from '@/utils/string';
+import { useEffect, useState } from 'react';
 
 const Payment = () => {
-  const userInfo: UserInfor = {
-    username: 'Robot',
-    phone: '012993921',
-    address:
-      'Kí Túc Xá Khu B - Đhqg, Phường Linh Trung, Thành Phố Thủ Đức, TP. Hồ Chí Minh',
+  const userInfo: any = queryClient.getQueryData(['user']) || {
+    user: {
+      _id: '6543ecae437e730b469c8d2d',
+      username: 'example',
+      password: '$2b$10$UeMyK5Z1xLgTFI7BkYe0Z.X5YlCycO1ce0uD2ijj5mfDUDX6GxGty',
+      email: 'nguyentuankhang10102003@gmail.com',
+      display_name: 'Administrator',
+      phone: '0000000001',
+      status: 'inactive',
+      isBlocked: false,
+      roles: ['manager'],
+    },
   };
 
-  const number = 0;
+  const [cost, setCost] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
 
-  const products: ProductData[] = [
-    {
-      product_name: 'Brick',
-      product_price: 20000,
-      product_url: 'example.com',
-      product_quantity: 20,
-      product_amount: 400000,
-    },
-    {
-      product_name: 'Brick',
-      product_price: 20000,
-      product_url: 'example.com',
-      product_quantity: 20,
-      product_amount: 400000,
-    },
-    {
-      product_name: 'Brick',
-      product_price: 20000,
-      product_url: 'example.com',
-      product_quantity: 20,
-      product_amount: 400000,
-    },
-  ];
+  useEffect(() => {
+    let cost = 0;
+    products.map((product) => {
+      cost += product.product_price * product.product_quantity;
+    });
+    setCost(cost);
+  }, []);
+
+  const products: CartProduct[] =
+    queryClient.getQueryData(['productsChosen']) || [];
+
+  console.log(1);
+
   return (
     // devide page into 2 col
     <Group
@@ -84,10 +72,10 @@ const Payment = () => {
           </Group>
           <Stack>
             <Group>
-              <Text>{userInfo.username}</Text>
-              <Text>{userInfo.phone}</Text>
+              <Text>{userInfo.user.username}</Text>
+              <Text>{userInfo.user.phone}</Text>
             </Group>
-            <Text>{userInfo.address}</Text>
+            <Text>HCM</Text>
           </Stack>
         </Stack>
 
@@ -127,68 +115,78 @@ const Payment = () => {
             </Grid.Col>
           </Grid>
 
-          {products.map((product) => (
-            <Grid>
-              <Grid.Col
-                span={6}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Group>
-                  <Image
-                    alt='img'
-                    src={exampleImage}
-                    component={NImage}
-                    className=' h-[106px] md:h-[106px]'
-                  />
-                  <Text color='#252525'>{product.product_name}</Text>
-                </Group>
-              </Grid.Col>
-              <Grid.Col
-                span={2}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Group align='start' gap={0}>
-                  <Text color='#252525'>{product.product_price}</Text>
-                  <Text color='#252525' size='10px'>
-                    đ
-                  </Text>
-                </Group>
-              </Grid.Col>
-              <Grid.Col
-                span={2}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Text color='#252525'>{product.product_quantity}</Text>
-              </Grid.Col>
-              <Grid.Col
-                span={2}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Group align='start' gap={0}>
-                  <Text color='#252525'>{product.product_amount}</Text>
-                  <Text color='#252525' size='10px'>
-                    đ
-                  </Text>
-                </Group>
-              </Grid.Col>
-            </Grid>
-          ))}
+          {products.map((product) => {
+            return (
+              <Grid key={product.productId}>
+                <Grid.Col
+                  span={6}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Group>
+                    <Image
+                      alt='img'
+                      src={product.product_thumb || exampleImage}
+                      component={NImage}
+                      width={50}
+                      height={50}
+                      // className=' h-[106px] md:h-[106px]'
+                    />
+                    <Text color='#252525'>{product.product_name}</Text>
+                  </Group>
+                </Grid.Col>
+                <Grid.Col
+                  span={2}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Group align='start' gap={0}>
+                    <Text color='#252525'>
+                      {formatMoney(product.product_price)}
+                    </Text>
+                    <Text color='#252525' size='10px'>
+                      đ
+                    </Text>
+                  </Group>
+                </Grid.Col>
+                <Grid.Col
+                  span={2}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text color='#252525'>{product.product_quantity}</Text>
+                </Grid.Col>
+                <Grid.Col
+                  span={2}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Group align='start' gap={0}>
+                    <Text color='#252525'>
+                      {formatMoney(
+                        product.product_price * product.product_quantity
+                      )}
+                    </Text>
+                    <Text color='#252525' size='10px'>
+                      đ
+                    </Text>
+                  </Group>
+                </Grid.Col>
+              </Grid>
+            );
+          })}
         </Stack>
 
         {/*promo*/}
@@ -220,7 +218,7 @@ const Payment = () => {
           <Group justify='space-between'>
             <Text fw={700}>Đơn hàng</Text>
             <Group gap={5}>
-              <Text>{number}</Text>
+              <Text>{products.length}</Text>
               <Text>sản phẩm</Text>
             </Group>
           </Group>
@@ -228,7 +226,7 @@ const Payment = () => {
           <Group justify='space-between'>
             <Text>Tạm tính</Text>
             <Group gap={0} align='start'>
-              <Text>00.00</Text>
+              <Text>{formatMoney(cost)}</Text>
               <Text size='10px'>đ</Text>
             </Group>
           </Group>

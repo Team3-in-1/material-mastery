@@ -20,12 +20,14 @@ const CartItem = ({
   allChecked,
   setAllChecked,
   deleteItem,
+  productChosen,
 }: {
   data: CartProduct;
   setTotalCost: Function;
   allChecked: boolean;
   setAllChecked: Function;
   deleteItem: Function;
+  productChosen: any;
 }) => {
   const [quantity, setQuantity] = useState<string | number>(
     data.product_quantity
@@ -46,6 +48,11 @@ const CartItem = ({
 
   useLayoutEffect(() => {
     setIsChecked(allChecked);
+    if (allChecked) {
+      setTotalCost(mul(quantity, data.product_price));
+    } else {
+      setTotalCost(-1);
+    }
   }, [allChecked]);
 
   return (
@@ -55,8 +62,15 @@ const CartItem = ({
           <Checkbox
             checked={isChecked || allChecked}
             onChange={(event) => {
-              if (!event.currentTarget.checked || allChecked) {
+              if (!event.currentTarget.checked && allChecked) {
                 setAllChecked(false);
+              }
+              if (!event.currentTarget.checked) {
+                setTotalCost(-quantity * data.product_price);
+                setIsChecked(false);
+              } else {
+                setTotalCost(mul(quantity, data.product_price));
+                setIsChecked(true);
               }
               setIsChecked(event.currentTarget.checked);
             }}
@@ -85,9 +99,10 @@ const CartItem = ({
             value={quantity}
             allowNegative={false}
             onChange={(value) => {
-              value < quantity
-                ? setTotalCost(-data.product_price * add(quantity, -value))
-                : setTotalCost(data.product_price * add(-quantity, value));
+              if (isChecked)
+                value < quantity
+                  ? setTotalCost(-data.product_price * add(quantity, -value))
+                  : setTotalCost(data.product_price * add(-quantity, value));
               setQuantity(value);
             }}
           />

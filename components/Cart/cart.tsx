@@ -14,36 +14,42 @@ import CartItem from '../CartItem/cartItem';
 import useCart from '@/helpers/useCart';
 import queryClient from '@/helpers/client';
 import { CartProduct } from '@/utils/response';
+
 import cartService from '@/services/cartService';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatMoney } from '@/utils/string';
+import useRQGlobalState from '@/helpers/useRQGlobalState';
+import { useRouter } from 'next/navigation';
 
 const Cart = () => {
   const queryClient = useQueryClient();
   const [cart, setCart] = useCart(queryClient.getQueryData(['cart']));
   const [totalCost, setTotalCost] = useState(0);
   const [allChecked, setAllChecked] = useState(false);
-  let productChosen = null;
+  const productsChosen = useRef<CartProduct[]>([]);
+  const router = useRouter();
+  const [products, setProducts] = useRQGlobalState(
+    'productsChosen',
+    productsChosen
+  );
 
+  // //this cal total cost in the first time access to cart page
   // useEffect(() => {
-  //   productChosen = structuredClone(cart);
-  //   productChosen.cart_products = [];
-  // }, [cart, allChecked]);
+  //   if (cart && cart.cart_products) {
+  //     let sum = 0;
+  //     cart.cart_products.map((item: CartProduct) => {
+  //       sum += item.product_price * item.product_quantity;
+  //     });
+  //     setTotalCost(sum);
+  //   }
+  // }, [cart]);
 
-  //this cal total cost in the first time access to cart page
-  useEffect(() => {
-    if (cart && cart.cart_products) {
-      let sum = 0;
-      cart.cart_products.map((item: CartProduct) => {
-        sum += item.product_price * item.product_quantity;
-      });
-      setTotalCost(sum);
-    }
-  }, [cart]);
   const addCost = (cost: number) => {
-    setTotalCost((prev) => prev + cost);
+    if (cost == -1) setTotalCost(0);
+    else setTotalCost((prev) => prev + cost);
   };
+
   const deleteOneProduct = (id: string) => {
     const data = structuredClone(cart);
 
@@ -71,7 +77,17 @@ const Cart = () => {
           <Grid.Col span={1} className='flex items-center justify-center'>
             <Checkbox
               checked={allChecked}
-              onChange={(event) => setAllChecked(event.currentTarget.checked)}
+              onChange={(event) => {
+                if (cart && cart.cart_products) {
+                  if (event.currentTarget.checked) {
+                    productsChosen.current.push(...cart.cart_products);
+                  } else {
+                    while (productsChosen.current.length)
+                      productsChosen.current.pop();
+                  }
+                }
+                setAllChecked(event.currentTarget.checked);
+              }}
             />
           </Grid.Col>
           <Grid.Col span={4} className='flex items-center'>
@@ -109,6 +125,7 @@ const Cart = () => {
                 allChecked={allChecked}
                 setAllChecked={setAllChecked}
                 deleteItem={deleteOneProduct}
+                productChosen={productsChosen}
               />
             ))}
         </div>
@@ -127,7 +144,15 @@ const Cart = () => {
               </Text>
             </div>
           </Group>
-          <Button fullWidth className='bg-[#02B1AB]' onClick={() => {}}>
+          <Button
+            fullWidth
+            className='bg-[#02B1AB]'
+            onClick={() => {
+              console.log(productsChosen);
+              setProducts(productsChosen.current);
+              router.push('/payment');
+            }}
+          >
             Mua hàng
           </Button>
         </Container>

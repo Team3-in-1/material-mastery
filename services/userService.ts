@@ -18,7 +18,7 @@ const login = async (request: FormData) => {
     .catch(error => {throw new Error(error.response.data.message)})
 }
 
-const register =async (formData: any) => {
+const register = async (formData: any) => {
 
     //  name: (value) => checkNameFormat(value),
     //   phone: (value) => checkPhoneFormat(value),
@@ -46,6 +46,10 @@ const register =async (formData: any) => {
     })
     .catch(error => {throw new Error(error.response.data.message)})
 }
+
+// const getUserById = async () : Promise<> => {
+
+// }
 
 export const userService = {
     login,
