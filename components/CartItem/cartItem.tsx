@@ -13,6 +13,7 @@ import NextImage from 'next/image';
 import { CartProduct } from '@/utils/response';
 import { formatMoney } from '@/utils/string';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { string } from 'zod';
 
 const CartItem = ({
   data,
@@ -65,6 +66,8 @@ const CartItem = ({
             checked={isChecked || allChecked}
             onChange={(event) => {
               if (!event.currentTarget.checked && allChecked) {
+                while (productChosen.current.length)
+                  productChosen.current.pop();
                 setAllChecked(false);
                 setNumberChecked(-1);
               } else {
@@ -72,10 +75,30 @@ const CartItem = ({
                   setNumberChecked((prev: number) => --prev);
                   setTotalCost(-quantity * data.product_price);
                   setIsChecked(false);
+
+                  for (let i = 0; i < productChosen.current.length; i++) {
+                    console.log(
+                      'productChosen.current.productId',
+                      productChosen.current[i].productId
+                    );
+                    console.log('id', data.productId);
+                    if (productChosen.current[i].productId == data.productId) {
+                      console.log('delete product');
+                      productChosen.current.splice(i, 1);
+                      break;
+                    }
+                  }
                 } else {
                   setNumberChecked((prev: number) => ++prev);
                   setTotalCost(mul(quantity, data.product_price));
                   setIsChecked(true);
+
+                  const cloneProduct = structuredClone(data);
+                  cloneProduct.product_quantity =
+                    typeof quantity == 'string'
+                      ? parseFloat(quantity)
+                      : quantity;
+                  productChosen.current.push(cloneProduct);
                 }
               }
               setIsChecked(event.currentTarget.checked);

@@ -36,17 +36,6 @@ const Cart = () => {
   );
   const [numberChecked, setNumberChecked] = useState(-1);
 
-  // //this cal total cost in the first time access to cart page
-  // useEffect(() => {
-  //   if (cart && cart.cart_products) {
-  //     let sum = 0;
-  //     cart.cart_products.map((item: CartProduct) => {
-  //       sum += item.product_price * item.product_quantity;
-  //     });
-  //     setTotalCost(sum);
-  //   }
-  // }, [cart]);
-
   useEffect(() => {
     if (cart) {
       if (
@@ -54,11 +43,9 @@ const Cart = () => {
         numberChecked == cart.cart_products.length - 1
       ) {
         setAllChecked(true);
-        if (totalCost != 0) setTotalCost(0);
+        if (totalCost != 0 && !allChecked) setTotalCost(0);
       }
     }
-    console.log(numberChecked);
-    console.log('length', cart.cart_products.length - 1);
   }, [numberChecked]);
   console.log(allChecked);
   const addCost = (cost: number) => {
@@ -95,6 +82,8 @@ const Cart = () => {
               onChange={(event) => {
                 if (cart && cart.cart_products) {
                   if (event.currentTarget.checked) {
+                    while (productsChosen.current.length)
+                      productsChosen.current.pop();
                     productsChosen.current.push(...cart.cart_products);
                     setNumberChecked(cart.cart_products.length - 1);
                   } else {
@@ -103,6 +92,7 @@ const Cart = () => {
                     setNumberChecked(-1);
                   }
                 }
+                setTotalCost(0);
                 setAllChecked(event.currentTarget.checked);
               }}
             />
