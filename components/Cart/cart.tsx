@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { formatMoney } from '@/utils/string';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { useRouter } from 'next/navigation';
+import { data } from 'cypress/types/jquery';
 
 const Cart = () => {
   const queryClient = useQueryClient();
@@ -33,6 +34,7 @@ const Cart = () => {
     'productsChosen',
     productsChosen
   );
+  const [numberChecked, setNumberChecked] = useState(-1);
 
   // //this cal total cost in the first time access to cart page
   // useEffect(() => {
@@ -44,6 +46,18 @@ const Cart = () => {
   //     setTotalCost(sum);
   //   }
   // }, [cart]);
+
+  useEffect(() => {
+    if (cart) {
+      if (
+        numberChecked != 0 &&
+        numberChecked == cart.cart_products.length - 1
+      ) {
+        setAllChecked(true);
+      }
+    }
+    console.log(numberChecked);
+  }, [numberChecked]);
 
   const addCost = (cost: number) => {
     if (cost == -1) setTotalCost(0);
@@ -68,7 +82,6 @@ const Cart = () => {
 
     setCart(data);
   };
-  console.log(1);
 
   return (
     <Grid>
@@ -81,9 +94,11 @@ const Cart = () => {
                 if (cart && cart.cart_products) {
                   if (event.currentTarget.checked) {
                     productsChosen.current.push(...cart.cart_products);
+                    setNumberChecked(cart.cart_products.length - 1);
                   } else {
                     while (productsChosen.current.length)
                       productsChosen.current.pop();
+                    setNumberChecked(-1);
                   }
                 }
                 setAllChecked(event.currentTarget.checked);
@@ -126,6 +141,7 @@ const Cart = () => {
                 setAllChecked={setAllChecked}
                 deleteItem={deleteOneProduct}
                 productChosen={productsChosen}
+                setNumberChecked={setNumberChecked}
               />
             ))}
         </div>

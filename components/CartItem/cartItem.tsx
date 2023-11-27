@@ -21,6 +21,7 @@ const CartItem = ({
   setAllChecked,
   deleteItem,
   productChosen,
+  setNumberChecked,
 }: {
   data: CartProduct;
   setTotalCost: Function;
@@ -28,6 +29,7 @@ const CartItem = ({
   setAllChecked: Function;
   deleteItem: Function;
   productChosen: any;
+  setNumberChecked: Function;
 }) => {
   const [quantity, setQuantity] = useState<string | number>(
     data.product_quantity
@@ -64,11 +66,14 @@ const CartItem = ({
             onChange={(event) => {
               if (!event.currentTarget.checked && allChecked) {
                 setAllChecked(false);
+                setNumberChecked(0);
               }
               if (!event.currentTarget.checked) {
+                setNumberChecked((prev: number) => --prev);
                 setTotalCost(-quantity * data.product_price);
                 setIsChecked(false);
               } else {
+                setNumberChecked((prev: number) => ++prev);
                 setTotalCost(mul(quantity, data.product_price));
                 setIsChecked(true);
               }
