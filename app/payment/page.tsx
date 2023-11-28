@@ -10,15 +10,16 @@ import {
   Grid,
   Image,
   Radio,
+  LoadingOverlay,
 } from '@mantine/core';
 import { IconMapPinFilled } from '@tabler/icons-react';
-import '@mantine/core/styles.css';
 import NImage from 'next/image';
 import exampleImage from '@/public/pic/gach.jpg';
 import { CartProduct, User } from '@/utils/response';
 import queryClient from '@/helpers/client';
 import { formatMoney } from '@/utils/string';
 import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 const Payment = () => {
   const userInfo: any = queryClient.getQueryData(['user']) || {
@@ -49,20 +50,23 @@ const Payment = () => {
   const products: CartProduct[] =
     queryClient.getQueryData(['productsChosen']) || [];
 
-  console.log(1);
+  const productsQuery = useQuery({
+    queryKey: ['productsChosen'],
+    queryFn: () => products,
+  });
 
   return (
     // devide page into 2 col
     <Group
-      gap={0}
+      gap={15}
       justify='center'
       align='start'
       className='relative z-[1] bg-[#f1f3f5] min-h-full w-full h-fit mt-[120px] mb-[30px] px-[100px] overflow-hidden'
     >
       {/*col 1*/}
-      <Stack className='flex-[2] w-[760px] h-full'>
+      <Stack className='flex-[2]'>
         {/*recipient information*/}
-        <Stack className='bg-white rounded-[10px] w-[760px] px-[32px] py-[24px]'>
+        <Stack className='bg-white rounded-[10px] w-full px-[32px] py-[24px]'>
           <Group justify='space-between' className='w-full'>
             <Group>
               <IconMapPinFilled style={{ color: '#02B1AB' }} />
@@ -80,18 +84,18 @@ const Payment = () => {
         </Stack>
 
         {/*scheduled time*/}
-        <Group className='gap-10 px-[32px] py-[24px] border-[#02B1AB] border-[1px] w-[760px]'>
+        <Group className='gap-10 px-[32px] py-[24px] border-[#02B1AB] border-[1px] w-full'>
           <Text color='#02B1AB'>Dự kiến giao hàng:</Text>
           <Text color='#02B1AB'>04-10-2023</Text>
         </Group>
 
         {/*products*/}
-        <Stack className='bg-white rounded-[10px] w-[760px] px-[32px] py-[24px]'>
+        <Stack className='bg-white rounded-[10px] w-full px-[32px] py-[24px]'>
           <Text fw={700}>Sản phẩm</Text>
           <Grid>
             <Grid.Col
               style={{ display: 'flex', justifyContent: 'center' }}
-              span={6}
+              span={7}
             >
               <Text color='#252525'>Sản phẩm</Text>
             </Grid.Col>
@@ -102,10 +106,10 @@ const Payment = () => {
               <Text color='#252525'>Đơn giá</Text>
             </Grid.Col>
             <Grid.Col
-              span={2}
+              span={1}
               style={{ display: 'flex', justifyContent: 'center' }}
             >
-              <Text color='#252525'>Số lượng</Text>
+              <Text color='#252525'>SL</Text>
             </Grid.Col>
             <Grid.Col
               span={2}
@@ -118,15 +122,8 @@ const Payment = () => {
           {products.map((product) => {
             return (
               <Grid key={product.productId}>
-                <Grid.Col
-                  span={6}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Group>
+                <Grid.Col span={2}>
+                  <Group justify='center' align='center'>
                     <Image
                       alt='img'
                       src={product.product_thumb || exampleImage}
@@ -135,7 +132,21 @@ const Payment = () => {
                       height={50}
                       // className=' h-[106px] md:h-[106px]'
                     />
-                    <Text color='#252525'>{product.product_name}</Text>
+                  </Group>
+                </Grid.Col>
+                <Grid.Col span={5}>
+                  <Group
+                    justify='flex-start'
+                    align='center'
+                    className='mt-[10px]'
+                  >
+                    <Text
+                      color='#252525'
+                      lineClamp={1}
+                      className=' text-ellipsis text-sm'
+                    >
+                      {product.product_name}
+                    </Text>
                   </Group>
                 </Grid.Col>
                 <Grid.Col
@@ -156,7 +167,7 @@ const Payment = () => {
                   </Group>
                 </Grid.Col>
                 <Grid.Col
-                  span={2}
+                  span={1}
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -191,7 +202,7 @@ const Payment = () => {
 
         {/*promo*/}
         <Group
-          className='bg-white rounded-[10px] w-[760px] p-[30px]'
+          className='bg-white rounded-[10px] w-full p-[30px]'
           justify='space-between'
         >
           <Text color='#252525'>Khuyến mãi</Text>
@@ -199,7 +210,7 @@ const Payment = () => {
         </Group>
 
         {/*payment method*/}
-        <Stack className='w-[760px] rounded-[10px] py-[24px] px-[32px] bg-white'>
+        <Stack className='w-full rounded-[10px] py-[24px] px-[32px] bg-white'>
           <Text fw={700}>Phương thức thanh toán</Text>
           <Radio.Group>
             <Stack>
@@ -211,9 +222,8 @@ const Payment = () => {
           </Radio.Group>
         </Stack>
       </Stack>
-
       {/*col 2*/}
-      <Stack className='flex-1 h-full'>
+      <Stack className='flex-1'>
         <Stack className='px-[32px] py-[24px] bg-white rounded-[10px]'>
           <Group justify='space-between'>
             <Text fw={700}>Đơn hàng</Text>
@@ -256,13 +266,19 @@ const Payment = () => {
               </Text>
             </Group>
           </Group>
-          <Button>Thanh toán</Button>
+          <Button className=' w-full bg-0-primary-color-6 '>Thanh toán</Button>
         </Stack>
         <Stack className='bg-white p-8 rounded-[10px]'>
           <Text className='font-medium'>Ghi chú</Text>
           <Textarea placeholder='Ghi chú' />
         </Stack>
       </Stack>
+      {/* {productsQuery.isPending && (
+        <LoadingOverlay
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+        />
+      )} */}
     </Group>
   );
 };

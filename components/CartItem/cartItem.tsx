@@ -7,6 +7,7 @@ import {
   Image,
   NumberInput,
 } from '@mantine/core';
+
 import { IconTrash } from '@tabler/icons-react';
 import GachImg from '@/public/pic/gach.jpg';
 import NextImage from 'next/image';

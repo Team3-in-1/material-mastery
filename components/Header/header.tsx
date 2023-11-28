@@ -33,8 +33,7 @@ export default function Header() {
 
   const cartFromServer = useQuery({
     queryKey: ['cart'],
-    queryFn: () =>
-      cartService.getCart(user.user._id, user.tokenPair.accessToken),
+    queryFn: () => cartService.getCart(),
     retry: false,
   });
 
@@ -87,7 +86,11 @@ export default function Header() {
               className={classes.hoverIcon}
             />
             {localCart?.cart_products.length != 0 && (
-              <Text className='absolute top-[-10px] right-[-10px] text-[red] font-bold'>
+              <Text
+                color='red'
+                fw={700}
+                className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
+              >
                 {localCart?.cart_products.length}
               </Text>
             )}

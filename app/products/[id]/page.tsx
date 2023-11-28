@@ -14,6 +14,7 @@ import {
   ActionIcon,
   NumberInputHandlers,
   Divider,
+  LoadingOverlay,
 } from '@mantine/core';
 import { IconPlus, IconMinus } from '@tabler/icons-react';
 import exampleImage from '@/public/pic/gach.jpg';
@@ -28,14 +29,16 @@ import { formatMoney } from '@/utils/string';
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const handlersRef = useRef<NumberInputHandlers>(null);
 
-  const comments = useQuery({
-    queryKey: ['comments'],
-    queryFn: CommentService.getAllComments,
-  });
-
   const product = useQuery({
     queryKey: ['product'],
     queryFn: () => productService.getProductById(params.id),
+  });
+  const productId = product.data?._id;
+
+  const comments = useQuery({
+    queryKey: ['comments'],
+    queryFn: () => CommentService.getAllComments(productId || ''),
+    enabled: !!productId,
   });
 
   const people = comments.data;
@@ -215,7 +218,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         {/* load comments base on rating score */}
         <Stack>
           {people?.map(
-            (person) =>
+            (person: any) =>
               (isChoosing == 0 || isChoosing == 3) && (
                 <Stack key={person._id}>
                   <Stack className=' gap-1'>
@@ -244,6 +247,16 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           )}
         </Stack>
       </Flex>
+      {(product.isRefetching ||
+        comments.isRefetching ||
+        product.isPending ||
+        comments.isPending) && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+        />
+      )}
     </div>
   );
 }
