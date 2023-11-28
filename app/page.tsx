@@ -145,7 +145,7 @@ export default function Home() {
           </Container>
         </Grid.Col>
       </Grid>
-      {categories.isPending && (
+      {(categories.isPending || categories.isRefetching) && (
         <LoadingOverlay
           visible={true}
           zIndex={1000}

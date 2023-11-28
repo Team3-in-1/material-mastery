@@ -22,24 +22,30 @@ import { useLocalStorage } from '@mantine/hooks';
 import useLogin from '@/helpers/useLogin';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import useCart from '@/helpers/useCart';
-import cartService from '@/services/cartService';
 import { useQuery } from '@tanstack/react-query';
 import queryClient from '@/helpers/client';
+import CartService from '@/services/cartService';
 
 export default function Header() {
   const appName = 'Material Mastery';
+  const router = useRouter();
 
   const [user, setUser] = useLogin();
 
   const cartFromServer = useQuery({
     queryKey: ['cart'],
-    queryFn: () => cartService.getCart(),
-    retry: false,
+    queryFn: () => {
+      const cartService = new CartService();
+      return cartService.getCart();
+    },
+
+    enabled: !!user,
   });
 
-  const [localCart, setLocalCart] = useCart(cartFromServer.data);
-
-  const router = useRouter();
+  if (cartFromServer.failureCount == 5) {
+    console.log('Get cart fail');
+    setUser();
+  }
 
   return (
     <Flex
@@ -85,13 +91,13 @@ export default function Header() {
               color='#02B1AB'
               className={classes.hoverIcon}
             />
-            {localCart?.cart_products.length != 0 && (
+            {cartFromServer.data?.cart_products.length != 0 && (
               <Text
                 color='red'
                 fw={700}
                 className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
               >
-                {localCart?.cart_products.length}
+                {cartFromServer.data?.cart_products.length}
               </Text>
             )}
           </div>
@@ -130,6 +136,7 @@ export default function Header() {
                 }
                 onClick={() => {
                   setUser();
+                  router.replace('/');
                 }}
               >
                 Đăng xuất

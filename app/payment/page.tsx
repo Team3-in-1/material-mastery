@@ -20,21 +20,18 @@ import queryClient from '@/helpers/client';
 import { formatMoney } from '@/utils/string';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import useLogin from '@/helpers/useLogin';
+import { useRouter } from 'next/navigation';
 
 const Payment = () => {
-  const userInfo: any = queryClient.getQueryData(['user']) || {
-    user: {
-      _id: '6543ecae437e730b469c8d2d',
-      username: 'example',
-      password: '$2b$10$UeMyK5Z1xLgTFI7BkYe0Z.X5YlCycO1ce0uD2ijj5mfDUDX6GxGty',
-      email: 'nguyentuankhang10102003@gmail.com',
-      display_name: 'Administrator',
-      phone: '0000000001',
-      status: 'inactive',
-      isBlocked: false,
-      roles: ['manager'],
-    },
-  };
+  const router = useRouter();
+  const [user, setUser] = useLogin();
+  if (!user) {
+    setUser();
+    router.replace('/');
+  }
+  console.log(typeof user);
+  const userObject = typeof user == 'string' ? JSON.parse(user) : user;
 
   const [cost, setCost] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
@@ -76,8 +73,8 @@ const Payment = () => {
           </Group>
           <Stack>
             <Group>
-              <Text>{userInfo.user.username}</Text>
-              <Text>{userInfo.user.phone}</Text>
+              <Text>{userObject.user.username}</Text>
+              <Text>{userObject.user.phone}</Text>
             </Group>
             <Text>HCM</Text>
           </Stack>

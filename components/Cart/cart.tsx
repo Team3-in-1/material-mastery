@@ -8,6 +8,7 @@ import {
   Container,
   Group,
   Button,
+  Notification,
 } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import CartItem from '../CartItem/cartItem';
@@ -24,8 +25,7 @@ import { useRouter } from 'next/navigation';
 import { data } from 'cypress/types/jquery';
 
 const Cart = () => {
-  const queryClient = useQueryClient();
-  const [cart, setCart] = useCart(queryClient.getQueryData(['cart']));
+  const [cart, setCart] = useCart();
   const [totalCost, setTotalCost] = useState(0);
   const [allChecked, setAllChecked] = useState(false);
   const productsChosen = useRef<CartProduct[]>([]);
@@ -47,7 +47,7 @@ const Cart = () => {
       }
     }
   }, [numberChecked]);
-  console.log(allChecked);
+
   const addCost = (cost: number) => {
     if (cost == -1) setTotalCost(0);
     else setTotalCost((prev) => prev + cost);
@@ -156,9 +156,11 @@ const Cart = () => {
             fullWidth
             className='bg-[#02B1AB]'
             onClick={() => {
-              console.log(productsChosen);
-              setProducts(productsChosen.current);
-              router.push('/payment');
+              if (productsChosen.current.length != 0) {
+                setProducts(productsChosen.current);
+                router.push('/payment');
+              } else {
+              }
             }}
           >
             Mua hàng

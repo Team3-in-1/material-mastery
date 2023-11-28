@@ -147,7 +147,10 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
               <Button className='w-[110px] lg:w-[300px] bg-[#02B1AB]'>
                 Mua ngay
               </Button>
-              <Button className='w-[180px] lg:w-[300px] bg-white text-[#02B1AB] border-[#02B1AB]'>
+              <Button
+                onClick={() => {}}
+                className='w-[180px] lg:w-[300px] bg-white text-[#02B1AB] border-[#02B1AB]'
+              >
                 Thêm vào giỏ hàng
               </Button>
             </Flex>
@@ -219,7 +222,8 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         <Stack>
           {people?.map(
             (person: any) =>
-              (isChoosing == 0 || isChoosing == 3) && (
+              (isChoosing == 0 ||
+                isChoosing == (person.comment_rating || 3)) && (
                 <Stack key={person._id}>
                   <Stack className=' gap-1'>
                     <Group>
@@ -230,8 +234,10 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                         className=' rounded-full w-[35px]'
                       />
                       <Stack className=' gap-0'>
-                        <Text className='ml-[5px]'>Khai</Text>
-                        <Rating defaultValue={3} readOnly />
+                        <Text className='ml-[5px]'>
+                          {person.comment_userName}
+                        </Text>
+                        <Rating value={person.comment_rating || 3} readOnly />
                       </Stack>
                     </Group>
                     <Text className=' ml-[55px] text-[#BBB] text-[12px]'>

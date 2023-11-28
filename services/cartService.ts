@@ -7,11 +7,16 @@ import queryClient from "@/helpers/client";
 
 class CartService {
     currentUser: any;
+    
     constructor(){
-        this.currentUser = queryClient.getQueryData(['user']);
+        console.log('oke');
+        this.currentUser = JSON.parse(queryClient.getQueryData(['user']) || localStorage.getItem('user') || '{}');
+        console.log(typeof this.currentUser);
+        console.log(this.currentUser)
     }
     async getCart(): Promise<CartInterface> {
-        console.log('MM:::Getting user cart.')
+        console.log(this.currentUser.user._id)
+        console.log(this.currentUser.tokenPair.accessToken)
         return await axios.get(`${constant.BASE_URL}/cart`, {
             headers: {
                 'x-api-key': constant.API_KEY,
@@ -19,7 +24,7 @@ class CartService {
                 'authorization': this.currentUser.tokenPair.accessToken,
 
         }})
-        .then(res=>res.data.metadata)
+        .then(res=>{localStorage.setItem('cart', res.data.metadata); return res.data.metadata})
         .catch(error => {throw new Error(error.response.data.message)})
     }
 
@@ -60,4 +65,4 @@ class CartService {
 }
 
 
-export default new CartService();
+export default CartService;
