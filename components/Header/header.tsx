@@ -27,6 +27,10 @@ import queryClient from '@/helpers/client';
 import CartService from '@/services/cartService';
 import { useRef } from 'react';
 
+interface OnClickInterface {
+  [index: string]: Function;
+}
+
 export default function Header() {
   const appName = 'Material Mastery';
   const router = useRouter();
@@ -46,6 +50,25 @@ export default function Header() {
     console.log('Get cart fail');
     setUser();
   }
+
+  const onClickFunction: OnClickInterface = {
+    details: () => {
+      router.push('/account/details');
+    },
+    orders: () => {
+      router.push('/account/orders');
+    },
+    vouchers: () => {
+      router.push('/account/vouchers');
+    },
+    signOut: () => {
+      setUser();
+      router.replace('/');
+    },
+  };
+  const handleOnClickOnMenu = (type: string) => {
+    return onClickFunction[type]();
+  };
 
   return (
     <Flex
@@ -110,7 +133,7 @@ export default function Header() {
                 leftSection={
                   <IconUser style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => {}}
+                onClick={() => handleOnClickOnMenu('details')}
               >
                 Thông tin tài khoản
               </Menu.Item>
@@ -118,7 +141,7 @@ export default function Header() {
                 leftSection={
                   <IconChecklist style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => {}}
+                onClick={() => handleOnClickOnMenu('orders')}
               >
                 Đơn hàng
               </Menu.Item>
@@ -126,7 +149,7 @@ export default function Header() {
                 leftSection={
                   <IconTicket style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => {}}
+                onClick={() => handleOnClickOnMenu('vouchers')}
               >
                 Kho voucher
               </Menu.Item>
@@ -134,10 +157,7 @@ export default function Header() {
                 leftSection={
                   <IconLogout style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => {
-                  setUser();
-                  router.replace('/');
-                }}
+                onClick={() => handleOnClickOnMenu('signOut')}
               >
                 Đăng xuất
               </Menu.Item>

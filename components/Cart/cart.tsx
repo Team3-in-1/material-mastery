@@ -8,21 +8,17 @@ import {
   Container,
   Group,
   Button,
-  Notification,
 } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import CartItem from '../CartItem/cartItem';
 import useCart from '@/helpers/useCart';
-import queryClient from '@/helpers/client';
 import { CartProduct } from '@/utils/response';
-
-import cartService from '@/services/cartService';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { formatMoney } from '@/utils/string';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { useRouter } from 'next/navigation';
 import { data } from 'cypress/types/jquery';
+import { Toaster, toast } from 'react-hot-toast';
 
 const Cart = () => {
   const [cart, setCart] = useCart();
@@ -73,101 +69,105 @@ const Cart = () => {
   };
 
   return (
-    <Grid>
-      <Grid.Col span={9}>
-        <Grid columns={10} my={20} py={5} className='bg-white rounded-lg'>
-          <Grid.Col span={1} className='flex items-center justify-center'>
-            <Checkbox
-              checked={allChecked}
-              onChange={(event) => {
-                if (cart && cart.cart_products) {
-                  if (event.currentTarget.checked) {
-                    while (productsChosen.current.length)
-                      productsChosen.current.pop();
-                    productsChosen.current.push(...cart.cart_products);
-                    setNumberChecked(cart.cart_products.length - 1);
-                  } else {
-                    while (productsChosen.current.length)
-                      productsChosen.current.pop();
-                    setNumberChecked(-1);
+    <div>
+      <Grid>
+        <Grid.Col span={9}>
+          <Grid columns={10} my={20} py={5} className='bg-white rounded-lg'>
+            <Grid.Col span={1} className='flex items-center justify-center'>
+              <Checkbox
+                checked={allChecked}
+                onChange={(event) => {
+                  if (cart && cart.cart_products) {
+                    if (event.currentTarget.checked) {
+                      while (productsChosen.current.length)
+                        productsChosen.current.pop();
+                      productsChosen.current.push(...cart.cart_products);
+                      setNumberChecked(cart.cart_products.length - 1);
+                    } else {
+                      while (productsChosen.current.length)
+                        productsChosen.current.pop();
+                      setNumberChecked(-1);
+                    }
                   }
-                }
-                setTotalCost(0);
-                setAllChecked(event.currentTarget.checked);
-              }}
-            />
-          </Grid.Col>
-          <Grid.Col span={4} className='flex items-center'>
-            <Text className='text-[0.8rem]'>Sản phẩm</Text>
-          </Grid.Col>
-          <Grid.Col span={1} className='flex items-center'>
-            <Text className='text-[0.8rem]'>Đơn giá</Text>
-          </Grid.Col>
-          <Grid.Col span={2} className='flex items-center'>
-            <Text className='text-[0.8rem]'>Số lượng</Text>
-          </Grid.Col>
-          <Grid.Col span={1} className='flex items-center'>
-            <Text className='text-[0.8rem]'>Thành tiền</Text>
-          </Grid.Col>
-          <Grid.Col span={1} className='flex items-center'>
-            <ActionIcon
-              variant='filled'
-              aria-label='Delete'
+                  setTotalCost(0);
+                  setAllChecked(event.currentTarget.checked);
+                }}
+              />
+            </Grid.Col>
+            <Grid.Col span={4} className='flex items-center'>
+              <Text className='text-[0.8rem]'>Sản phẩm</Text>
+            </Grid.Col>
+            <Grid.Col span={1} className='flex items-center'>
+              <Text className='text-[0.8rem]'>Đơn giá</Text>
+            </Grid.Col>
+            <Grid.Col span={2} className='flex items-center'>
+              <Text className='text-[0.8rem]'>Số lượng</Text>
+            </Grid.Col>
+            <Grid.Col span={1} className='flex items-center'>
+              <Text className='text-[0.8rem]'>Thành tiền</Text>
+            </Grid.Col>
+            <Grid.Col span={1} className='flex items-center'>
+              <ActionIcon
+                variant='filled'
+                aria-label='Delete'
+                onClick={() => {
+                  setCart();
+                  setTotalCost(0);
+                }}
+              >
+                <IconTrash color='#000' stroke={1.5} />
+              </ActionIcon>
+            </Grid.Col>
+          </Grid>
+          <div className='bg-white rounded-[10px] py-[10px]'>
+            {cart &&
+              cart.cart_products.map((item: CartProduct) => (
+                <CartItem
+                  key={item.productId}
+                  data={item}
+                  setTotalCost={addCost}
+                  allChecked={allChecked}
+                  setAllChecked={setAllChecked}
+                  deleteItem={deleteOneProduct}
+                  productChosen={productsChosen}
+                  setNumberChecked={setNumberChecked}
+                />
+              ))}
+          </div>
+        </Grid.Col>
+        <Grid.Col span={3}>
+          <Container className='bg-white rounded' mt={20} py={20}>
+            <Group pb={20} justify='space-between' align='flex-start'>
+              <Text>Tạm tính</Text>
+              <div className='text-[#02B1AB] text-right'>
+                <p>
+                  {formatMoney(totalCost)}
+                  <span>đ</span>
+                </p>
+                <Text size='xs' c='dimmed'>
+                  (Chưa bao gồm phí vận chuyển)
+                </Text>
+              </div>
+            </Group>
+            <Button
+              fullWidth
+              className='bg-[#02B1AB]'
               onClick={() => {
-                setCart();
-                setTotalCost(0);
+                if (productsChosen.current.length != 0) {
+                  setProducts(productsChosen.current);
+                  router.push('/payment');
+                } else {
+                  toast.error('Vui lòng chọn sản phẩm để thanh toán.');
+                }
               }}
             >
-              <IconTrash color='#000' stroke={1.5} />
-            </ActionIcon>
-          </Grid.Col>
-        </Grid>
-        <div className='bg-white rounded-[10px] py-[10px]'>
-          {cart &&
-            cart.cart_products.map((item: CartProduct) => (
-              <CartItem
-                key={item.productId}
-                data={item}
-                setTotalCost={addCost}
-                allChecked={allChecked}
-                setAllChecked={setAllChecked}
-                deleteItem={deleteOneProduct}
-                productChosen={productsChosen}
-                setNumberChecked={setNumberChecked}
-              />
-            ))}
-        </div>
-      </Grid.Col>
-      <Grid.Col span={3}>
-        <Container className='bg-white rounded' mt={20} py={20}>
-          <Group pb={20} justify='space-between' align='flex-start'>
-            <Text>Tạm tính</Text>
-            <div className='text-[#02B1AB] text-right'>
-              <p>
-                {formatMoney(totalCost)}
-                <span>đ</span>
-              </p>
-              <Text size='xs' c='dimmed'>
-                (Chưa bao gồm phí vận chuyển)
-              </Text>
-            </div>
-          </Group>
-          <Button
-            fullWidth
-            className='bg-[#02B1AB]'
-            onClick={() => {
-              if (productsChosen.current.length != 0) {
-                setProducts(productsChosen.current);
-                router.push('/payment');
-              } else {
-              }
-            }}
-          >
-            Mua hàng
-          </Button>
-        </Container>
-      </Grid.Col>
-    </Grid>
+              Mua hàng
+            </Button>
+          </Container>
+        </Grid.Col>
+      </Grid>
+      <Toaster position='bottom-center' reverseOrder={false} />
+    </div>
   );
 };
 

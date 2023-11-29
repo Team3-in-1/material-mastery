@@ -2,23 +2,40 @@
 import { useState } from 'react';
 import { IconUser, IconChecklist, IconTicket } from '@tabler/icons-react';
 import { Box, NavLink } from '@mantine/core';
+import { useRouter } from 'next/navigation';
 
-const data = [
-  {
-    icon: IconUser,
-    label: 'Thông tin tài khoản',
-  },
-  {
-    icon: IconChecklist,
-    label: 'Đơn hàng',
-  },
-  { icon: IconTicket, label: 'Kho vouvher' },
-];
+interface HandleRouterInterface {
+  [id: number]: Function;
+}
 
-const AccountNav = () => {
-  const [active, setActive] = useState(0);
+const AccountNav = ({ idPage }: { idPage: number }) => {
+  const [active, setActive] = useState(idPage);
+  const router = useRouter();
+  const data = [
+    {
+      icon: IconUser,
+      label: 'Thông tin tài khoản',
+    },
+    {
+      icon: IconChecklist,
+      label: 'Đơn hàng',
+    },
+    { icon: IconTicket, label: 'Kho vouvher' },
+  ];
+  const handleRouter: HandleRouterInterface = {
+    0: () => {
+      router.push('/account/details');
+    },
+    1: () => {
+      router.push('/account/orders');
+    },
+    2: () => {
+      router.push('/account/vouchers');
+    },
+  };
   const handleOnclick = (index: number) => {
     setActive(index);
+    handleRouter[index]();
   };
 
   const items = data.map((item, index) => (
@@ -27,12 +44,13 @@ const AccountNav = () => {
       active={index === active}
       label={item.label}
       leftSection={<item.icon size='1rem' stroke={1.5} />}
+      className='h-[50px] rounded-[12px] mb-3'
       onClick={() => handleOnclick(index)}
     />
   ));
 
   return (
-    <Box w={'100%'} bg={'white'} mt={90}>
+    <Box w={'100%'} h={'100%'} className=' p-[10px]'>
       {items}
     </Box>
   );
