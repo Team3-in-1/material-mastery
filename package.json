@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "cypress:open": "cypress open",
-    "chay-di-khai": "next dev"
+    "dev-turbo": "next dev --turbo"
   },
   "dependencies": {
     "@mantine/carousel": "^7.1.2",

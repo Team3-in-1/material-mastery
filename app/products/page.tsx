@@ -4,7 +4,11 @@ import { ProductCards } from '@/components/Product/productCards';
 import { CategoryNav } from '@/components/CategoryNav/categoryNav';
 import '../global.css';
 import { Grid, Pagination, Flex } from '@mantine/core';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from '@tanstack/react-query';
 import { categoryService } from '@/services/categoryService';
 import { productService } from '@/services/productService';
 import {
@@ -44,8 +48,8 @@ export default function ProductsPage() {
         <Anchor key={1}>
           {searchParams.get('category')
             ? categories.data?.find(
-              (category) => category._id == searchParams.get('category')
-            )?.category_name
+                (category) => category._id == searchParams.get('category')
+              )?.category_name
             : categories.data?.[0].category_name}
         </Anchor>
       </Breadcrumbs>

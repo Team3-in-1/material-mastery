@@ -4,8 +4,9 @@ import { NavLink, Stack } from '@mantine/core';
 import classes from './categoryNav.module.css';
 import { Category } from '@/utils/response';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { data } from 'cypress/types/jquery';
 
-export const CategoryNav = ({ data }: CategoryNavProps) => {
+export const CategoryNav = ({ data }: { data: Category[] }) => {
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -41,7 +42,3 @@ export const CategoryNav = ({ data }: CategoryNavProps) => {
     </Stack>
   );
 };
-
-interface CategoryNavProps {
-  data: Category[];
-}

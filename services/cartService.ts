@@ -9,7 +9,6 @@ class CartService {
     currentUser: any;
     
     constructor(){
-        console.log('oke');
         this.currentUser = JSON.parse(queryClient.getQueryData(['user']) || localStorage.getItem('user') || '{}');
         console.log(typeof this.currentUser);
         console.log(this.currentUser)

@@ -18,6 +18,7 @@ import { Carousel } from '@mantine/carousel';
 import { splitArray } from '@/utils/array';
 import { Product } from '@/utils/response';
 import { ProductCards } from '@/components/Product/productCards';
+import { useRouter } from 'next/navigation';
 
 const data: Product[] = [];
 for (let index = 0; index < 14; index++) {

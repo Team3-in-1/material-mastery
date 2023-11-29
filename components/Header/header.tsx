@@ -25,13 +25,13 @@ import useCart from '@/helpers/useCart';
 import { useQuery } from '@tanstack/react-query';
 import queryClient from '@/helpers/client';
 import CartService from '@/services/cartService';
+import { useRef } from 'react';
 
 export default function Header() {
   const appName = 'Material Mastery';
   const router = useRouter();
 
   const [user, setUser] = useLogin();
-
   const cartFromServer = useQuery({
     queryKey: ['cart'],
     queryFn: () => {

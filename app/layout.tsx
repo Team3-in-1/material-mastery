@@ -10,6 +10,8 @@ import { theme } from '@/theme';
 import Header from '@/components/Header/header';
 import Footer from '@/components/Footer/footer';
 import BottomNavBar from '@/components/Mobile/BottomNavBar/bottomNavBar';
+import { Suspense } from 'react';
+import Loading from './loading';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -32,7 +34,7 @@ export default function RootLayout({
         <MantineProvider theme={theme} defaultColorScheme='light'>
           <TanStackProvider>
             <Header />
-            {children}
+            <Suspense fallback={<Loading />}>{children}</Suspense>
             <Footer />
             <BottomNavBar />
           </TanStackProvider>
