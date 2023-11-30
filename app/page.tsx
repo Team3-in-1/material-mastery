@@ -19,6 +19,7 @@ import { splitArray } from '@/utils/array';
 import { Product } from '@/utils/response';
 import { ProductCards } from '@/components/Product/productCards';
 import { useRouter } from 'next/navigation';
+import queryClient from '@/helpers/client';
 
 const data: Product[] = [];
 for (let index = 0; index < 14; index++) {
@@ -47,6 +48,9 @@ export default function Home() {
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,
   });
+
+  const user = queryClient.getQueryData(['user']);
+  const cart = queryClient.getQueryData(['cart']);
 
   return (
     <Container
@@ -146,7 +150,9 @@ export default function Home() {
           </Container>
         </Grid.Col>
       </Grid>
-      {(categories.isPending || categories.isRefetching) && (
+      {(categories.isPending ||
+        categories.isRefetching ||
+        (!cart && !!user)) && (
         <LoadingOverlay
           visible={true}
           zIndex={1000}

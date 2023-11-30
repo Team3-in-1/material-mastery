@@ -16,7 +16,6 @@ import Styles from './pcard.module.css';
 import Link from 'next/link';
 import { Product } from '@/utils/response';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
-import useCard from '@/helpers/useCart';
 import { formatMoney } from '@/utils/string';
 import { useQueryClient } from '@tanstack/react-query';
 import useCart from '@/helpers/useCart';

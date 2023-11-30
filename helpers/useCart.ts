@@ -19,19 +19,11 @@ const useCart = (initialData: any = queryClient.getQueryData(['cart'])): any => 
     useQuery(
         {queryKey: ['cart'],
          queryFn: () => {
-            if(!initialData && localStorage.getItem('cart'))
-                return JSON.parse(localStorage.getItem('cart') || '')
-            if(initialData)
-                localStorage.setItem('cart', JSON.stringify(initialData));
-            return JSON.parse(initialData)
+            return typeof initialData == 'string' ? JSON.parse(initialData) : initialData;
         }}
          ).data,
     (value: CartInterface = defaultValue) => {
-        if(value === defaultValue)
-            localStorage.removeItem('cart');
-        else
-            localStorage.setItem('cart', JSON.stringify(value));
-        return queryClient.setQueryData(['cart'], value);
+        queryClient.setQueryData(['cart'], value);
     }
 ]
 

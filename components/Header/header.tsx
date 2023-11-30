@@ -17,15 +17,10 @@ import {
 import classes from './header.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
-import { useLocalStorage } from '@mantine/hooks';
 import useLogin from '@/helpers/useLogin';
-import useRQGlobalState from '@/helpers/useRQGlobalState';
-import useCart from '@/helpers/useCart';
 import { useQuery } from '@tanstack/react-query';
-import queryClient from '@/helpers/client';
 import CartService from '@/services/cartService';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface OnClickInterface {
   [index: string]: Function;
@@ -36,14 +31,15 @@ export default function Header() {
   const router = useRouter();
 
   const [user, setUser] = useLogin();
+
   const cartFromServer = useQuery({
     queryKey: ['cart'],
     queryFn: () => {
       const cartService = new CartService();
+      console.log('oke');
       return cartService.getCart();
     },
-
-    enabled: !!user,
+    staleTime: Infinity,
   });
 
   if (cartFromServer.failureCount == 5) {

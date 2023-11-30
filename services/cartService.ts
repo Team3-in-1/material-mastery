@@ -10,12 +10,9 @@ class CartService {
     
     constructor(){
         this.currentUser = JSON.parse(queryClient.getQueryData(['user']) || localStorage.getItem('user') || '{}');
-        console.log(typeof this.currentUser);
-        console.log(this.currentUser)
     }
     async getCart(): Promise<CartInterface> {
-        console.log(this.currentUser.user._id)
-        console.log(this.currentUser.tokenPair.accessToken)
+        console.log('getting cart')
         return await axios.get(`${constant.BASE_URL}/cart`, {
             headers: {
                 'x-api-key': constant.API_KEY,
@@ -23,7 +20,7 @@ class CartService {
                 'authorization': this.currentUser.tokenPair.accessToken,
 
         }})
-        .then(res=>{localStorage.setItem('cart', res.data.metadata); return res.data.metadata})
+        .then(res=> res.data.metadata)
         .catch(error => {throw new Error(error.response.data.message)})
     }
 
