@@ -19,6 +19,7 @@ import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { useRouter } from 'next/navigation';
 import { data } from 'cypress/types/jquery';
 import { Toaster, toast } from 'react-hot-toast';
+import queryClient from '@/helpers/client';
 
 const Cart = () => {
   const [cart, setCart] = useCart();

@@ -15,6 +15,7 @@ import { CartProduct } from '@/utils/response';
 import { formatMoney } from '@/utils/string';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { string } from 'zod';
+import { is } from 'cypress/types/bluebird';
 
 const CartItem = ({
   data,
@@ -59,54 +60,61 @@ const CartItem = ({
     }
   }, [allChecked]);
 
+  const onChecked = (checked: boolean) => {
+    if (!checked && allChecked) {
+      while (productChosen.current.length) productChosen.current.pop();
+      setAllChecked(false);
+      setNumberChecked(-1);
+    } else {
+      if (!checked) {
+        setNumberChecked((prev: number) => --prev);
+        setTotalCost(-quantity * data.product_price);
+        setIsChecked(false);
+
+        for (let i = 0; i < productChosen.current.length; i++) {
+          console.log(
+            'productChosen.current.productId',
+            productChosen.current[i].productId
+          );
+          console.log('id', data.productId);
+          if (productChosen.current[i].productId == data.productId) {
+            console.log('delete product');
+            productChosen.current.splice(i, 1);
+            break;
+          }
+        }
+      } else {
+        setNumberChecked((prev: number) => ++prev);
+        setTotalCost(mul(quantity, data.product_price));
+        setIsChecked(true);
+
+        const cloneProduct = structuredClone(data);
+        cloneProduct.product_quantity =
+          typeof quantity == 'string' ? parseFloat(quantity) : quantity;
+        productChosen.current.push(cloneProduct);
+      }
+    }
+    setIsChecked(checked);
+  };
+
   return (
     <div className='bg-white  py-3'>
       <Grid columns={10} py={5}>
-        <Grid.Col span={1} className='flex items-center justify-center'>
+        <Grid.Col
+          span={1}
+          className='flex items-center justify-center cursor-pointer'
+          onClick={() => {
+            onChecked(!isChecked);
+          }}
+        >
           <Checkbox
             checked={isChecked || allChecked}
             onChange={(event) => {
-              if (!event.currentTarget.checked && allChecked) {
-                while (productChosen.current.length)
-                  productChosen.current.pop();
-                setAllChecked(false);
-                setNumberChecked(-1);
-              } else {
-                if (!event.currentTarget.checked) {
-                  setNumberChecked((prev: number) => --prev);
-                  setTotalCost(-quantity * data.product_price);
-                  setIsChecked(false);
-
-                  for (let i = 0; i < productChosen.current.length; i++) {
-                    console.log(
-                      'productChosen.current.productId',
-                      productChosen.current[i].productId
-                    );
-                    console.log('id', data.productId);
-                    if (productChosen.current[i].productId == data.productId) {
-                      console.log('delete product');
-                      productChosen.current.splice(i, 1);
-                      break;
-                    }
-                  }
-                } else {
-                  setNumberChecked((prev: number) => ++prev);
-                  setTotalCost(mul(quantity, data.product_price));
-                  setIsChecked(true);
-
-                  const cloneProduct = structuredClone(data);
-                  cloneProduct.product_quantity =
-                    typeof quantity == 'string'
-                      ? parseFloat(quantity)
-                      : quantity;
-                  productChosen.current.push(cloneProduct);
-                }
-              }
-              setIsChecked(event.currentTarget.checked);
+              onChecked(event.currentTarget.checked);
             }}
           />
         </Grid.Col>
-        <Grid.Col span={4} className='flex items-center gap-[1rem]'>
+        <Grid.Col span={4} className='flex items-center gap-[1rem] '>
           <Image
             alt='product'
             component={NextImage}

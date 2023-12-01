@@ -10,9 +10,11 @@ import {
   Grid,
   Image,
   Radio,
-  LoadingOverlay,
+  TextInput,
+  Dialog,
 } from '@mantine/core';
-import { IconMapPinFilled } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
+import { IconMapPinFilled, IconArrowNarrowLeft } from '@tabler/icons-react';
 import NImage from 'next/image';
 import exampleImage from '@/public/pic/gach.jpg';
 import { CartProduct, User } from '@/utils/response';
@@ -22,20 +24,34 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import useLogin from '@/helpers/useLogin';
 import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
+import Link from 'next/link';
+import { add } from 'cypress/types/lodash';
+import { checkPhoneFormat } from '@/utils/regex';
+import Voucher from '@/components/Vouchers/voucher';
 
 const Payment = () => {
   const router = useRouter();
+
+  // check login status
   const [user, setUser] = useLogin();
   if (!user) {
     setUser();
     router.replace('/');
   }
-  console.log(typeof user);
-  const userObject = typeof user == 'string' ? JSON.parse(user) : user;
 
+  // convert string to object
+  const [userObject, setUserObject] = useState(
+    typeof user == 'string' ? JSON.parse(user) : user
+  );
+
+  // control dialog
+  const [opened, { toggle, close }] = useDisclosure(false);
+  const [openedVoucher, setOpenedVoucher] = useState(false);
+
+  // cal cost
   const [cost, setCost] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
-
   useEffect(() => {
     let cost = 0;
     products.map((product) => {
@@ -44,16 +60,104 @@ const Payment = () => {
     setCost(cost);
   }, []);
 
+  // get product from cart page
   const products: CartProduct[] =
     queryClient.getQueryData(['productsChosen']) || [];
-
   const productsQuery = useQuery({
     queryKey: ['productsChosen'],
     queryFn: () => products,
   });
 
+  // control text input in dialog
+  const [phone, setPhone] = useState(userObject.user.phone);
+  const [address, setAddress] = useState(userObject.user.address);
+
+  // if user address null
+  const [enableButton, setEnableButton] = useState(!!userObject.user.address);
+
+  // Estimated delivery date is equal to the current date plus 5
+  const getDay = () => {
+    const d = new Date();
+    let date = d.getDate() + 5;
+    let month = d.getMonth() + 1;
+    let year = d.getFullYear();
+
+    if (date > 28) {
+      if (date == 29) {
+        if (month == 2) {
+          if (year % 4 != 0) {
+            date--;
+          }
+        }
+      } else if (date == 30) {
+        if (month == 2) {
+          date = date - 2;
+        }
+      } else if (date == 31) {
+        if (month == 2) {
+          date = date - 3;
+        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+          date--;
+        }
+      } else {
+        if (month == 2) {
+          month++;
+          if (year % 4 == 0) {
+            date = date - 29;
+          } else {
+            date = date - 29;
+          }
+        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+          month++;
+          date = date - 30;
+        } else {
+          month++;
+          if (month == 13) {
+            month = 1;
+            year++;
+          }
+          date = date - 31;
+        }
+      }
+    }
+
+    return date + '-' + month + '-' + year;
+  };
+
+  // fake voucher
+  const vouchers = [
+    {
+      image: 'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7',
+      title: 'Giảm 20K',
+      description: 'Cho đơn hàng tối thiểu 500k',
+      expiry: '31/12/2023',
+      detail: '',
+      status: true,
+    },
+    {
+      image: 'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7',
+      title: 'Giảm 50K',
+      description: 'Cho đơn hàng tối thiểu 2 triệu',
+      expiry: '31/12/2023',
+      detail: '',
+      status: false,
+    },
+
+    {
+      image: 'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7',
+      title: 'Giảm 50k',
+      description: 'Cho đơn hàng tối thiểu 500k',
+      expiry: '31/12/2023',
+      detail: '',
+      status: true,
+    },
+  ];
+
+  const [checkedVoucher, setCheckedVoucher] = useState(0);
+
   return (
     // devide page into 2 col
+
     <Group
       gap={15}
       justify='center'
@@ -67,23 +171,43 @@ const Payment = () => {
           <Group justify='space-between' className='w-full'>
             <Group>
               <IconMapPinFilled style={{ color: '#02B1AB' }} />
+              <IconArrowNarrowLeft
+                className=' absolute top-[10px] left-[50px] h-[30px] cursor-pointer'
+                color='#02B1AB'
+                onClick={() => {
+                  router.back();
+                }}
+              />
               <Text color='#02B1AB'>Thông tin nhận hàng</Text>
             </Group>
-            <Text color='#02B1AB'>Thay đổi</Text>
+            <Text color='#02B1AB' onClick={toggle} className=' cursor-pointer'>
+              Thay đổi
+            </Text>
           </Group>
           <Stack>
             <Group>
               <Text>{userObject.user.username}</Text>
               <Text>{userObject.user.phone}</Text>
             </Group>
-            <Text>HCM</Text>
+            {!!userObject.user.address ? (
+              <Text>{userObject.user.address}</Text>
+            ) : (
+              <Stack gap={0}>
+                <Text className='text-[red]' size='xs'>
+                  *Cần bổ sung địa chỉ giao hàng
+                </Text>
+                <Link href={'/account/details'}>
+                  Cập nhập địa chỉ giao hàng
+                </Link>
+              </Stack>
+            )}
           </Stack>
         </Stack>
 
         {/*scheduled time*/}
         <Group className='gap-10 px-[32px] py-[24px] border-[#02B1AB] border-[1px] w-full'>
           <Text color='#02B1AB'>Dự kiến giao hàng:</Text>
-          <Text color='#02B1AB'>04-10-2023</Text>
+          <Text color='#02B1AB'>{getDay()}</Text>
         </Group>
 
         {/*products*/}
@@ -203,7 +327,13 @@ const Payment = () => {
           justify='space-between'
         >
           <Text color='#252525'>Khuyến mãi</Text>
-          <Text color='#02B1AB'>Chọn khuyến mãi</Text>
+          <Text
+            color='#02B1AB'
+            onClick={() => setOpenedVoucher(!openedVoucher)}
+            className=' cursor-pointer'
+          >
+            Chọn khuyến mãi
+          </Text>
         </Group>
 
         {/*payment method*/}
@@ -263,19 +393,135 @@ const Payment = () => {
               </Text>
             </Group>
           </Group>
-          <Button className=' w-full bg-0-primary-color-6 '>Thanh toán</Button>
+          <Button
+            className=' w-full bg-0-primary-color-6'
+            onClick={() => {
+              if (enableButton) {
+              } else {
+                toast.error(
+                  'Bạn không thể thanh toán khi không có đỉa chỉ giao hàng.'
+                );
+              }
+            }}
+          >
+            Thanh toán
+          </Button>
         </Stack>
         <Stack className='bg-white p-8 rounded-[10px]'>
           <Text className='font-medium'>Ghi chú</Text>
           <Textarea placeholder='Ghi chú' />
         </Stack>
       </Stack>
-      {/* {productsQuery.isPending && (
-        <LoadingOverlay
-          zIndex={1000}
-          overlayProps={{ radius: 'sm', blur: 2 }}
-        />
-      )} */}
+
+      <Dialog
+        opened={opened}
+        withCloseButton
+        withBorder
+        onClose={() => {
+          close();
+          setTimeout(() => {
+            setPhone(userObject.user.phone);
+            setAddress(userObject.user.address);
+          }, 500);
+        }}
+        radius='md'
+        size={500}
+        position={{ bottom: 10, right: 10 }}
+      >
+        <Text size='sm' mb='xs' fw={500}>
+          Thay đổi thông tin nhận hàng
+        </Text>
+
+        <Stack align='center' justify='center'>
+          <TextInput
+            label='Số điện thoại nhận hàng'
+            withAsterisk
+            className='w-full'
+            value={phone}
+            onChange={(event) => {
+              setPhone(event.currentTarget.value);
+            }}
+          />
+          <TextInput
+            label='Địa chỉ nhận hàng'
+            withAsterisk
+            className='w-full'
+            disabled={!enableButton}
+            value={address}
+            onChange={(event) => {
+              setAddress(event.currentTarget.value);
+            }}
+          />
+          <Button
+            onClick={() => {
+              if (checkPhoneFormat(phone)) {
+                toast.error('Số điện thoại không hợp lệ');
+              } else if (enableButton && address.length == 0) {
+                toast.error('Địa chỉ giao hàng không được để trống.');
+              } else {
+                userObject.user.phone = phone;
+                if (enableButton) {
+                  userObject.user.address = address;
+                }
+                close();
+                toast.success('Thay đổi thành công.');
+              }
+            }}
+            className=' w-full bg-0-primary-color-6 '
+          >
+            Chỉnh sửa
+          </Button>
+        </Stack>
+      </Dialog>
+
+      <Dialog
+        opened={openedVoucher}
+        withCloseButton
+        withBorder
+        onClose={() => {
+          setOpenedVoucher(false);
+        }}
+        radius='md'
+        size={500}
+        position={{ bottom: 10, right: 10 }}
+      >
+        <Group className='w-full justify-between mt-3'>
+          <Text size='sm' mb='xs' fw={500}>
+            Khuyến mãi
+          </Text>
+          <Text size='xs' color='gray'>
+            Áp dụng tối đa 1
+          </Text>
+        </Group>
+
+        <Stack align='center' justify='center'>
+          {vouchers.map((voucher, index) => (
+            <Voucher
+              key={voucher.title}
+              image={voucher.image}
+              title={voucher.title}
+              description={voucher.description}
+              expiry={voucher.expiry}
+              detail={voucher.detail}
+              status={voucher.status}
+              setChecked={setCheckedVoucher}
+              index={index}
+              isChecked={index === checkedVoucher}
+            />
+          ))}
+          <Button
+            onClick={() => {
+              toast.success('Chọn voucher thành công.');
+              setOpenedVoucher(false);
+            }}
+            className=' w-full bg-0-primary-color-6 '
+          >
+            Áp dụng
+          </Button>
+        </Stack>
+      </Dialog>
+
+      <Toaster position='bottom-center' reverseOrder={false} />
     </Group>
   );
 };

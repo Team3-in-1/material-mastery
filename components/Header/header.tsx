@@ -116,7 +116,10 @@ export default function Header() {
                 fw={700}
                 className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
               >
-                {cartFromServer.data?.cart_products.length}
+                {cartFromServer.data?.cart_products.length &&
+                cartFromServer.data?.cart_products.length > 99
+                  ? '+99'
+                  : cartFromServer.data?.cart_products.length}
               </Text>
             )}
           </div>
