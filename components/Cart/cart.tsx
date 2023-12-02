@@ -33,6 +33,7 @@ const Cart = () => {
   );
   const [numberChecked, setNumberChecked] = useState(-1);
 
+  console.log('numberChecked', numberChecked);
   useEffect(() => {
     if (cart) {
       if (
@@ -54,13 +55,7 @@ const Cart = () => {
     const data = structuredClone(cart);
 
     for (let i = 0; i < data.cart_products.length; i++) {
-      console.log(
-        'data.cart_products.productId',
-        data.cart_products[i].productId
-      );
-      console.log('id', id);
       if (data.cart_products[i].productId == id) {
-        console.log('delete product');
         data.cart_products.splice(i, 1);
         break;
       }

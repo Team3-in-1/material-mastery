@@ -29,6 +29,8 @@ import Link from 'next/link';
 import { add } from 'cypress/types/lodash';
 import { checkPhoneFormat } from '@/utils/regex';
 import Voucher from '@/components/Vouchers/voucher';
+import dynamic from 'next/dynamic';
+import '../global.css';
 
 const Payment = () => {
   const router = useRouter();
@@ -530,4 +532,4 @@ const Payment = () => {
   );
 };
 
-export default Payment;
+export default dynamic(() => Promise.resolve(Payment), { ssr: false });

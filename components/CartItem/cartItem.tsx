@@ -109,9 +109,7 @@ const CartItem = ({
         >
           <Checkbox
             checked={isChecked || allChecked}
-            onChange={(event) => {
-              onChecked(event.currentTarget.checked);
-            }}
+            onChange={(event) => {}}
           />
         </Grid.Col>
         <Grid.Col span={4} className='flex items-center gap-[1rem] '>

@@ -8,7 +8,9 @@ import {
   TextInput,
   Text,
   Flex,
+  LoadingOverlay,
 } from '@mantine/core';
+import '../../../global.css';
 import NextImage from 'next/image';
 import logo from '@/public/icon.svg';
 import queryClient from '@/helpers/client';
@@ -26,6 +28,7 @@ import {
   checkPhoneFormat,
 } from '@/utils/regex';
 import { userService } from '@/services/userService';
+import dynamic from 'next/dynamic';
 
 const DetailsPage = () => {
   const router = useRouter();
@@ -35,10 +38,11 @@ const DetailsPage = () => {
   const [enableBox2, setEnableBox2] = useState(false);
 
   // store initial value
-  let initialName = user?.user.username || '';
-  let initialEmail = user?.user.email || '';
-  let initialPhone = user?.user.phone || '';
-  let initialAddress = user?.user.user_attributes.address || '';
+  let initialName = typeof window !== 'undefined' ? user?.user.username : '';
+  let initialEmail = typeof window !== 'undefined' ? user?.user.email : '';
+  let initialPhone = typeof window !== 'undefined' ? user?.user.phone : '';
+  let initialAddress =
+    typeof window !== 'undefined' ? user?.user.user_attributes.address : '';
 
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
@@ -53,10 +57,15 @@ const DetailsPage = () => {
     } else setAddress(initialAddress);
   };
 
-  const userObject = typeof user == 'string' ? JSON.parse(user) : user;
-  const userId = userObject.user._id;
+  const userObject =
+    typeof user == 'string' && user != undefined ? JSON.parse(user) : user;
 
-  const token = userObject.tokenPair.accessToken;
+  console.log('user != undefined', user != undefined);
+
+  const userId = typeof window !== 'undefined' ? userObject.user._id : '';
+
+  const token =
+    typeof window !== 'undefined' ? userObject.tokenPair.accessToken : '';
 
   const userMutation = useMutation({
     mutationKey: ['update-user'],
@@ -103,6 +112,7 @@ const DetailsPage = () => {
             {enableBox1 && (
               <Button
                 className=' h-5 text-[#02B1AB] bg-transparent border-0'
+                //style={{ height: '1.25rem', color: '#02B1AB' }}
                 onClick={() => {
                   returnInitialValue(0);
                   setEnableBox1(!enableBox1);
@@ -215,4 +225,4 @@ const DetailsPage = () => {
   );
 };
 
-export default DetailsPage;
+export default dynamic(() => Promise.resolve(DetailsPage), { ssr: false });
