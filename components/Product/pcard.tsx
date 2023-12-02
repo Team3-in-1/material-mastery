@@ -19,6 +19,7 @@ import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { formatMoney } from '@/utils/string';
 import { useQueryClient } from '@tanstack/react-query';
 import useCart from '@/helpers/useCart';
+import '../../app/global.css';
 
 export const PCard = ({ data }: PCardProps) => {
   const [value, setValue] = useState(2);

@@ -22,6 +22,7 @@ import { useQuery } from '@tanstack/react-query';
 import CartService from '@/services/cartService';
 import { useEffect, useRef, useState } from 'react';
 import queryClient from '@/helpers/client';
+import dynamic from 'next/dynamic';
 
 interface OnClickInterface {
   [index: string]: Function;
@@ -40,8 +41,8 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
       const cartService = new CartService(userObject);
       return cartService.getCart();
     },
-    // enabled: !!user,
-    // staleTime: Infinity,
+    enabled: !!user,
+    //staleTime: Infinity,
     retry: 5,
   });
 
@@ -141,4 +142,4 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
   );
 };
 
-export default LoggedHeader;
+export default dynamic(() => Promise.resolve(LoggedHeader), { ssr: false });

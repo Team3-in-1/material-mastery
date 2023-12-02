@@ -30,6 +30,7 @@ export default function ProductsPage() {
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,
     gcTime: Infinity,
+    staleTime: Infinity,
   });
 
   const id = searchParams.get('category') || '654272bffe4d153ff2b3078e';
@@ -97,12 +98,13 @@ export default function ProductsPage() {
           <Container fluid py={10} className='bg-white rounded'>
             <ProductCards data={products.data || []} />
             <Flex className='w-full items-center justify-center p-[10px]'>
-              <Pagination
-                total={10}
-                color='cyan'
+              {/* <Pagination
+                total={11}
+                color='gray'
                 withControls={false}
                 className='text-black'
-              />
+                style={{ color: 'black' }}
+              /> */}
             </Flex>
           </Container>
         </Grid.Col>

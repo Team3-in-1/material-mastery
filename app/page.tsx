@@ -20,6 +20,7 @@ import { Product } from '@/utils/response';
 import { ProductCards } from '@/components/Product/productCards';
 import { useRouter } from 'next/navigation';
 import queryClient from '@/helpers/client';
+import dynamic from 'next/dynamic';
 
 const data: Product[] = [];
 for (let index = 0; index < 14; index++) {
@@ -43,14 +44,15 @@ for (let index = 0; index < 14; index++) {
   });
 }
 
-export default function Home() {
+function Home() {
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,
+    staleTime: Infinity,
   });
 
-  const user: any = queryClient.getQueryData(['user']) || '';
-  const cart: any = queryClient.getQueryData(['cart']) || '';
+  const user: any = queryClient.getQueryData(['user']);
+  const cart: any = queryClient.getQueryData(['cart']);
 
   return (
     <Container
@@ -150,9 +152,7 @@ export default function Home() {
           </Container>
         </Grid.Col>
       </Grid>
-      {(categories.isPending ||
-        categories.isRefetching ||
-        (cart == '' && user != '')) && (
+      {(categories.isPending || categories.isRefetching || (cart && !user)) && (
         <LoadingOverlay
           visible={true}
           zIndex={1000}
@@ -162,3 +162,5 @@ export default function Home() {
     </Container>
   );
 }
+
+export default dynamic(() => Promise.resolve(Home), { ssr: false });
