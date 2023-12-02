@@ -8,8 +8,9 @@ import queryClient from "@/helpers/client";
 class CartService {
     currentUser: any;
     
-    constructor(){
-        this.currentUser = JSON.parse(queryClient.getQueryData(['user']) || localStorage.getItem('user') || '{}');
+    constructor(currentUser: any){
+        const userObject = typeof currentUser == 'string' ? JSON.parse(currentUser) : currentUser;
+        this.currentUser = userObject;
     }
     async getCart(): Promise<CartInterface> {
         console.log('getting cart')

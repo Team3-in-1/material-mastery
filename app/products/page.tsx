@@ -21,6 +21,7 @@ import {
   Divider,
 } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -28,11 +29,10 @@ export default function ProductsPage() {
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,
+    gcTime: Infinity,
   });
 
   const id = searchParams.get('category') || '654272bffe4d153ff2b3078e';
-
-  console.log(id);
 
   const products = useQuery({
     queryKey: ['products', id],
@@ -42,16 +42,16 @@ export default function ProductsPage() {
   return (
     <Container fluid>
       <Breadcrumbs my={30}>
-        <Anchor href='/' key={0}>
+        <Link href='/' key={0}>
           Trang chủ
-        </Anchor>
-        <Anchor key={1}>
+        </Link>
+        <Link href={`/products?category=${id}`} key={1}>
           {searchParams.get('category')
             ? categories.data?.find(
                 (category) => category._id == searchParams.get('category')
               )?.category_name
             : categories.data?.[0].category_name}
-        </Anchor>
+        </Link>
       </Breadcrumbs>
       <Grid w='100%'>
         <Grid.Col span={2}>

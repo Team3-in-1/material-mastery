@@ -49,8 +49,8 @@ export default function Home() {
     queryFn: categoryService.getAllCategories,
   });
 
-  const user = queryClient.getQueryData(['user']);
-  const cart = queryClient.getQueryData(['cart']);
+  const user: any = queryClient.getQueryData(['user']) || '';
+  const cart: any = queryClient.getQueryData(['cart']) || '';
 
   return (
     <Container
@@ -152,7 +152,7 @@ export default function Home() {
       </Grid>
       {(categories.isPending ||
         categories.isRefetching ||
-        (!cart && !!user)) && (
+        (cart == '' && user != '')) && (
         <LoadingOverlay
           visible={true}
           zIndex={1000}

@@ -21,10 +21,12 @@ import useLogin from '@/helpers/useLogin';
 import { useQuery } from '@tanstack/react-query';
 import CartService from '@/services/cartService';
 import { useEffect, useRef, useState } from 'react';
+import queryClient from '@/helpers/client';
+import LoggedHeader from './loggedHeader';
 
-interface OnClickInterface {
-  [index: string]: Function;
-}
+// interface OnClickInterface {
+//   [index: string]: Function;
+// }
 
 export default function Header() {
   const appName = 'Material Mastery';
@@ -32,39 +34,45 @@ export default function Header() {
 
   const [user, setUser] = useLogin();
 
-  const cartFromServer = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => {
-      const cartService = new CartService();
-      console.log('oke');
-      return cartService.getCart();
-    },
-    staleTime: Infinity,
-  });
+  // const cartFromServer = useQuery({
+  //   queryKey: ['cart'],
+  //   queryFn: () => {
+  //     const cartService = new CartService();
+  //     return cartService.getCart();
+  //   },
+  //   // enabled: !!user,
+  //   staleTime: Infinity,
+  //   retryDelay: 1000,
+  //   retry: 5,
+  // });
 
-  if (cartFromServer.failureCount == 5) {
-    console.log('Get cart fail');
-    setUser();
-  }
+  // if (cartFromServer.isError && cartFromServer.failureCount == 5 && user) {
+  //   console.log('Get cart fail');
+  //   setUser();
+  // }
 
-  const onClickFunction: OnClickInterface = {
-    details: () => {
-      router.push('/account/details');
-    },
-    orders: () => {
-      router.push('/account/orders');
-    },
-    vouchers: () => {
-      router.push('/account/vouchers');
-    },
-    signOut: () => {
-      setUser();
-      router.replace('/');
-    },
-  };
-  const handleOnClickOnMenu = (type: string) => {
-    return onClickFunction[type]();
-  };
+  // const onClickFunction: OnClickInterface = {
+  //   details: () => {
+  //     router.prefetch('/account/details');
+  //     router.push('/account/details');
+  //   },
+  //   orders: () => {
+  //     router.prefetch('/account/orders');
+  //     router.push('/account/orders');
+  //   },
+  //   vouchers: () => {
+  //     router.prefetch('/account/vouchers');
+  //     router.push('/account/vouchers');
+  //   },
+  //   signOut: () => {
+  //     setUser();
+  //     router.prefetch('/');
+  //     router.replace('/');
+  //   },
+  // };
+  // const handleOnClickOnMenu = (type: string) => {
+  //   return onClickFunction[type]();
+  // };
 
   return (
     <Flex
@@ -78,7 +86,8 @@ export default function Header() {
       className={`z-1000 ${classes.header}`}
       maw='100%'
     >
-      <Anchor href='/' underline='never'>
+      <Link href='/'>
+        {/* //underline='never' */}
         <Group wrap='nowrap'>
           <Image
             component={NextImage}
@@ -98,71 +107,75 @@ export default function Header() {
             {appName}
           </Text>
         </Group>
-      </Anchor>
+      </Link>
       <Search content='' />
 
       {user ? (
-        <Flex gap='1rem' align='center' className='hidden-mobile'>
-          {/* <LanguagePicker /> */}
-          <div className=' relative w-[25px] h-[25px] cursor-pointer'>
-            <IconShoppingCart
-              onClick={() => router.push('/cart')}
-              color='#02B1AB'
-              className={classes.hoverIcon}
-            />
-            {cartFromServer.data?.cart_products.length != 0 && (
-              <Text
-                color='red'
-                fw={700}
-                className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
-              >
-                {cartFromServer.data?.cart_products.length &&
-                cartFromServer.data?.cart_products.length > 99
-                  ? '+99'
-                  : cartFromServer.data?.cart_products.length}
-              </Text>
-            )}
-          </div>
-          <Menu trigger='hover' openDelay={100} closeDelay={400} zIndex={1002}>
-            <Menu.Target>
-              <IconUserCircle color='#02B1AB' className={classes.hoverIcon} />
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                leftSection={
-                  <IconUser style={{ width: rem(14), height: rem(14) }} />
-                }
-                onClick={() => handleOnClickOnMenu('details')}
-              >
-                Thông tin tài khoản
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconChecklist style={{ width: rem(14), height: rem(14) }} />
-                }
-                onClick={() => handleOnClickOnMenu('orders')}
-              >
-                Đơn hàng
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconTicket style={{ width: rem(14), height: rem(14) }} />
-                }
-                onClick={() => handleOnClickOnMenu('vouchers')}
-              >
-                Kho voucher
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconLogout style={{ width: rem(14), height: rem(14) }} />
-                }
-                onClick={() => handleOnClickOnMenu('signOut')}
-              >
-                Đăng xuất
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Flex>
+        // <Flex gap='1rem' align='center' className='hidden-mobile'>
+        //   {/* <LanguagePicker /> */}
+        //   <div className=' relative w-[25px] h-[25px] cursor-pointer'>
+        //     <IconShoppingCart
+        //       onClick={() => {
+        //         router.prefetch('/cart');
+        //         router.push('/cart');
+        //       }}
+        //       color='#02B1AB'
+        //       className={classes.hoverIcon}
+        //     />
+        //     {cartFromServer.data?.cart_products.length != 0 && (
+        //       <Text
+        //         color='red'
+        //         fw={700}
+        //         className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
+        //       >
+        //         {cartFromServer.data?.cart_products.length &&
+        //         cartFromServer.data?.cart_products.length > 99
+        //           ? '+99'
+        //           : cartFromServer.data?.cart_products.length}
+        //       </Text>
+        //     )}
+        //   </div>
+        //   <Menu trigger='hover' openDelay={100} closeDelay={400} zIndex={1002}>
+        //     <Menu.Target>
+        //       <IconUserCircle color='#02B1AB' className={classes.hoverIcon} />
+        //     </Menu.Target>
+        //     <Menu.Dropdown>
+        //       <Menu.Item
+        //         leftSection={
+        //           <IconUser style={{ width: rem(14), height: rem(14) }} />
+        //         }
+        //         onClick={() => handleOnClickOnMenu('details')}
+        //       >
+        //         Thông tin tài khoản
+        //       </Menu.Item>
+        //       <Menu.Item
+        //         leftSection={
+        //           <IconChecklist style={{ width: rem(14), height: rem(14) }} />
+        //         }
+        //         onClick={() => handleOnClickOnMenu('orders')}
+        //       >
+        //         Đơn hàng
+        //       </Menu.Item>
+        //       <Menu.Item
+        //         leftSection={
+        //           <IconTicket style={{ width: rem(14), height: rem(14) }} />
+        //         }
+        //         onClick={() => handleOnClickOnMenu('vouchers')}
+        //       >
+        //         Kho voucher
+        //       </Menu.Item>
+        //       <Menu.Item
+        //         leftSection={
+        //           <IconLogout style={{ width: rem(14), height: rem(14) }} />
+        //         }
+        //         onClick={() => handleOnClickOnMenu('signOut')}
+        //       >
+        //         Đăng xuất
+        //       </Menu.Item>
+        //     </Menu.Dropdown>
+        //   </Menu>
+        // </Flex>
+        <LoggedHeader user={user} setUser={setUser} />
       ) : (
         <Flex gap='1rem' align='center' className='hidden-mobile'>
           {/* <LanguagePicker /> */}

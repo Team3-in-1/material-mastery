@@ -60,6 +60,28 @@ const checkPasswordFormat = (value: string) : any => {
     return null;
 }
 
-export {checkNameFormat, checkPhoneFormat, checkEmailFormat, checkPasswordFormat};
+const checkAddressFormat = (value: string) : any => {
+    // if(value.length > 30)
+    //     return "Password must not exceed 30 characters";
+    // if(value.length < 8)
+    //     return "Password must have at least 8 characters";
+    // if(!/(?=.*[A-Z])/.test(value))
+    //     return "Password must contain uppercase letters";
+    // if(!/(?=.*[!@#$&*])/.test(value))
+    //     return "Password must contain special characters";
+    // if(!/(?=.*[0-9])/.test(value))
+    //     return "Password must contain numeric characters";
+    // if(!/(?=.*[a-z].*[a-z].*[a-z])/.test(value))
+    //     return "Password must contain lowercase letters"
+
+    if(value.length > 200)
+        return "Address must not exceed 200 characters";
+    // if(value.length < 8)
+    //     return "Password must have at least 8 characters";
+    
+    return null;
+}
+
+export {checkNameFormat, checkPhoneFormat, checkEmailFormat, checkPasswordFormat, checkAddressFormat};
 
 

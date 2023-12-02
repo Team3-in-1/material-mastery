@@ -36,7 +36,7 @@ export function SignInForm() {
     },
     onSuccess: () => {
       setUser(localStorage.getItem('user'));
-      router.push('/');
+      router.replace('/');
     },
     onError(error) {
       console.log(error);

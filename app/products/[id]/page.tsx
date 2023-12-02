@@ -25,6 +25,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { productService } from '@/services/productService';
 import { formatMoney } from '@/utils/string';
+import { categoryService } from '@/services/categoryService';
+import queryClient from '@/helpers/client';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const handlersRef = useRef<NumberInputHandlers>(null);
@@ -33,7 +35,21 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     queryKey: ['product'],
     queryFn: () => productService.getProductById(params.id),
   });
+
   const productId = product.data?._id;
+  const category: any = queryClient.getQueryData(['categories']);
+  let categoryId = '65427434680cb0bd8f9d776c';
+  if (category) {
+    category.every((item: any) => {
+      if (
+        item.category_name == product.data?.product_categories[0].category_name
+      ) {
+        categoryId = item._id;
+        return false;
+      }
+      return true;
+    });
+  }
 
   const comments = useQuery({
     queryKey: ['comments'],
@@ -60,17 +76,15 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   return (
     <div className='min-h-max relative h-fit z-1'>
       <Breadcrumbs mt={30} className='ml-[100px] mr-[100px] mb-[5px]'>
-        <Anchor href='/' key={0}>
+        <Link href='/' key={0}>
           Trang chủ
-        </Anchor>
-        <Anchor
-          href={`/products?category=${product.data?.product_categories[0].category_name}`}
-        >
+        </Link>
+        <Link href={`/products?category=${categoryId}`}>
           {product.data?.product_categories[0].category_name}
-        </Anchor>
-        <Anchor href={`/products/${product.data?._id}`}>
+        </Link>
+        <Link href={`/products/${product.data?._id}`}>
           {product.data?.product_name}
-        </Anchor>
+        </Link>
       </Breadcrumbs>
 
       <Flex className=' w-full h-full'>

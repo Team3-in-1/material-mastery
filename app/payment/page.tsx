@@ -70,10 +70,14 @@ const Payment = () => {
 
   // control text input in dialog
   const [phone, setPhone] = useState(userObject.user.phone);
-  const [address, setAddress] = useState(userObject.user.address);
+  const [address, setAddress] = useState(
+    userObject.user.user_attributes.address
+  );
 
   // if user address null
-  const [enableButton, setEnableButton] = useState(!!userObject.user.address);
+  const [enableButton, setEnableButton] = useState(
+    !!userObject.user.user_attributes.address
+  );
 
   // Estimated delivery date is equal to the current date plus 5
   const getDay = () => {
@@ -189,8 +193,8 @@ const Payment = () => {
               <Text>{userObject.user.username}</Text>
               <Text>{userObject.user.phone}</Text>
             </Group>
-            {!!userObject.user.address ? (
-              <Text>{userObject.user.address}</Text>
+            {!!userObject.user.user_attributes.address ? (
+              <Text>{userObject.user.user_attributes.address}</Text>
             ) : (
               <Stack gap={0}>
                 <Text className='text-[red]' size='xs'>
@@ -421,7 +425,7 @@ const Payment = () => {
           close();
           setTimeout(() => {
             setPhone(userObject.user.phone);
-            setAddress(userObject.user.address);
+            setAddress(userObject.user.user_attributes.address);
           }, 500);
         }}
         radius='md'
@@ -461,7 +465,7 @@ const Payment = () => {
               } else {
                 userObject.user.phone = phone;
                 if (enableButton) {
-                  userObject.user.address = address;
+                  userObject.user.user_attributes.address = address;
                 }
                 close();
                 toast.success('Thay đổi thành công.');
