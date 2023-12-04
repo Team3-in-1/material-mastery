@@ -29,38 +29,44 @@ import {
 } from '@/utils/regex';
 import { userService } from '@/services/userService';
 import dynamic from 'next/dynamic';
+import { async } from 'rxjs';
 
 const DetailsPage = () => {
   const router = useRouter();
   const [user, setUser] = useLogin();
 
+  const userObject =
+    typeof user == 'string' && user != undefined ? JSON.parse(user) : user;
+
+  if (!userObject) {
+    router.replace('/');
+  }
+
   const [enableBox1, setEnableBox1] = useState(false);
   const [enableBox2, setEnableBox2] = useState(false);
 
   // store initial value
-  let initialName = typeof window !== 'undefined' ? user?.user.username : '';
-  let initialEmail = typeof window !== 'undefined' ? user?.user.email : '';
-  let initialPhone = typeof window !== 'undefined' ? user?.user.phone : '';
+  let initialName =
+    typeof window !== 'undefined' ? userObject?.user.display_name : '';
+  let initialEmail =
+    typeof window !== 'undefined' ? userObject?.user.email : '';
+  let initialPhone =
+    typeof window !== 'undefined' ? userObject?.user.phone : '';
   let initialAddress =
-    typeof window !== 'undefined' ? user?.user.user_attributes.address : '';
+    typeof window !== 'undefined'
+      ? userObject?.user.user_attributes.address
+      : '';
 
   const [name, setName] = useState(initialName);
-  const [email, setEmail] = useState(initialEmail);
   const [phone, setPhone] = useState(initialPhone);
   const [address, setAddress] = useState(initialAddress);
 
   const returnInitialValue = (type: number) => {
     if (type == 0) {
       setName(initialName);
-      setEmail(initialEmail);
       setPhone(initialPhone);
     } else setAddress(initialAddress);
   };
-
-  const userObject =
-    typeof user == 'string' && user != undefined ? JSON.parse(user) : user;
-
-  console.log('user != undefined', user != undefined);
 
   const userId = typeof window !== 'undefined' ? userObject.user._id : '';
 
@@ -70,27 +76,26 @@ const DetailsPage = () => {
   const userMutation = useMutation({
     mutationKey: ['update-user'],
     mutationFn: () =>
-      userService.updateUser(userId, token, name, email, phone, address),
-    onSuccess: () => {
+      userService.updateUser(userId, token, name, phone, address),
+    onSuccess: (res) => {
       toast.success('Cập nhập thành công');
       initialName = name || '';
-      initialEmail = email || '';
       initialPhone = phone || '';
       initialAddress = address || '';
-      // const newUser = structuredClone(userObject);
-      // newUser.user = userMutation.data;
-      // localStorage.setItem('user', newUser);
-      console.log('userMutation', userMutation);
+      const newUser = structuredClone(userObject);
+      newUser.user = res;
+      console.log('user', user);
+      if (newUser) setUser(newUser);
     },
-    onError: () => {
+    onError: (err) => {
       toast.error('Cập nhập thất bại.');
+      console.log('err: ', err);
     },
     retry: 3,
   });
 
-  const updateClick = () => {
-    const a = userMutation.mutate();
-    console.log('a', a);
+  const updateClick = async () => {
+    const a = await userMutation.mutateAsync();
   };
 
   return (
@@ -132,9 +137,6 @@ const DetailsPage = () => {
                   } else if (checkPhoneFormat(phone)) {
                     returnInitialValue(0);
                     toast.error('Số điện thoại không hợp lệ');
-                  } else if (checkEmailFormat(email)) {
-                    toast.error('Email không hợp lệ');
-                    returnInitialValue(0);
                   } else {
                     updateClick();
                   }
@@ -157,11 +159,8 @@ const DetailsPage = () => {
           <TextInput
             withAsterisk
             label={'Email'}
-            value={email}
-            disabled={!enableBox1}
-            onChange={(event) => {
-              setEmail(event.currentTarget.value);
-            }}
+            value={initialEmail}
+            disabled={true}
           />
           <TextInput
             withAsterisk

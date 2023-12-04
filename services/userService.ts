@@ -52,18 +52,9 @@ const register = async (formData: any) => {
 
 // }
 
-const updateUser = async(user_id: string, token:string, username: string, email: string, phone: string, address: string): Promise<any> => {
-    console.log('Update user infor')
-    console.log('userID', user_id)
-    console.log('token', token)
-    console.log('username', username)
-    console.log('email', email)
-    console.log('phone', phone)
-    console.log('address', address)
-    
+const updateUser = async(user_id: string, token:string, name: string, phone: string, address: string): Promise<any> => {
     return await axios.patch(`${constant.BASE_URL}/user/${user_id}`, {
-        'username': username,
-        'email': email,
+        'display_name': name,
         'phone': phone,
         "user_attributes": {
             "address": address

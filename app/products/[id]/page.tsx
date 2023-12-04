@@ -27,18 +27,26 @@ import { productService } from '@/services/productService';
 import { formatMoney } from '@/utils/string';
 import { categoryService } from '@/services/categoryService';
 import queryClient from '@/helpers/client';
+import useCart from '@/helpers/useCart';
+import toast, { Toaster } from 'react-hot-toast';
+import useRQGlobalState from '@/helpers/useRQGlobalState';
+import { useRouter } from 'next/navigation';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
-  const handlersRef = useRef<NumberInputHandlers>(null);
-
+  const [quantity, setQuantity] = useState<string | number>(1);
+  const router = useRouter();
+  router.prefetch('/payment');
   const product = useQuery({
     queryKey: ['product'],
     queryFn: () => productService.getProductById(params.id),
+    refetchOnWindowFocus: false,
   });
 
   const productId = product.data?._id;
   const category: any = queryClient.getQueryData(['categories']);
   let categoryId = '65427434680cb0bd8f9d776c';
+
+  // get category name by category id
   if (category) {
     category.every((item: any) => {
       if (
@@ -55,7 +63,14 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     queryKey: ['comments'],
     queryFn: () => CommentService.getAllComments(productId || ''),
     enabled: !!productId,
+    refetchOnWindowFocus: false,
   });
+
+  const [cart, setCart] = useCart();
+  const [productChosen, setProductChosen] = useRQGlobalState(
+    'productsChosen',
+    []
+  );
 
   const people = comments.data;
   const number = '(' + (people?.length || 0) + ' đánh giá)';
@@ -130,26 +145,37 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                 <Group gap={5}>
                   <ActionIcon
                     onClick={() => {
-                      handlersRef.current?.decrement();
+                      const temp =
+                        typeof quantity == 'string'
+                          ? parseInt(quantity)
+                          : quantity;
+
+                      if (temp > 1) setQuantity(temp - 1);
                     }}
                     variant='default'
+                    disabled={quantity == 1}
                   >
                     <IconMinus color='#111111' />
                   </ActionIcon>
                   <NumberInput
-                    defaultValue={1}
+                    value={quantity}
                     min={1}
                     max={1000}
                     hideControls
-                    handlersRef={handlersRef}
                     step={1}
                     allowNegative={false}
                     clampBehavior='strict'
+                    onChange={setQuantity}
                   />
                   <ActionIcon
                     variant='default'
                     onClick={() => {
-                      handlersRef.current?.increment();
+                      const temp =
+                        typeof quantity == 'string'
+                          ? parseInt(quantity)
+                          : quantity;
+
+                      setQuantity(temp + 1);
                     }}
                   >
                     <IconPlus color='#111111' />
@@ -158,11 +184,85 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
               </Stack>
             </Flex>
             <Flex className=' flex-col lg:flex-row w-full gap-3 mt-7'>
-              <Button className='w-[110px] lg:w-[300px] bg-[#02B1AB]'>
+              <Button
+                className='w-[110px] lg:w-[300px] bg-[#02B1AB]'
+                disabled={productChosen == null}
+                onClick={() => {
+                  setProductChosen([
+                    {
+                      product_name: product.data?.product_name,
+                      product_thumb: product.data?.product_thumb,
+                      product_description: null,
+                      product_price: product.data?.product_price,
+                      product_quantity: quantity,
+                      product_brand: null,
+                      product_unit: null,
+                      product_ratingAverage: null,
+                      product_categories: null,
+                      productId: product.data?._id,
+                    },
+                  ]);
+                  router.push('/payment');
+                }}
+              >
                 Mua ngay
               </Button>
               <Button
-                onClick={() => {}}
+                onClick={() => {
+                  if (cart) {
+                    const newCart = structuredClone(cart);
+                    if (newCart.cart_products == 0) {
+                      newCart.cart_products.push({
+                        product_name: product.data?.product_name,
+                        product_thumb: product.data?.product_thumb,
+                        product_description: null,
+                        product_price: product.data?.product_price,
+                        product_quantity: quantity,
+                        product_brand: null,
+                        product_unit: null,
+                        product_ratingAverage: null,
+                        product_categories: null,
+                        productId: product.data?._id,
+                      });
+                    } else {
+                      let temp = 0;
+                      newCart.cart_products.every(
+                        (value: any, index: any, array: any) => {
+                          if (
+                            value.productId == product.data?._id &&
+                            temp == 0
+                          ) {
+                            value.product_quantity++;
+                            temp = 1;
+                            return false;
+                          }
+                          return true;
+                        }
+                      );
+                      if (temp == 0) {
+                        newCart.cart_products.push({
+                          product_name: product.data?.product_name,
+                          product_thumb: product.data?.product_thumb,
+                          product_description: null,
+                          product_price: product.data?.product_price,
+                          product_quantity: quantity,
+                          product_brand: null,
+                          product_unit: null,
+                          product_ratingAverage: null,
+                          product_categories: null,
+                          productId: product.data?._id,
+                        });
+                      }
+                    }
+
+                    setCart(newCart);
+                    toast.success(
+                      `Thêm ${quantity} sản phẩm vào giỏ hàng thành công.`
+                    );
+                  } else {
+                    toast.error('Thêm sản phẩm thất bại.');
+                  }
+                }}
                 className='w-[180px] lg:w-[300px] bg-white text-[#02B1AB] border-[#02B1AB]'
               >
                 Thêm vào giỏ hàng
@@ -267,6 +367,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           )}
         </Stack>
       </Flex>
+      <Toaster position='bottom-center' />
       {(product.isRefetching ||
         comments.isRefetching ||
         product.isPending ||

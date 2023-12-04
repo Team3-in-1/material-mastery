@@ -192,7 +192,7 @@ const Payment = () => {
           </Group>
           <Stack>
             <Group>
-              <Text>{userObject.user.username}</Text>
+              <Text>{userObject.user.display_name}</Text>
               <Text>{userObject.user.phone}</Text>
             </Group>
             {!!userObject.user.user_attributes.address ? (

@@ -27,10 +27,7 @@ const Cart = () => {
   const [allChecked, setAllChecked] = useState(false);
   const productsChosen = useRef<CartProduct[]>([]);
   const router = useRouter();
-  const [products, setProducts] = useRQGlobalState(
-    'productsChosen',
-    productsChosen
-  );
+  const [products, setProducts] = useRQGlobalState('productsChosen', []);
   const [numberChecked, setNumberChecked] = useState(-1);
 
   console.log('numberChecked', numberChecked);
@@ -150,7 +147,8 @@ const Cart = () => {
               className='bg-[#02B1AB]'
               onClick={() => {
                 if (productsChosen.current.length != 0) {
-                  setProducts(productsChosen.current);
+                  const temp: any = productsChosen.current;
+                  setProducts(temp);
                   router.push('/payment');
                 } else {
                   toast.error('Vui lòng chọn sản phẩm để thanh toán.');
