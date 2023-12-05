@@ -22,7 +22,7 @@ import NImage from 'next/image';
 import Link from 'next/link';
 import CommentService from '@/services/commentService';
 import { useEffect, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { productService } from '@/services/productService';
 import { formatMoney } from '@/utils/string';
 import { categoryService } from '@/services/categoryService';
@@ -31,6 +31,7 @@ import useCart from '@/helpers/useCart';
 import toast, { Toaster } from 'react-hot-toast';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { useRouter } from 'next/navigation';
+import CartService from '@/services/cartService';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const [quantity, setQuantity] = useState<string | number>(1);
@@ -42,7 +43,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     refetchOnWindowFocus: false,
   });
 
-  const productId = product.data?._id;
+  const productId = product.data?._id || '';
   const category: any = queryClient.getQueryData(['categories']);
   let categoryId = '65427434680cb0bd8f9d776c';
 
@@ -87,6 +88,23 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   const handleOnclick = (id: number) => {
     setIschoosing(id);
   };
+
+  const addMutation = useMutation({
+    mutationKey: ['addProductCart'],
+    mutationFn: ({
+      productId,
+      quantity,
+    }: {
+      productId: string;
+      quantity: number;
+    }) => {
+      const cartService = new CartService(queryClient.getQueryData(['user']));
+      return cartService.addProduct(productId, quantity);
+    },
+    onSuccess: (res) => {
+      console.log('res', res);
+    },
+  });
 
   return (
     <div className='min-h-max relative h-fit z-1'>
@@ -254,6 +272,11 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                         });
                       }
                     }
+                    const temp: number =
+                      typeof quantity == 'string'
+                        ? parseInt(quantity)
+                        : quantity;
+                    addMutation.mutate({ productId, quantity: temp });
 
                     setCart(newCart);
                     toast.success(

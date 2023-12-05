@@ -17,14 +17,26 @@ import Link from 'next/link';
 import { Product } from '@/utils/response';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { formatMoney } from '@/utils/string';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import useCart from '@/helpers/useCart';
 import '../../app/global.css';
+import CartService from '@/services/cartService';
+import queryClient from '@/helpers/client';
+import toast, { Toaster } from 'react-hot-toast';
 
 export const PCard = ({ data }: PCardProps) => {
   const [value, setValue] = useState(2);
-  const queryClient = useQueryClient();
   const [cart, setCart] = useCart();
+  const addMutation = useMutation({
+    mutationKey: ['addProductCart'],
+    mutationFn: (productId: string) => {
+      const cartServices = new CartService(queryClient.getQueryData(['user']));
+      console.log('productId', productId);
+      return cartServices.addProduct(productId, 1);
+    },
+    onSuccess: () => {},
+    onError: () => {},
+  });
 
   const productQuantity =
     data.product_quantity < 1000
@@ -136,8 +148,9 @@ export const PCard = ({ data }: PCardProps) => {
                     });
                   }
                 }
-
+                addMutation.mutate(data._id);
                 setCart(newCart);
+                toast.success('Thêm sản phẩm thành công');
               } else {
               }
             }}

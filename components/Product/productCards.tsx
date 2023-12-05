@@ -2,6 +2,7 @@
 import { Grid } from '@mantine/core';
 import { PCard } from './pcard';
 import { Product } from '@/utils/response';
+import { Toaster } from 'react-hot-toast';
 
 export const ProductCards = ({ data }: { data: Product[] }) => {
   return (
@@ -11,6 +12,7 @@ export const ProductCards = ({ data }: { data: Product[] }) => {
           <PCard data={item} />
         </Grid.Col>
       ))}
+      <Toaster position='bottom-center' />
     </Grid>
   );
 };

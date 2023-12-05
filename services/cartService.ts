@@ -43,8 +43,8 @@ class CartService {
         console.log('MM:::Delete product');
         return await axios.delete(`${constant.BASE_URL}/cart`,{ headers:{
             'x-api-key': constant.API_KEY,
-            'x-client-id': this.currentUser.user._idid,
-            'authorization': this.currentUser.tokenPair.accessTokenoken,
+            'x-client-id': this.currentUser.user._id,
+            'authorization': this.currentUser.tokenPair.accessToken,
         },
         data: {
             'productId': productId

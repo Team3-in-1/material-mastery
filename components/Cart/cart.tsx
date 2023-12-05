@@ -52,6 +52,7 @@ const Cart = () => {
   const deleteMutation = useMutation({
     mutationKey: ['deleteProductCart'],
     mutationFn: (productId: string) => {
+      console.log('delete id', productId);
       const cartService = new CartService(queryClient.getQueryData(['user']));
       return cartService.deleteProduct(productId);
     },
@@ -103,17 +104,22 @@ const Cart = () => {
     }
     deleteMutation.mutate(id);
     setCart(data);
+    toast.success('Xóa sản phẩm thành công.');
   };
 
   const deleteAll = () => {
     const data = structuredClone(cart);
 
-    for (let i = 0; i < data.cart_products.length; i++) {
-      deleteMutation.mutate(data.cart_products[i].productId);
-    }
+    if (data.cart_products.length !== 0) {
+      for (let i = 0; i < data.cart_products.length; i++) {
+        deleteMutation.mutate(data.cart_products[i].productId);
+      }
 
-    setCart();
-    setTotalCost(0);
+      setCart();
+      setTotalCost(0);
+      toast.success('Xóa sản phẩm thành công.');
+    }
+    toast.success('Bạn không có sản phẩm dể xóa.');
   };
 
   const updateQuantity = (
