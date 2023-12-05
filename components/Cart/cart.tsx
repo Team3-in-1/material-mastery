@@ -20,6 +20,8 @@ import { useRouter } from 'next/navigation';
 import { data } from 'cypress/types/jquery';
 import { Toaster, toast } from 'react-hot-toast';
 import queryClient from '@/helpers/client';
+import { useMutation } from '@tanstack/react-query';
+import CartService from '@/services/cartService';
 
 const Cart = () => {
   const [cart, setCart] = useCart();
@@ -30,7 +32,6 @@ const Cart = () => {
   const [products, setProducts] = useRQGlobalState('productsChosen', []);
   const [numberChecked, setNumberChecked] = useState(-1);
 
-  console.log('numberChecked', numberChecked);
   useEffect(() => {
     if (cart) {
       if (
@@ -48,7 +49,50 @@ const Cart = () => {
     else setTotalCost((prev) => prev + cost);
   };
 
-  const deleteOneProduct = (id: string) => {
+  const deleteMutation = useMutation({
+    mutationKey: ['deleteProductCart'],
+    mutationFn: (productId: string) => {
+      const cartService = new CartService(queryClient.getQueryData(['user']));
+      return cartService.deleteProduct(productId);
+    },
+    onSuccess: (res) => {
+      console.log('delete success: ', res);
+    },
+    onError: (err) => {
+      console.log('delete fail: ', err);
+    },
+  });
+
+  const updateQuantityMutation = useMutation({
+    mutationKey: ['updateQuantityCart'],
+    mutationFn: ({
+      productId,
+      quantity,
+      oldQuantity,
+    }: {
+      productId: string;
+      quantity: string | number;
+      oldQuantity: string | number;
+    }) => {
+      const cartService = new CartService(queryClient.getQueryData(['user']));
+      console.log('productId', productId);
+      console.log('quantity', quantity);
+      console.log('oldQuantity', oldQuantity);
+      return cartService.updateQuantityProduct(
+        productId,
+        quantity,
+        oldQuantity
+      );
+    },
+    onSuccess: (res) => {
+      // console.log('update success: ', res);
+    },
+    onError: (err) => {
+      // console.log('update fail: ', err);
+    },
+  });
+
+  const deleteOne = (id: string) => {
     const data = structuredClone(cart);
 
     for (let i = 0; i < data.cart_products.length; i++) {
@@ -57,8 +101,36 @@ const Cart = () => {
         break;
       }
     }
-
+    deleteMutation.mutate(id);
     setCart(data);
+  };
+
+  const deleteAll = () => {
+    const data = structuredClone(cart);
+
+    for (let i = 0; i < data.cart_products.length; i++) {
+      deleteMutation.mutate(data.cart_products[i].productId);
+    }
+
+    setCart();
+    setTotalCost(0);
+  };
+
+  const updateQuantity = (
+    productId: string,
+    quantity: string | number,
+    oldQuantity: string | number
+  ) => {
+    const data = structuredClone(cart);
+
+    for (let i = 0; i < data.cart_products.length; i++) {
+      if (data.cart_products[i].productId == productId) {
+        data.cart_products[i].product_quantity = quantity;
+        break;
+      }
+    }
+    setCart(data);
+    updateQuantityMutation.mutate({ productId, quantity, oldQuantity });
   };
 
   return (
@@ -103,10 +175,7 @@ const Cart = () => {
               <ActionIcon
                 variant='filled'
                 aria-label='Delete'
-                onClick={() => {
-                  setCart();
-                  setTotalCost(0);
-                }}
+                onClick={deleteAll}
               >
                 <IconTrash color='#000' stroke={1.5} />
               </ActionIcon>
@@ -121,9 +190,10 @@ const Cart = () => {
                   setTotalCost={addCost}
                   allChecked={allChecked}
                   setAllChecked={setAllChecked}
-                  deleteItem={deleteOneProduct}
+                  deleteItem={deleteOne}
                   productChosen={productsChosen}
                   setNumberChecked={setNumberChecked}
+                  updateQuantity={updateQuantity}
                 />
               ))}
           </div>

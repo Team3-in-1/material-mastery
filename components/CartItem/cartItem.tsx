@@ -16,6 +16,7 @@ import { formatMoney } from '@/utils/string';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { string } from 'zod';
 import { is } from 'cypress/types/bluebird';
+import useCart from '@/helpers/useCart';
 
 const CartItem = ({
   data,
@@ -25,6 +26,7 @@ const CartItem = ({
   deleteItem,
   productChosen,
   setNumberChecked,
+  updateQuantity,
 }: {
   data: CartProduct;
   setTotalCost: Function;
@@ -33,6 +35,7 @@ const CartItem = ({
   deleteItem: Function;
   productChosen: any;
   setNumberChecked: Function;
+  updateQuantity: Function;
 }) => {
   const [quantity, setQuantity] = useState<string | number>(
     data.product_quantity
@@ -139,6 +142,13 @@ const CartItem = ({
                 value < quantity
                   ? setTotalCost(-data.product_price * add(quantity, -value))
                   : setTotalCost(data.product_price * add(-quantity, value));
+              if (typeof value == 'string') {
+                if (value != '') {
+                  updateQuantity(data.productId, parseFloat(value), quantity);
+                }
+              } else {
+                updateQuantity(data.productId, value, quantity);
+              }
               setQuantity(value);
             }}
           />
