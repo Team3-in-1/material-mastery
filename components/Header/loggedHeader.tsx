@@ -88,12 +88,12 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
         />
         {cartFromServer.data?.cart_products.length != 0 && (
           <Text
-            color='red'
+            c='red'
             fw={700}
             className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
           >
             {cartFromServer.data?.cart_products.length &&
-            cartFromServer.data?.cart_products.length > 99
+              cartFromServer.data?.cart_products.length > 99
               ? '+99'
               : cartFromServer.data?.cart_products.length}
           </Text>
