@@ -30,7 +30,7 @@ export default function RootLayout({
         <link rel='shortcut icon' href='/display-icon.svg' />
       </head>
 
-      <body className={inter.className} style={{ backgroundColor: '#f1f2f5' }}>
+      <body className={`${inter.className} h-full`} style={{ backgroundColor: '#f1f2f5' }}>
         <MantineProvider theme={theme} defaultColorScheme='light'>
           <TanStackProvider>
             <Header />

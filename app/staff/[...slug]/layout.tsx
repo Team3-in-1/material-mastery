@@ -11,7 +11,7 @@ export default function StaffLayout({
 }) {
 
     return (
-        <Group w='100%' mih='100vh' pos='fixed' className="z-[2]" bg='white' pt={72}>
+        <Group w='100%' h='100%' pos='fixed' className="z-[2]" bg='white' pt={72} gap='0'>
             <SideBar currentSlug={params.slug} mainSlug='staff' />
             {children}
         </Group>

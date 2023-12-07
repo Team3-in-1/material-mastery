@@ -89,7 +89,7 @@ export default function SideBar({ currentSlug, mainSlug }: { currentSlug: string
     ));
 
     return (
-        <Stack h='100vh' py='2rem' px='1rem' bg='white' gap='0' className='shadow-[0px_0px_4px_0px_rgba(0,0,0,0.2)]'>
+        <Stack py='2rem' px='1rem' bg='white' gap='0' className='shadow-[0px_0px_4px_0px_rgba(0,0,0,0.2)] z-[1] h-[100%]'>
             {items}
         </Stack>
     );
