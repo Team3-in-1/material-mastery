@@ -12,7 +12,7 @@ export default function StaffLayout({
 
     return (
         <Group w='100%' h='100%' pos='fixed' className="z-[2]" bg='white' pt={72} gap='0' wrap='nowrap'>
-            <SideBar />
+            <SideBar from='staff' />
             {children}
         </Group>
     )

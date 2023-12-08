@@ -4,7 +4,45 @@ import { Stack, NavLink, Group } from '@mantine/core'
 import { useRouter, usePathname } from 'next/navigation'
 import { IconLayoutDashboard, IconBuildingWarehouse, IconChecklist } from '@tabler/icons-react'
 
-export const staffData = [
+const staffData = [
+    {
+        slug: 'dashboard',
+        icon: IconLayoutDashboard,
+        label: 'Bảng điều khiển',
+        child: [
+            {
+                slug: 'revenue',
+                label: 'Doanh thu'
+            },
+            {
+                slug: 'in-outbound',
+                label: 'Nhập/Xuất kho'
+            },
+        ]
+    },
+    {
+        slug: 'warehouse',
+        icon: IconBuildingWarehouse,
+        label: 'Kho',
+        child: []
+    },
+    {
+        slug: 'order',
+        icon: IconChecklist,
+        label: 'Đơn hàng',
+        child: [
+            {
+                slug: 'online',
+                label: 'Trực tuyến'
+            },
+            {
+                slug: 'offline',
+                label: 'Tại cửa hàng'
+            },
+        ]
+    },
+];
+const adminData = [
     {
         slug: 'dashboard',
         icon: IconLayoutDashboard,
@@ -44,7 +82,7 @@ export const staffData = [
 ];
 
 
-export default function SideBar() {
+export default function SideBar({ from }: { from: string }) {
     const router = useRouter()
     let currentUrl = usePathname()
     const [active, setActive] = useState(
@@ -60,7 +98,9 @@ export default function SideBar() {
         router.push(`/${active[0]}/${targetSlug[0]}` + href)
     };
 
-    const items = staffData.map((item) => (
+    const data = (from === 'staff') ? staffData : adminData
+
+    const items = data.map((item) => (
         <NavLink
             key={item.label}
             active={item.slug === active[1]}
