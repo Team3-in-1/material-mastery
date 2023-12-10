@@ -60,10 +60,6 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
       router.prefetch('/account/orders');
       router.push('/account/orders');
     },
-    vouchers: () => {
-      router.prefetch('/account/vouchers');
-      router.push('/account/vouchers');
-    },
     signOut: () => {
       setUser();
       router.prefetch('/');
@@ -93,7 +89,7 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
             className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
           >
             {cartFromServer.data?.cart_products.length &&
-              cartFromServer.data?.cart_products.length > 99
+            cartFromServer.data?.cart_products.length > 99
               ? '+99'
               : cartFromServer.data?.cart_products.length}
           </Text>
@@ -119,14 +115,6 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
             onClick={() => handleOnClickOnMenu('orders')}
           >
             Đơn hàng
-          </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconTicket style={{ width: rem(14), height: rem(14) }} />
-            }
-            onClick={() => handleOnClickOnMenu('vouchers')}
-          >
-            Kho voucher
           </Menu.Item>
           <Menu.Item
             leftSection={

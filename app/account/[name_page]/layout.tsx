@@ -7,7 +7,6 @@ interface IdPageInterface {
 const ID_PAGE: IdPageInterface = {
   details: 0,
   orders: 1,
-  vouchers: 2,
 };
 
 class Adapter {

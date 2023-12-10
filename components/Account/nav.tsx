@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { IconUser, IconChecklist, IconTicket } from '@tabler/icons-react';
+import { IconUser, IconChecklist } from '@tabler/icons-react';
 import { Box, NavLink } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 
@@ -20,7 +20,6 @@ const AccountNav = ({ idPage }: { idPage: number }) => {
       icon: IconChecklist,
       label: 'Đơn hàng',
     },
-    { icon: IconTicket, label: 'Kho vouvher' },
   ];
   const handleRouter: HandleRouterInterface = {
     0: () => {
@@ -28,9 +27,6 @@ const AccountNav = ({ idPage }: { idPage: number }) => {
     },
     1: () => {
       router.push('/account/orders');
-    },
-    2: () => {
-      router.push('/account/vouchers');
     },
   };
   const handleOnclick = (index: number) => {
