@@ -34,6 +34,7 @@ export default function Header() {
   const router = useRouter();
 
   const { user, setUser } = useContext(UserContext);
+  if (!user) return <></>;
 
   // const cartFromServer = useQuery({
   //   queryKey: ['cart'],
@@ -87,7 +88,13 @@ export default function Header() {
       className={`z-1000 ${classes.header}`}
       maw='100%'
     >
-      <Link href='/'>
+      <Link
+        href={
+          user.user && user?.user.roles[0] != 'manager'
+            ? '/'
+            : '/staff/dashboard/revenue'
+        }
+      >
         {/* //underline='never' */}
         <Group wrap='nowrap'>
           <Image
@@ -109,7 +116,7 @@ export default function Header() {
           </Text>
         </Group>
       </Link>
-      <Search content='' />
+      {user.user && user?.user.roles[0] != 'manager' && <Search content='' />}
 
       {user?.user ? (
         // <Flex gap='1rem' align='center' className='hidden-mobile'>
