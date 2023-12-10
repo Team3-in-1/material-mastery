@@ -39,6 +39,13 @@ const Providers = ({ children }: { children: ReactNode }) => {
       console.log('pathName', pathname.split('/'));
       redirect('/staff');
     }
+    if (
+      user?.user &&
+      user?.user.roles[0] != 'manager' &&
+      pathname.split('/')[1] == 'staff'
+    ) {
+      redirect('/');
+    }
     console.log('provider', user);
   }, [pathname, searchParams, user, isUserSet]);
 
