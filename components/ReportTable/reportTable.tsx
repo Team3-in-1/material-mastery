@@ -1,5 +1,5 @@
 'use client'
-import { Button, Flex, Pagination, Table, Text } from '@mantine/core'
+import { Button, Flex, Group, Pagination, Table, Text } from '@mantine/core'
 import { useState } from 'react';
 
 function chunk<T>(array: T[], size: number): T[][] {
@@ -19,9 +19,13 @@ const mockData = chunk(
 );
 
 type Props = {
+    title?: string,
     data?: Object[]
 }
-export default function ReportTable({ data }: Props) {
+export default function ReportTable({
+    title = 'Bảng báo cáo bán hàng theo ...',
+    data
+}: Props) {
     const [activePage, setPage] = useState(1);
     const items = mockData[activePage - 1].map((item) => (
         <Table.Tr>
@@ -33,9 +37,12 @@ export default function ReportTable({ data }: Props) {
 
     ));
     return (
-        <Flex direction='column' align='end' >
-            <Button>Xuất file</Button>
-            <div className='border-[0.5px] border-solid rounded-lg w-full py-[12px] px-[16px]' >
+        <Flex direction='column' gap='26px'>
+            <Group justify='space-between'>
+                <Text c='gray.9' fw='700' tt='uppercase' p='0.5rem' bg='turquoise.1'>{title}</Text>
+                <Button>Xuất file</Button>
+            </Group>
+            <div className='border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                 <Table >
                     <Table.Thead>
                         <Table.Tr>
@@ -50,7 +57,7 @@ export default function ReportTable({ data }: Props) {
                     </Table.Tbody>
                 </Table>
             </div>
-            <Pagination total={mockData.length} value={activePage} onChange={setPage} mt="sm" />
+            <Pagination className='self-center' total={mockData.length} value={activePage} onChange={setPage} mt="sm" />
         </Flex>
     )
 }

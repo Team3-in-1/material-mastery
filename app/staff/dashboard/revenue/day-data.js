@@ -21,3 +21,4 @@ export const statsData = [
         desc: 'Compare with previous day'
     }
 ]
+
