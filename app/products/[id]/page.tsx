@@ -390,7 +390,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           )}
         </Stack>
       </Flex>
-      <Toaster position='bottom-center' />
       {(product.isRefetching ||
         comments.isRefetching ||
         product.isPending ||

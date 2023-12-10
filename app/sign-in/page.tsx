@@ -14,15 +14,8 @@ import {
 import displayImg from '@/public/pic/display-img.png';
 import { SignInForm } from './signInForm';
 import { IconChevronLeft } from '@tabler/icons-react';
-import useLogin from '@/helpers/useLogin';
-import { useRouter } from 'next/navigation';
 
 export default function page() {
-  const [user, setUser] = useLogin();
-  const router = useRouter();
-  if (user) {
-    router.push('/');
-  }
   return (
     <Flex
       pt='7rem'

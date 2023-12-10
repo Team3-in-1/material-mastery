@@ -20,9 +20,10 @@ import { useRouter } from 'next/navigation';
 import useLogin from '@/helpers/useLogin';
 import { useQuery } from '@tanstack/react-query';
 import CartService from '@/services/cartService';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import queryClient from '@/helpers/client';
 import LoggedHeader from './loggedHeader';
+import UserContext from '@/contexts/UserContext';
 
 // interface OnClickInterface {
 //   [index: string]: Function;
@@ -32,7 +33,7 @@ export default function Header() {
   const appName = 'Material Mastery';
   const router = useRouter();
 
-  const [user, setUser] = useLogin();
+  const { user, setUser } = useContext(UserContext);
 
   // const cartFromServer = useQuery({
   //   queryKey: ['cart'],
@@ -110,7 +111,7 @@ export default function Header() {
       </Link>
       <Search content='' />
 
-      {user ? (
+      {user?.user ? (
         // <Flex gap='1rem' align='center' className='hidden-mobile'>
         //   {/* <LanguagePicker /> */}
         //   <div className=' relative w-[25px] h-[25px] cursor-pointer'>

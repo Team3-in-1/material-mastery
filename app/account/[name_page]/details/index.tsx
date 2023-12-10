@@ -16,7 +16,7 @@ import logo from '@/public/icon.svg';
 import queryClient from '@/helpers/client';
 import { useRouter } from 'next/navigation';
 import { IconMapPinFilled } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { event } from 'cypress/types/jquery';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import useLogin from '@/helpers/useLogin';
@@ -30,16 +30,13 @@ import {
 import { userService } from '@/services/userService';
 import dynamic from 'next/dynamic';
 import { async } from 'rxjs';
+import UserContext from '@/contexts/UserContext';
 
 const DetailsPage = () => {
-  const router = useRouter();
-  const [user, setUser] = useLogin();
+  const { user, setUser } = useContext(UserContext);
 
-  const userObject =
-    typeof user == 'string' && user != undefined ? JSON.parse(user) : user;
-
-  if (!userObject) {
-    router.replace('/');
+  if (!user.user) {
+    return <></>;
   }
 
   const [enableBox1, setEnableBox1] = useState(false);
@@ -47,15 +44,11 @@ const DetailsPage = () => {
 
   // store initial value
   let initialName =
-    typeof window !== 'undefined' ? userObject?.user.display_name : '';
-  let initialEmail =
-    typeof window !== 'undefined' ? userObject?.user.email : '';
-  let initialPhone =
-    typeof window !== 'undefined' ? userObject?.user.phone : '';
+    typeof window !== 'undefined' ? user?.user.display_name : '';
+  let initialEmail = typeof window !== 'undefined' ? user?.user.email : '';
+  let initialPhone = typeof window !== 'undefined' ? user?.user.phone : '';
   let initialAddress =
-    typeof window !== 'undefined'
-      ? userObject?.user.user_attributes.address
-      : '';
+    typeof window !== 'undefined' ? user?.user.user_attributes.address : '';
 
   const [name, setName] = useState(initialName);
   const [phone, setPhone] = useState(initialPhone);
@@ -68,10 +61,9 @@ const DetailsPage = () => {
     } else setAddress(initialAddress);
   };
 
-  const userId = typeof window !== 'undefined' ? userObject.user._id : '';
+  const userId = typeof window !== 'undefined' ? user.user._id : '';
 
-  const token =
-    typeof window !== 'undefined' ? userObject.tokenPair.accessToken : '';
+  const token = typeof window !== 'undefined' ? user.tokenPair.accessToken : '';
 
   const userMutation = useMutation({
     mutationKey: ['update-user'],
@@ -82,7 +74,7 @@ const DetailsPage = () => {
       initialName = name || '';
       initialPhone = phone || '';
       initialAddress = address || '';
-      const newUser = structuredClone(userObject);
+      const newUser = structuredClone(user);
       newUser.user = res;
       console.log('user', user);
       if (newUser) setUser(newUser);

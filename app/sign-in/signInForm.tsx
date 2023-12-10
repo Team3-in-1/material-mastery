@@ -15,10 +15,13 @@ import { userService } from '@/services/userService';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import useLogin from '@/helpers/useLogin';
+import { useContext } from 'react';
+import UserContext from '@/contexts/UserContext';
 
 export function SignInForm() {
   const router = useRouter();
-  const [user, setUser] = useLogin();
+  // const [user, setUser] = useLogin();
+  const { user, setUser } = useContext(UserContext);
   const form = useForm({
     initialValues: {
       userInfo: '',
@@ -31,20 +34,20 @@ export function SignInForm() {
   });
 
   const loginMutation = useMutation({
-    mutationFn: async (formdata: FormData) => {
-      await userService.login(formdata);
+    mutationKey: ['loginMutation'],
+    mutationFn: (formdata: FormData) => userService.login(formdata),
+
+    onSuccess: (res) => {
+      setUser(res);
     },
-    onSuccess: () => {
-      setUser(localStorage.getItem('user'));
-      router.replace('/');
-    },
+
     onError(error) {
       console.log(error);
     },
   });
 
-  const handleSubmit = async (formData: any) => {
-    await loginMutation.mutateAsync(formData);
+  const handleSubmit = (formData: any) => {
+    loginMutation.mutate(formData);
   };
 
   return (

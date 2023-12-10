@@ -21,9 +21,11 @@ import { useMutation } from '@tanstack/react-query';
 import useLogin from '@/helpers/useLogin';
 import { useRouter } from 'next/navigation';
 import { IconInfoCircle } from '@tabler/icons-react';
+import { useContext } from 'react';
+import UserContext from '@/contexts/UserContext';
 
 export function SignUpForm() {
-  const [user, setUser] = useLogin();
+  const { user, setUser } = useContext(UserContext);
   const router = useRouter();
   const form = useForm({
     // validateInputOnChange: true,
@@ -47,9 +49,8 @@ export function SignUpForm() {
     mutationFn: async (formdata: FormData) => {
       await userService.register(formdata);
     },
-    onSuccess: () => {
-      setUser(localStorage.getItem('user'));
-      router.push('/');
+    onSuccess: (res) => {
+      setUser(res);
     },
     onError(error) {
       console.log(error);

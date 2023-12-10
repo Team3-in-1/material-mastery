@@ -13,6 +13,7 @@ import Footer from '@/components/Footer/footer';
 import BottomNavBar from '@/components/Mobile/BottomNavBar/bottomNavBar';
 import { Suspense } from 'react';
 import Loading from './loading';
+import Providers from './providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -31,15 +32,20 @@ export default function RootLayout({
         <link rel='shortcut icon' href='/display-icon.svg' />
       </head>
 
-      <body className={`${inter.className} h-full`} style={{ backgroundColor: '#f1f2f5' }}>
-        <MantineProvider theme={theme} defaultColorScheme='light'>
-          <TanStackProvider>
-            <Header />
-            <Suspense fallback={<Loading />}>{children}</Suspense>
-            <Footer />
-            <BottomNavBar />
-          </TanStackProvider>
-        </MantineProvider>
+      <body
+        className={`${inter.className} h-full`}
+        style={{ backgroundColor: '#f1f2f5' }}
+      >
+        <Providers>
+          <MantineProvider theme={theme} defaultColorScheme='light'>
+            <TanStackProvider>
+              <Header />
+              <Suspense fallback={<Loading />}>{children}</Suspense>
+              <Footer />
+              <BottomNavBar />
+            </TanStackProvider>
+          </MantineProvider>
+        </Providers>
       </body>
     </html>
   );

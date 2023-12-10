@@ -20,7 +20,7 @@ import exampleImage from '@/public/pic/gach.jpg';
 import { CartProduct, User } from '@/utils/response';
 import queryClient from '@/helpers/client';
 import { formatMoney } from '@/utils/string';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import useLogin from '@/helpers/useLogin';
 import { useRouter } from 'next/navigation';
@@ -31,15 +31,15 @@ import { checkPhoneFormat } from '@/utils/regex';
 import Voucher from '@/components/Vouchers/voucher';
 import dynamic from 'next/dynamic';
 import '../global.css';
+import UserContext from '@/contexts/UserContext';
 
 const Payment = () => {
   const router = useRouter();
 
   // check login status
-  const [user, setUser] = useLogin();
+  const { user, setUser } = useContext(UserContext);
   if (!user) {
-    setUser();
-    router.replace('/');
+    return <></>;
   }
 
   // convert string to object

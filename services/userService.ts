@@ -6,20 +6,19 @@ import { metadata } from '@/app/layout';
 
 
 
-const login = async (request: FormData) => {
-    await axios.post(`${constant.BASE_URL}/signIn`, request, {
+const login = async (request: FormData): Promise<any> => {
+    return await axios.post(`${constant.BASE_URL}/signIn`, request, {
         headers: {
             'x-api-key': constant.API_KEY
         }
     })
-    .then(res => {
-        localStorage.setItem('user', JSON.stringify(res.data.metadata))
-        return res.data
+    .then((res) => {
+        return res.data.metadata;
     })
-    .catch(error => {throw new Error(error.response.data.message)})
+    .catch((error) => {throw new Error(error.response.data.message)})
 }
 
-const register = async (formData: any) => {
+const register = async (formData: any): Promise<any> => {
 
     //  name: (value) => checkNameFormat(value),
     //   phone: (value) => checkPhoneFormat(value),
@@ -36,14 +35,14 @@ const register = async (formData: any) => {
         user_attributes: {address: 'Thu duc'},
     }
 
-    await axios.post(`${constant.BASE_URL}/signUp`, user, {
+    return await axios.post(`${constant.BASE_URL}/signUp`, user, {
         headers: {
             'x-api-key': constant.API_KEY
         }
     })
     .then(res => {
-        localStorage.setItem('user', JSON.stringify(res.data.metadata))
-        return res.data
+        //localStorage.setItem('user', JSON.stringify(res.data.metadata))
+        return res.data.metadata;
     })
     .catch(error => {throw new Error(error.response.data.message)})
 }

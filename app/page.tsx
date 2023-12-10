@@ -21,6 +21,8 @@ import { ProductCards } from '@/components/Product/productCards';
 import { useRouter } from 'next/navigation';
 import queryClient from '@/helpers/client';
 import dynamic from 'next/dynamic';
+import { useContext } from 'react';
+import UserContext from '@/contexts/UserContext';
 
 const data: Product[] = [];
 for (let index = 0; index < 14; index++) {
@@ -51,7 +53,7 @@ function Home() {
     staleTime: Infinity,
   });
 
-  const user: any = queryClient.getQueryData(['user']);
+  const { user } = useContext(UserContext);
   const cart: any = queryClient.getQueryData(['cart']);
 
   return (

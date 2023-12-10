@@ -29,7 +29,6 @@ interface OnClickInterface {
 }
 
 const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
-  console.log('Logged Header');
   const userObject = typeof user == 'string' ? JSON.parse(user) : user;
 
   const router = useRouter();
@@ -61,9 +60,7 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
       router.push('/account/orders');
     },
     signOut: () => {
-      setUser();
-      router.prefetch('/');
-      router.replace('/');
+      setUser({});
     },
   };
   const handleOnClickOnMenu = (type: string) => {
@@ -73,49 +70,56 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
   return (
     <Flex gap='1rem' align='center' className='hidden-mobile'>
       {/* <LanguagePicker /> */}
-      <div className=' relative w-[25px] h-[25px] cursor-pointer'>
-        <IconShoppingCart
-          onClick={() => {
-            router.prefetch('/cart');
-            router.push('/cart');
-          }}
-          color='#02B1AB'
-          className={classes.hoverIcon}
-        />
-        {cartFromServer.data?.cart_products.length != 0 && (
-          <Text
-            c='red'
-            fw={700}
-            className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
-          >
-            {cartFromServer.data?.cart_products.length &&
-            cartFromServer.data?.cart_products.length > 99
-              ? '+99'
-              : cartFromServer.data?.cart_products.length}
-          </Text>
-        )}
-      </div>
+      {user?.user.roles[0] != 'manager' && (
+        <div className=' relative w-[25px] h-[25px] cursor-pointer'>
+          <IconShoppingCart
+            onClick={() => {
+              router.prefetch('/cart');
+              router.push('/cart');
+            }}
+            color='#02B1AB'
+            className={classes.hoverIcon}
+          />
+          {cartFromServer.data?.cart_products.length != 0 && (
+            <Text
+              c='red'
+              fw={700}
+              className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
+            >
+              {cartFromServer.data?.cart_products.length &&
+              cartFromServer.data?.cart_products.length > 99
+                ? '+99'
+                : cartFromServer.data?.cart_products.length}
+            </Text>
+          )}
+        </div>
+      )}
       <Menu trigger='hover' openDelay={100} closeDelay={400} zIndex={1002}>
         <Menu.Target>
           <IconUserCircle color='#02B1AB' className={classes.hoverIcon} />
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item
-            leftSection={
-              <IconUser style={{ width: rem(14), height: rem(14) }} />
-            }
-            onClick={() => handleOnClickOnMenu('details')}
-          >
-            Thông tin tài khoản
-          </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconChecklist style={{ width: rem(14), height: rem(14) }} />
-            }
-            onClick={() => handleOnClickOnMenu('orders')}
-          >
-            Đơn hàng
-          </Menu.Item>
+          {user?.user.roles[0] != 'manager' && (
+            <>
+              <Menu.Item
+                leftSection={
+                  <IconUser style={{ width: rem(14), height: rem(14) }} />
+                }
+                onClick={() => handleOnClickOnMenu('details')}
+              >
+                Thông tin tài khoản
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconChecklist style={{ width: rem(14), height: rem(14) }} />
+                }
+                onClick={() => handleOnClickOnMenu('orders')}
+              >
+                Đơn hàng
+              </Menu.Item>
+            </>
+          )}
+
           <Menu.Item
             leftSection={
               <IconLogout style={{ width: rem(14), height: rem(14) }} />

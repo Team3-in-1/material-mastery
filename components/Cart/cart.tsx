@@ -76,9 +76,6 @@ const Cart = () => {
       oldQuantity: string | number;
     }) => {
       const cartService = new CartService(queryClient.getQueryData(['user']));
-      console.log('productId', productId);
-      console.log('quantity', quantity);
-      console.log('oldQuantity', oldQuantity);
       return cartService.updateQuantityProduct(
         productId,
         quantity,
