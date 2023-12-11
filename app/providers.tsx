@@ -20,12 +20,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
   const [user, setUser, isUserSet] = useLocalStorage('user', defaultUser);
   useDeepCompareEffect(() => {
     if (!isUserSet) return;
-    if (
-      !user?.user &&
-      pathname !== '/sign-in' &&
-      pathname !== '/sign-up' &&
-      pathname !== '/'
-    ) {
+    if (!user?.user && pathname.split('/')[1] == 'account') {
       redirect('/');
     }
     if (user?.user && (pathname === '/sign-in' || pathname === '/sign-up')) {

@@ -36,46 +36,6 @@ export default function Header() {
   const { user, setUser } = useContext(UserContext);
   if (!user) return <></>;
 
-  // const cartFromServer = useQuery({
-  //   queryKey: ['cart'],
-  //   queryFn: () => {
-  //     const cartService = new CartService();
-  //     return cartService.getCart();
-  //   },
-  //   // enabled: !!user,
-  //   staleTime: Infinity,
-  //   retryDelay: 1000,
-  //   retry: 5,
-  // });
-
-  // if (cartFromServer.isError && cartFromServer.failureCount == 5 && user) {
-  //   console.log('Get cart fail');
-  //   setUser();
-  // }
-
-  // const onClickFunction: OnClickInterface = {
-  //   details: () => {
-  //     router.prefetch('/account/details');
-  //     router.push('/account/details');
-  //   },
-  //   orders: () => {
-  //     router.prefetch('/account/orders');
-  //     router.push('/account/orders');
-  //   },
-  //   vouchers: () => {
-  //     router.prefetch('/account/vouchers');
-  //     router.push('/account/vouchers');
-  //   },
-  //   signOut: () => {
-  //     setUser();
-  //     router.prefetch('/');
-  //     router.replace('/');
-  //   },
-  // };
-  // const handleOnClickOnMenu = (type: string) => {
-  //   return onClickFunction[type]();
-  // };
-
   return (
     <Flex
       justify='space-between'
@@ -90,9 +50,9 @@ export default function Header() {
     >
       <Link
         href={
-          user.user && user?.user.roles[0] != 'manager'
-            ? '/'
-            : '/staff/dashboard/revenue'
+          user?.user && user?.user.roles[0] == 'manager'
+            ? '/staff/dashboard/revenue'
+            : '/'
         }
       >
         {/* //underline='never' */}

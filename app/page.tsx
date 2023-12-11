@@ -54,7 +54,6 @@ function Home() {
   });
 
   const { user } = useContext(UserContext);
-  const cart: any = queryClient.getQueryData(['cart']);
 
   return (
     <Container
@@ -154,7 +153,7 @@ function Home() {
           </Container>
         </Grid.Col>
       </Grid>
-      {(categories.isPending || categories.isRefetching || (cart && !user)) && (
+      {(categories.isPending || categories.isRefetching || (true && !user)) && (
         <LoadingOverlay
           visible={true}
           zIndex={1000}

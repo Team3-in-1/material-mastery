@@ -21,19 +21,21 @@ import exampleImage from '@/public/pic/gach.jpg';
 import NImage from 'next/image';
 import Link from 'next/link';
 import CommentService from '@/services/commentService';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { productService } from '@/services/productService';
 import { formatMoney } from '@/utils/string';
 import { categoryService } from '@/services/categoryService';
 import queryClient from '@/helpers/client';
 import useCart from '@/helpers/useCart';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { useRouter } from 'next/navigation';
 import CartService from '@/services/cartService';
+import UserContext from '@/contexts/UserContext';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
+  const { user } = useContext(UserContext);
   const [quantity, setQuantity] = useState<string | number>(1);
   const router = useRouter();
   router.prefetch('/payment');
@@ -206,31 +208,9 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                 className='w-[110px] lg:w-[300px] bg-[#02B1AB]'
                 disabled={productChosen == null}
                 onClick={() => {
-                  setProductChosen([
-                    {
-                      product_name: product.data?.product_name,
-                      product_thumb: product.data?.product_thumb,
-                      product_description: null,
-                      product_price: product.data?.product_price,
-                      product_quantity: quantity,
-                      product_brand: null,
-                      product_unit: null,
-                      product_ratingAverage: null,
-                      product_categories: null,
-                      productId: product.data?._id,
-                    },
-                  ]);
-                  router.push('/payment');
-                }}
-              >
-                Mua ngay
-              </Button>
-              <Button
-                onClick={() => {
-                  if (cart) {
-                    const newCart = structuredClone(cart);
-                    if (newCart.cart_products == 0) {
-                      newCart.cart_products.push({
+                  if (user?.user) {
+                    setProductChosen([
+                      {
                         product_name: product.data?.product_name,
                         product_thumb: product.data?.product_thumb,
                         product_description: null,
@@ -241,23 +221,24 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                         product_ratingAverage: null,
                         product_categories: null,
                         productId: product.data?._id,
-                      });
-                    } else {
-                      let temp = 0;
-                      newCart.cart_products.every(
-                        (value: any, index: any, array: any) => {
-                          if (
-                            value.productId == product.data?._id &&
-                            temp == 0
-                          ) {
-                            value.product_quantity++;
-                            temp = 1;
-                            return false;
-                          }
-                          return true;
-                        }
-                      );
-                      if (temp == 0) {
+                      },
+                    ]);
+                    router.push('/payment');
+                  } else {
+                    toast.error(
+                      'Bạn cần phải đăng nhập để thực hiện chức năng này.'
+                    );
+                  }
+                }}
+              >
+                Mua ngay
+              </Button>
+              <Button
+                onClick={() => {
+                  if (user?.user) {
+                    if (cart) {
+                      const newCart = structuredClone(cart);
+                      if (newCart.cart_products == 0) {
                         newCart.cart_products.push({
                           product_name: product.data?.product_name,
                           product_thumb: product.data?.product_thumb,
@@ -270,20 +251,53 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                           product_categories: null,
                           productId: product.data?._id,
                         });
+                      } else {
+                        let temp = 0;
+                        newCart.cart_products.every(
+                          (value: any, index: any, array: any) => {
+                            if (
+                              value.productId == product.data?._id &&
+                              temp == 0
+                            ) {
+                              value.product_quantity++;
+                              temp = 1;
+                              return false;
+                            }
+                            return true;
+                          }
+                        );
+                        if (temp == 0) {
+                          newCart.cart_products.push({
+                            product_name: product.data?.product_name,
+                            product_thumb: product.data?.product_thumb,
+                            product_description: null,
+                            product_price: product.data?.product_price,
+                            product_quantity: quantity,
+                            product_brand: null,
+                            product_unit: null,
+                            product_ratingAverage: null,
+                            product_categories: null,
+                            productId: product.data?._id,
+                          });
+                        }
                       }
-                    }
-                    const temp: number =
-                      typeof quantity == 'string'
-                        ? parseInt(quantity)
-                        : quantity;
-                    addMutation.mutate({ productId, quantity: temp });
+                      const temp: number =
+                        typeof quantity == 'string'
+                          ? parseInt(quantity)
+                          : quantity;
+                      addMutation.mutate({ productId, quantity: temp });
 
-                    setCart(newCart);
-                    toast.success(
-                      `Thêm ${quantity} sản phẩm vào giỏ hàng thành công.`
-                    );
+                      setCart(newCart);
+                      toast.success(
+                        `Thêm ${quantity} sản phẩm vào giỏ hàng thành công.`
+                      );
+                    } else {
+                      toast.error('Thêm sản phẩm thất bại.');
+                    }
                   } else {
-                    toast.error('Thêm sản phẩm thất bại.');
+                    toast.error(
+                      'Bạn cần phải đăng nhập để thực hiện chức năng này.'
+                    );
                   }
                 }}
                 className='w-[180px] lg:w-[300px] bg-white text-[#02B1AB] border-[#02B1AB]'

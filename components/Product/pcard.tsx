@@ -11,7 +11,7 @@ import {
   Badge,
 } from '@mantine/core';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Styles from './pcard.module.css';
 import Link from 'next/link';
 import { Product } from '@/utils/response';
@@ -23,9 +23,11 @@ import '../../app/global.css';
 import CartService from '@/services/cartService';
 import queryClient from '@/helpers/client';
 import toast, { Toaster } from 'react-hot-toast';
+import UserContext from '@/contexts/UserContext';
 
 export const PCard = ({ data }: PCardProps) => {
   const [value, setValue] = useState(2);
+  const { user } = useContext(UserContext);
   const [cart, setCart] = useCart();
   const addMutation = useMutation({
     mutationKey: ['addProductCart'],
@@ -106,34 +108,10 @@ export const PCard = ({ data }: PCardProps) => {
               // product_ratingAverage: number | null
               // product_categories: string[] | null
               // productId: string | null
-              if (cart) {
-                const newCart = structuredClone(cart);
-                if (newCart.cart_products == 0) {
-                  newCart.cart_products.push({
-                    product_name: data.product_name,
-                    product_thumb: data.product_thumb,
-                    product_description: null,
-                    product_price: data.product_price,
-                    product_quantity: 1,
-                    product_brand: null,
-                    product_unit: null,
-                    product_ratingAverage: null,
-                    product_categories: null,
-                    productId: data._id,
-                  });
-                } else {
-                  let temp = 0;
-                  newCart.cart_products.every(
-                    (value: any, index: any, array: any) => {
-                      if (value.productId == data._id && temp == 0) {
-                        value.product_quantity++;
-                        temp = 1;
-                        return false;
-                      }
-                      return true;
-                    }
-                  );
-                  if (temp == 0) {
+              if (user?.user) {
+                if (cart) {
+                  const newCart = structuredClone(cart);
+                  if (newCart.cart_products == 0) {
                     newCart.cart_products.push({
                       product_name: data.product_name,
                       product_thumb: data.product_thumb,
@@ -146,12 +124,43 @@ export const PCard = ({ data }: PCardProps) => {
                       product_categories: null,
                       productId: data._id,
                     });
+                  } else {
+                    let temp = 0;
+                    newCart.cart_products.every(
+                      (value: any, index: any, array: any) => {
+                        if (value.productId == data._id && temp == 0) {
+                          value.product_quantity++;
+                          temp = 1;
+                          return false;
+                        }
+                        return true;
+                      }
+                    );
+                    if (temp == 0) {
+                      newCart.cart_products.push({
+                        product_name: data.product_name,
+                        product_thumb: data.product_thumb,
+                        product_description: null,
+                        product_price: data.product_price,
+                        product_quantity: 1,
+                        product_brand: null,
+                        product_unit: null,
+                        product_ratingAverage: null,
+                        product_categories: null,
+                        productId: data._id,
+                      });
+                    }
                   }
+                  addMutation.mutate(data._id);
+                  setCart(newCart);
+                  toast.success('Thêm sản phẩm thành công');
+                } else {
+                  toast.error('Thêm sản phẩm thất bại.');
                 }
-                addMutation.mutate(data._id);
-                setCart(newCart);
-                toast.success('Thêm sản phẩm thành công');
               } else {
+                toast.error(
+                  'Bạn cần phải đăng nhập để thực hiện chức năng này.'
+                );
               }
             }}
           >
