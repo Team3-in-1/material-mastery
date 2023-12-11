@@ -1,7 +1,7 @@
 
 import '@mantine/core/styles.layer.css';
 import '@mantine/carousel/styles.layer.css';
-import '@mantine/dates/styles.css';
+
 import './global.css';
 
 import type { Metadata } from 'next';
@@ -39,16 +39,18 @@ export default function RootLayout({
         className={`${inter.className} h-full`}
         style={{ backgroundColor: '#f1f2f5' }}
       >
-        <Providers>
-          <MantineProvider theme={theme} defaultColorScheme='light'>
+
+        <MantineProvider theme={theme} defaultColorScheme='light'>
+          <Providers>
             <TanStackProvider>
               <Header />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
               <BottomNavBar />
             </TanStackProvider>
-          </MantineProvider>
-        </Providers>
+          </Providers>
+        </MantineProvider>
+
       </body>
     </html>
   );

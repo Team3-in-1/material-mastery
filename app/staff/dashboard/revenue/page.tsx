@@ -68,9 +68,9 @@ export default function RevenuePage() {
     ))
 
     const tabPanels = tabData.map(i => (
-        <Tabs.Panel key={i.value} value={i.value} className="rounded-[8px] border-[0.5px] p-[12px] flex flex-col justify-between gap-[10px]">
+        <Tabs.Panel key={i.value} value={i.value} className=" p-[12px] flex flex-col justify-between gap-[10px]">
             <CalendarInput type={i.value} />
-            <div className="flex gap-[10px] justify-around items-center">
+            <div className="rounded-[8px] border-[0.5px] flex gap-[10px] justify-around items-center">
                 <Stack gap='1rem'>
                     {i.stats?.map(i => (
                         <StatsticCard key={i.label} label={i.label} number={i.number} per={i.per} desc={i.desc} />
@@ -86,23 +86,22 @@ export default function RevenuePage() {
     ))
 
     return (
-        <Flex direction='column' gap='1rem' bg='white' className="grow z-[0] " h='100%' py='1rem' px='2rem'>
-            <Title order={2} c='gray.9' fw='800' mt='lg'>Doanh thu</Title>
-            <ScrollArea className='grow'>
-                <Tabs
-                    variant='default'
-                    orientation="vertical"
-                    placement='right'
-                    defaultValue={tabData.at(0)?.value}
-                    activateTabWithKeyboard={false}>
-                    <div className="rounded-[8px] border-[0.5px] p-[12px] h-fit ml-[12px] sticky top-0">
-                        <Tabs.List>
-                            {tabList}
-                        </Tabs.List>
-                    </div>
-                    {tabPanels}
-                </Tabs>
-            </ScrollArea>
-        </Flex>
+        <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
+
+            <Tabs
+                variant='pills'
+                orientation="vertical"
+                placement='right'
+                defaultValue={tabData.at(0)?.value}
+                activateTabWithKeyboard={false}>
+                <div className="rounded-[8px] border-[0.5px] p-[12px] h-fit ml-[12px] sticky top-0">
+                    <Tabs.List>
+                        {tabList}
+                    </Tabs.List>
+                </div>
+                {tabPanels}
+            </Tabs>
+
+        </ScrollArea>
     )
 }
