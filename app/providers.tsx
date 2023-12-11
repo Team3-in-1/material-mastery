@@ -2,7 +2,7 @@
 
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { redirect, usePathname, useSearchParams } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { useDeepCompareEffect } from 'react-use';
 
 import { ReactNode } from 'react';

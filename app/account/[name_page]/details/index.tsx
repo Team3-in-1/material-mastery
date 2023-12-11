@@ -9,10 +9,17 @@ import {
   Text,
   Flex,
   LoadingOverlay,
+  Modal,
+  Input,
 } from '@mantine/core';
+import '@mantine/core/styles.layer.css';
+import '@mantine/carousel/styles.layer.css';
+import '@mantine/dates/styles.css';
 import '../../../global.css';
 import NextImage from 'next/image';
-import logo from '@/public/icon.svg';
+import { useDisclosure } from '@mantine/hooks';
+
+import defaultAvatar from '@/public/pic/Avatar.png';
 import queryClient from '@/helpers/client';
 import { useRouter } from 'next/navigation';
 import { IconMapPinFilled } from '@tabler/icons-react';
@@ -49,10 +56,16 @@ const DetailsPage = () => {
   let initialPhone = typeof window !== 'undefined' ? user?.user.phone : '';
   let initialAddress =
     typeof window !== 'undefined' ? user?.user.user_attributes.address : '';
+  let initialImage =
+    typeof window !== 'undefined' && user?.user.user_attributes.image
+      ? user?.user.user_attributes.avatar
+      : 'https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/289149087_532680565185439_2587124243099315687_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9c7eae&_nc_eui2=AeHlj-MAcPCkW6Sd1ZZINLX3dnM5XV8os_B2czldXyiz8DYpOp_w7W8fpY4T3y3bu4Av1LeBPAcSUXou-hH6qBbe&_nc_ohc=NLO3EECZx1QAX_XqSm2&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfBz6S6rudC72TW0LONnocrZQ4cIsc4UNFHt9IKBOmWiuw&oe=657B1067';
 
   const [name, setName] = useState(initialName);
   const [phone, setPhone] = useState(initialPhone);
   const [address, setAddress] = useState(initialAddress);
+  const [avatar, setAvatar] = useState(initialImage);
+  const [avatarInput, setAvatarInput] = useState('');
 
   const returnInitialValue = (type: number) => {
     if (type == 0) {
@@ -64,11 +77,12 @@ const DetailsPage = () => {
   const userId = typeof window !== 'undefined' ? user.user._id : '';
 
   const token = typeof window !== 'undefined' ? user.tokenPair.accessToken : '';
+  const [opened, { open, close }] = useDisclosure(false);
 
   const userMutation = useMutation({
     mutationKey: ['update-user'],
     mutationFn: () =>
-      userService.updateUser(userId, token, name, phone, address),
+      userService.updateUser(userId, token, name, phone, address, avatar),
     onSuccess: (res) => {
       toast.success('Cập nhập thành công');
       initialName = name || '';
@@ -92,17 +106,65 @@ const DetailsPage = () => {
 
   return (
     <Stack className='w-full h-full px-[100px]'>
+      <Modal opened={opened} onClose={close} centered>
+        <Stack>
+          <Stack>
+            <Text>Đường dẫn avatar: </Text>
+            <Input
+              value={avatarInput}
+              onChange={(event) => {
+                setAvatarInput(event.target.value);
+              }}
+            />
+          </Stack>
+          <Group className='w-full justify-evenly'>
+            <Button
+              className=' h-5 text-[#02B1AB] bg-transparent border-0'
+              onClick={() => {
+                if (avatarInput != '') {
+                  setAvatar(avatarInput);
+                  updateClick();
+                  close();
+                } else {
+                  toast.error('Đường dẫn không thể để trống.');
+                }
+              }}
+            >
+              Lưu
+            </Button>
+            <Button
+              className=' h-5 text-[#02B1AB] bg-transparent border-0'
+              onClick={() => {
+                setAvatarInput('');
+                close();
+              }}
+            >
+              Hủy
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
       <Group>
         <Stack align='center' justify='center' className='flex-[1]'>
-          <Image
-            alt='avater'
-            h={100}
-            w={100}
-            component={NextImage}
-            src={logo}
-          />
+          <div className='w-[140px] h-[140px] rounded-full flex items-center justify-center'>
+            <Image
+              alt='avatar'
+              h={120}
+              w='auto'
+              fit='contain'
+              className='rounded-full '
+              src={avatar}
+            />
+          </div>
 
-          <Button>Thay đổi</Button>
+          <Button
+            className=' h-[25px] w-[120px] bg-transparent text-[#02B1AB] font-light border-[1.5px] border-[#02B1AB] rounded-[5px]'
+            onClick={() => {
+              open();
+            }}
+          >
+            Thay đổi
+          </Button>
         </Stack>
         <Stack className='flex-[2] bg-white rounded-[10px] p-[20px] box-content'>
           <Flex className=' w-full flex-row-reverse'>
@@ -211,7 +273,6 @@ const DetailsPage = () => {
           }}
         />
       </Stack>
-      <Toaster position='bottom-center' />
     </Stack>
   );
 };
