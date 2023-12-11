@@ -23,6 +23,9 @@ const Providers = ({ children }: { children: ReactNode }) => {
     if (!user?.user && pathname.split('/')[1] == 'account') {
       redirect('/');
     }
+    if (!user?.user && pathname.split('/')[1] == 'staff') {
+      redirect('/');
+    }
     if (user?.user && (pathname === '/sign-in' || pathname === '/sign-up')) {
       redirect('/');
     }

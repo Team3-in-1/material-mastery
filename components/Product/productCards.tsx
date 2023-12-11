@@ -12,7 +12,6 @@ export const ProductCards = ({ data }: { data: Product[] }) => {
           <PCard data={item} />
         </Grid.Col>
       ))}
-      <Toaster position='bottom-center' />
     </Grid>
   );
 };
