@@ -1,8 +1,9 @@
 
-import '@mantine/core/styles.layer.css';
-import '@mantine/carousel/styles.layer.css';
-
 import './global.css';
+import '@mantine/core/styles.css';
+import '@mantine/carousel/styles.css';
+import '@mantine/dates/styles.css';
+
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -39,17 +40,16 @@ export default function RootLayout({
         className={`${inter.className} h-full`}
         style={{ backgroundColor: '#f1f2f5' }}
       >
-
-        <MantineProvider theme={theme} defaultColorScheme='light'>
-          <Providers>
+        <Providers>
+          <MantineProvider theme={theme} defaultColorScheme='light'>
             <TanStackProvider>
               <Header />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
               <BottomNavBar />
             </TanStackProvider>
-          </Providers>
-        </MantineProvider>
+          </MantineProvider>
+        </Providers>
 
       </body>
     </html>
