@@ -1,7 +1,8 @@
-import '@mantine/core/styles.css';
-import './global.css';
-import '@mantine/carousel/styles.css';
+
+import '@mantine/core/styles.layer.css';
+import '@mantine/carousel/styles.layer.css';
 import '@mantine/dates/styles.css';
+import './global.css';
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -14,6 +15,8 @@ import BottomNavBar from '@/components/Mobile/BottomNavBar/bottomNavBar';
 import { Suspense } from 'react';
 import Loading from './loading';
 import Providers from './providers';
+
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {

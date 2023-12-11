@@ -1,4 +1,5 @@
-const labels = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
+import dayjs from "dayjs"
+
 export const chartData = {
     pie: {
         labels: ['Label', 'Label'],
@@ -9,16 +10,13 @@ export const chartData = {
         }]
     },
     bar: {
-        labels,
+        labels: Array.from({ length: 30 }, (_, index) => index + 1),
         datasets: [
             {
-                label: 'Dataset 1',
-                data: labels.map(() => Math.random() * (1000 - 0) + 0),
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
+                fill: true,
                 label: 'Dataset 2',
-                data: labels.map(() => Math.random() * (1000 - 0) + 0),
+                data: Array.from({ length: 30 }, (_, index) => index + 1).map(() => Math.random() * (1000 - 0) + 0),
+                borderColor: 'rgb(53, 162, 235)',
                 backgroundColor: 'rgba(53, 162, 235, 0.5)',
             },
         ],

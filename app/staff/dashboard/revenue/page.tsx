@@ -12,6 +12,7 @@ import { IconCalendar } from "@tabler/icons-react";
 import ReportTable from "@/components/ReportTable/reportTable";
 import StatisticChart from "@/components/StatisticChart/statisticChart";
 import CalendarInput from "@/components/CalendarInput/calendarInput";
+import { startOfWeek, startOfQuarter, endOfWeek, endOfQuarter } from "@/utils/date"
 
 const tabData = [
     {
@@ -56,14 +57,15 @@ const tabData = [
 
 export default function RevenuePage() {
 
-    const [date, setDate] = useState<Date | null>(new Date())
-
+    const [day, setDay] = useState<Date | null>(new Date())
+    const [week, setWeek] = useState<[Date | null, Date | null]>([startOfWeek(new Date()), endOfWeek(new Date())])
+    const [month, setMonth] = useState<Date | null>(new Date())
+    const [quarter, setQuarter] = useState<[Date | null, Date | null]>([startOfQuarter(new Date()), endOfQuarter(new Date())])
+    const [year, setYear] = useState<Date | null>(new Date())
 
     const tabList = tabData.map(item => (
         <Tabs.Tab key={item.value} value={item.value}>{item.display}</Tabs.Tab>
     ))
-
-
 
     const tabPanels = tabData.map(i => (
         <Tabs.Panel key={i.value} value={i.value} className="rounded-[8px] border-[0.5px] p-[12px] flex flex-col justify-between gap-[10px]">

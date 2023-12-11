@@ -11,6 +11,7 @@ import {
     Legend,
     Tooltip
 } from "chart.js";
+
 Chart.register(
     CategoryScale,
     LinearScale,
