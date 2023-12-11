@@ -47,7 +47,7 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
 
   if (cartFromServer.failureCount == 5 && userObject) {
     console.log('Get cart fail');
-    setUser();
+    setUser({});
   }
 
   const onClickFunction: OnClickInterface = {

@@ -28,7 +28,7 @@ const AccountLayout = ({
 }) => {
   const adapter = new Adapter(params.name_page);
   return (
-    <Group className=' bg-[#D9D9D9] z-[1] h-full relative w-full'>
+    <Group className=' bg-[#f1f3f5] z-[1] h-full relative w-full'>
       <div className='flex-[1] h-full bg-white w-full  pt-[90px]'>
         <AccountNav idPage={adapter.getId()} />
       </div>

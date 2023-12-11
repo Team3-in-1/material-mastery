@@ -51,12 +51,13 @@ const register = async (formData: any): Promise<any> => {
 
 // }
 
-const updateUser = async(user_id: string, token:string, name: string, phone: string, address: string): Promise<any> => {
+const updateUser = async(user_id: string, token:string, name: string, phone: string, address: string, avatar: string | null): Promise<any> => {
     return await axios.patch(`${constant.BASE_URL}/user/${user_id}`, {
         'display_name': name,
         'phone': phone,
         "user_attributes": {
-            "address": address
+            "address": address,
+            "avatar": avatar,
         }
     }, {
         headers: {
