@@ -8,13 +8,13 @@ const Order = () => {
       {/* infor of order */}
       <Group className='w-full justify-between'>
         <Group>
-          <Text>Mã đơn hàng</Text>
-          <Text>1283289371298</Text>
+          <Text className='  text-[#8E8E8E]'>Mã đơn hàng</Text>
+          <Text className='text-[#8E8E8E]'>1283289371298</Text>
         </Group>
         <Group>
-          <Text>Chưa thanh toán</Text>
+          <Text className=' font-light text-[#0063FF]'>Chưa thanh toán</Text>
           <Divider orientation='vertical' />
-          <Text>Chưa xác nhận</Text>
+          <Text className=' font-light text-[#FFA903]'>Chưa xác nhận</Text>
         </Group>
       </Group>
       <Divider />
@@ -29,7 +29,7 @@ const Order = () => {
       <Group className=' w-full flex-row-reverse'>
         <Group>
           <Text>Thành tiền</Text>
-          <Group className=' gap-0'>
+          <Group className=' gap-0 text-[#02B1AB]'>
             <Text>{formatMoney(200000)}</Text>
             <Text>đ</Text>
           </Group>

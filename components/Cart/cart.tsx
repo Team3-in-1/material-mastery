@@ -13,7 +13,7 @@ import { IconTrash } from '@tabler/icons-react';
 import CartItem from '../CartItem/cartItem';
 import useCart from '@/helpers/useCart';
 import { CartProduct } from '@/utils/response';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { formatMoney } from '@/utils/string';
 import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { useRouter } from 'next/navigation';
@@ -22,6 +22,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import queryClient from '@/helpers/client';
 import { useMutation } from '@tanstack/react-query';
 import CartService from '@/services/cartService';
+import UserContext from '@/contexts/UserContext';
 
 const Cart = () => {
   const [cart, setCart] = useCart();
@@ -31,6 +32,7 @@ const Cart = () => {
   const router = useRouter();
   const [products, setProducts] = useRQGlobalState('productsChosen', []);
   const [numberChecked, setNumberChecked] = useState(-1);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     if (cart) {
@@ -52,8 +54,7 @@ const Cart = () => {
   const deleteMutation = useMutation({
     mutationKey: ['deleteProductCart'],
     mutationFn: (productId: string) => {
-      console.log('delete id', productId);
-      const cartService = new CartService(queryClient.getQueryData(['user']));
+      const cartService = new CartService(user);
       return cartService.deleteProduct(productId);
     },
     onSuccess: (res) => {
@@ -75,7 +76,7 @@ const Cart = () => {
       quantity: string | number;
       oldQuantity: string | number;
     }) => {
-      const cartService = new CartService(queryClient.getQueryData(['user']));
+      const cartService = new CartService(user);
       return cartService.updateQuantityProduct(
         productId,
         quantity,

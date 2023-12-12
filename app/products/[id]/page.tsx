@@ -100,7 +100,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       productId: string;
       quantity: number;
     }) => {
-      const cartService = new CartService(queryClient.getQueryData(['user']));
+      const cartService = new CartService(user);
       return cartService.addProduct(productId, quantity);
     },
     onSuccess: (res) => {
@@ -259,7 +259,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                               value.productId == product.data?._id &&
                               temp == 0
                             ) {
-                              value.product_quantity++;
+                              value.product_quantity += quantity;
                               temp = 1;
                               return false;
                             }

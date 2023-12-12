@@ -2,7 +2,7 @@ import dayjs from "dayjs"
 
 export const chartData = {
     pie: {
-        labels: ['Label', 'Label'],
+        labels: ['Labelss', 'Label'],
         datasets: [{
             label: '# of Votes',
             data: [3, 5],
@@ -38,7 +38,7 @@ export const statsData = [
     }
 ]
 
-export const segmentData = [
+export const segmentData = [ 
     { value: 'general', label: 'Tổng' },
     { value: 'per', label: 'Theo tuần' }
 ]

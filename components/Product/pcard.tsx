@@ -32,7 +32,7 @@ export const PCard = ({ data }: PCardProps) => {
   const addMutation = useMutation({
     mutationKey: ['addProductCart'],
     mutationFn: (productId: string) => {
-      const cartServices = new CartService(queryClient.getQueryData(['user']));
+      const cartServices = new CartService(user);
       console.log('productId', productId);
       return cartServices.addProduct(productId, 1);
     },
