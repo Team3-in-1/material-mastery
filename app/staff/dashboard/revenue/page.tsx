@@ -1,5 +1,4 @@
 'use client';
-import StatsticCard from '@/components/StatisticCard/statsticCard';
 import {
   Flex,
   Group,
@@ -42,6 +41,7 @@ import {
   endOfQuarter,
 } from '@/utils/date';
 import dynamic from 'next/dynamic';
+import StatsticCard from '@/components/StatisticChart/StatisticCard/statsticCard';
 
 const tabData = [
   {
