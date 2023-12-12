@@ -1,5 +1,5 @@
 'use client';
-
+import StatsticCard from '@/components/StatisticCard/statsticCard';
 import {
   Flex,
   Group,
@@ -10,7 +10,7 @@ import {
   Stack,
   Divider,
 } from '@mantine/core';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { chartData as DayChart, statsData as DayStats } from './day-data';
 import {
   chartData as WeekChart,
@@ -32,8 +32,6 @@ import {
   statsData as YearStats,
   segmentData as YearSegment,
 } from './year-data';
-import { DatePickerInput } from '@mantine/dates';
-import { IconCalendar } from '@tabler/icons-react';
 import ReportTable from '@/components/ReportTable/reportTable';
 import StatisticChart from '@/components/StatisticChart/statisticChart';
 import CalendarInput from '@/components/CalendarInput/calendarInput';
@@ -43,8 +41,7 @@ import {
   endOfWeek,
   endOfQuarter,
 } from '@/utils/date';
-import UserContext from '@/contexts/UserContext';
-import StatsticCard from '@/components/StatisticChart/StatisticCard/statsticCard';
+import dynamic from 'next/dynamic';
 
 const tabData = [
   {
@@ -95,8 +92,6 @@ export default function RevenuePage() {
     endOfQuarter(new Date()),
   ]);
   const [year, setYear] = useState<Date | null>(new Date());
-  const { user } = useContext(UserContext);
-  if (!user) return <></>;
 
   const tabList = tabData.map((item) => (
     <Tabs.Tab key={item.value} value={item.value}>
@@ -108,10 +103,10 @@ export default function RevenuePage() {
     <Tabs.Panel
       key={i.value}
       value={i.value}
-      className='rounded-[8px] border-[0.5px] p-[12px] flex flex-col justify-between gap-[10px]'
+      className=' p-[12px] flex flex-col justify-between gap-[10px]'
     >
       <CalendarInput type={i.value} />
-      <div className='flex gap-[10px] justify-around items-center'>
+      <div className='rounded-[8px] border-[0.5px] p-[16px] flex gap-[10px] justify-around items-center'>
         <Stack gap='1rem'>
           {i.stats?.map((i) => (
             <StatsticCard
@@ -140,32 +135,21 @@ export default function RevenuePage() {
   ));
 
   return (
-    <Flex
-      direction='column'
-      gap='1rem'
-      bg='white'
-      className='grow z-[0] '
-      h='100%'
-      py='1rem'
-      px='2rem'
-    >
-      <Title order={2} c='gray.9' fw='800' mt='lg'>
-        Doanh thu
-      </Title>
-      <ScrollArea className='grow'>
-        <Tabs
-          variant='default'
-          orientation='vertical'
-          placement='right'
-          defaultValue={tabData.at(0)?.value}
-          activateTabWithKeyboard={false}
-        >
-          <div className='rounded-[8px] border-[0.5px] p-[12px] h-fit ml-[12px] sticky top-0'>
-            <Tabs.List>{tabList}</Tabs.List>
-          </div>
-          {tabPanels}
-        </Tabs>
-      </ScrollArea>
-    </Flex>
+    <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
+      <Tabs
+        variant='default'
+        orientation='vertical'
+        placement='right'
+        defaultValue={tabData.at(0)?.value}
+        activateTabWithKeyboard={false}
+      >
+        <div className='rounded-[8px] border-[0.5px] p-[12px] h-fit ml-[12px] sticky top-0'>
+          <Tabs.List>{tabList}</Tabs.List>
+        </div>
+        {tabPanels}
+      </Tabs>
+    </ScrollArea>
   );
 }
+
+// export default dynamic(() => Promise.resolve(RevenuePage), { ssr: false });
