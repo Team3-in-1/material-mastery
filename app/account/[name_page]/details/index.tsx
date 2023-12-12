@@ -11,10 +11,11 @@ import {
   LoadingOverlay,
   Modal,
   Input,
+  Textarea,
 } from '@mantine/core';
-import '@mantine/core/styles.layer.css';
-import '@mantine/carousel/styles.layer.css';
-import '@mantine/dates/styles.css';
+// import '@mantine/core/styles.layer.css';
+// import '@mantine/carousel/styles.layer.css';
+// import '@mantine/dates/styles.css';
 import '../../../global.css';
 import NextImage from 'next/image';
 import { useDisclosure } from '@mantine/hooks';
@@ -36,7 +37,6 @@ import {
 } from '@/utils/regex';
 import { userService } from '@/services/userService';
 import dynamic from 'next/dynamic';
-import { async } from 'rxjs';
 import UserContext from '@/contexts/UserContext';
 
 const DetailsPage = () => {
@@ -247,6 +247,7 @@ const DetailsPage = () => {
                 }
                 setEnableBox2(!enableBox2);
               }}
+              // sua cho nay
               className=' h-5 cursor-pointer text-[#02B1AB] bg-transparent border-0'
             >
               {enableBox2 ? 'Lưu' : 'Thay đổi'}
@@ -264,7 +265,7 @@ const DetailsPage = () => {
             )}
           </Group>
         </Group>
-        <TextInput
+        <Textarea
           withAsterisk
           disabled={!enableBox2}
           value={address}

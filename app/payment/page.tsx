@@ -15,6 +15,7 @@ import {
   LoadingOverlay,
   Box,
   Loader,
+  Popover,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMapPinFilled, IconArrowNarrowLeft } from '@tabler/icons-react';
@@ -129,16 +130,19 @@ const Payment = () => {
     return date + '-' + month + '-' + year;
   };
 
-  const [checkedVoucher, setCheckedVoucher] = useState('');
+  //const [checkedVoucher, setCheckedVoucher] = useState('');
   const [checkedProduct, setCheckedProduct] = useState('');
 
   const voucherChosen: any = [];
   const id2Index: any = {};
   for (let i = 0; i < products.length; i++) {
     const b = useState('');
+    const c = useState('');
+
+    voucherChosen.push(b);
+
     const key: any = products[i].productId ? products[i].productId : -1;
     id2Index[key] = i;
-    voucherChosen.push(b);
   }
 
   const orderMutation = useMutation({
@@ -196,19 +200,7 @@ const Payment = () => {
             ],
           });
         }
-
-        // payload.push({
-        //   discounts: [],
-        //   products: [
-        //     {
-        //       price: product.product_price,
-        //       quantity: product.product_quantity,
-        //       productId: product.productId,
-        //     },
-        //   ],
-        // });
       });
-      console.log('payload', payload);
       const orderService = new OrderService(user);
       return orderService.checkOut(payload);
     },
@@ -239,7 +231,6 @@ const Payment = () => {
   //     />
   //   );
   // }
-
   return (
     // devide page into 2 col
 
@@ -265,9 +256,73 @@ const Payment = () => {
               />
               <Text color='#02B1AB'>Thông tin nhận hàng</Text>
             </Group>
-            <Text color='#02B1AB' onClick={toggle} className=' cursor-pointer'>
+
+            <Button
+              c='#02B1AB'
+              bg='white'
+              onClick={toggle}
+              // className=' cursor-pointer'
+            >
               Thay đổi
-            </Text>
+            </Button>
+            {/* <Popover opened={opened} width={300}>
+              <Popover.Target>
+                <Button
+                  c='#02B1AB'
+                  bg='white'
+                  onClick={toggle}
+                  // className=' cursor-pointer'
+                >
+                  Thay đổi
+                </Button>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text size='sm' mb='xs' fw={500}>
+                  Thay đổi thông tin nhận hàng
+                </Text>
+
+                <Stack align='center' justify='center'>
+                  <TextInput
+                    label='Số điện thoại nhận hàng'
+                    withAsterisk
+                    className='w-full'
+                    value={phone}
+                    onChange={(event) => {
+                      setPhone(event.currentTarget.value);
+                    }}
+                  />
+                  <Textarea
+                    label='Địa chỉ nhận hàng'
+                    withAsterisk
+                    className='w-full'
+                    disabled={!enableButton}
+                    value={address}
+                    onChange={(event) => {
+                      setAddress(event.currentTarget.value);
+                    }}
+                  />
+                  <Button
+                    onClick={() => {
+                      if (checkPhoneFormat(phone)) {
+                        toast.error('Số điện thoại không hợp lệ');
+                      } else if (enableButton && address.length == 0) {
+                        toast.error('Địa chỉ giao hàng không được để trống.');
+                      } else {
+                        userObject.user.phone = phone;
+                        if (enableButton) {
+                          userObject.user.user_attributes.address = address;
+                        }
+                        close();
+                        toast.success('Thay đổi thành công.');
+                      }
+                    }}
+                    className=' w-full bg-0-primary-color-6 '
+                  >
+                    Chỉnh sửa
+                  </Button>
+                </Stack>
+              </Popover.Dropdown>
+            </Popover> */}
           </Group>
           <Stack>
             <Group>
@@ -420,15 +475,34 @@ const Payment = () => {
                       <Text
                         color='#02B1AB'
                         onClick={() => {
-                          setCheckedProduct(product.productId || '');
-                          setOpenedVoucher(!openedVoucher);
+                          if (!openedVoucher) {
+                            setCheckedProduct(product.productId || '');
+                            setOpenedVoucher(true);
+                          } else {
+                            setOpenedVoucher(false);
+                            if (product.productId != checkedProduct) {
+                              setCheckedProduct(product.productId || '');
+                              setOpenedVoucher(true);
+                            } else {
+                              setOpenedVoucher(false);
+                            }
+                          }
                         }}
                         className=' cursor-pointer'
                       >
                         Chọn
                       </Text>
                     ) : (
-                      <Text>{voucherChosen[index][0].code}</Text>
+                      <Text
+                        color='#02B1AB'
+                        onClick={() => {
+                          setCheckedProduct(product.productId || '');
+                          setOpenedVoucher(!openedVoucher);
+                        }}
+                        className=' cursor-pointer'
+                      >
+                        {voucherChosen[index][0].code}
+                      </Text>
                     )}
                   </Group>
                 </Grid.Col>
@@ -621,7 +695,7 @@ const Payment = () => {
               setPhone(event.currentTarget.value);
             }}
           />
-          <TextInput
+          <Textarea
             label='Địa chỉ nhận hàng'
             withAsterisk
             className='w-full'
@@ -664,19 +738,29 @@ const Payment = () => {
         size={500}
         position={{ bottom: 10, right: 10 }}
       >
-        <Group className='w-full justify-between mt-3'>
-          <Text size='sm' mb='xs' fw={500}>
-            Khuyến mãi
-          </Text>
-          <Text size='xs' color='gray'>
-            Áp dụng tối đa 1
-          </Text>
-        </Group>
+        <Stack gap={0} className='w-full mt-3'>
+          <Text className=' text-[12px]'>Khuyến mãi</Text>
+          <Group className='justify-between items-center mb-4'>
+            <Text size='sm' fw={500} className=' text-ellipsis'>
+              {products[id2Index[checkedProduct]]
+                ? products[id2Index[checkedProduct]].product_name
+                : ''}
+            </Text>
+            <Text size='xs' color='gray'>
+              Áp dụng tối đa 1
+            </Text>
+          </Group>
+        </Stack>
+
         <VoucherPayment
           productId={checkedProduct}
-          setCheckedVoucher={setCheckedVoucher}
-          checkedVoucher={checkedVoucher}
           setOpenedVoucher={setOpenedVoucher}
+          orderValue={
+            products[id2Index[checkedProduct]]
+              ? products[id2Index[checkedProduct]].product_price *
+                products[id2Index[checkedProduct]].product_quantity
+              : 0
+          }
           voucherChosen={voucherChosen[id2Index[checkedProduct] | 0]}
           checkOut={checkOut}
         />

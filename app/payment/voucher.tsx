@@ -1,23 +1,23 @@
+'use client';
 import Voucher from '@/components/Vouchers/voucher';
 import voucherService from '@/services/voucherService';
-import { Button, LoadingOverlay, Stack } from '@mantine/core';
+import { Button, Divider, LoadingOverlay, Stack } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 const VoucherPayment = ({
   productId,
-  checkedVoucher,
-  setCheckedVoucher,
   setOpenedVoucher,
   voucherChosen,
   checkOut,
+  orderValue,
 }: {
   productId: string;
-  checkedVoucher: any;
-  setCheckedVoucher: any;
   setOpenedVoucher: any;
   voucherChosen: any;
   checkOut: any;
+  orderValue: number;
 }) => {
   // fake voucher
   const fakevouchers = [
@@ -52,25 +52,33 @@ const VoucherPayment = ({
     queryFn: () => voucherService.getVoucherOfProduct(productId),
   });
 
+  const [checked, setChecked] = useState(voucherChosen[0]);
+
   return (
     <Stack align='center' justify='center'>
       {vouchers.data &&
         vouchers.data.map((voucher: any) => (
-          <Voucher
-            key={voucher._id}
-            image={
-              'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7'
-            }
-            title={voucher.discount_name}
-            description={voucher.discount_description}
-            expiry={voucher.discount_end_date}
-            detail={voucher.discount_value}
-            status={voucher.discount_is_active}
-            setChecked={setCheckedVoucher}
-            index={voucher._id}
-            code={voucher.discount_code}
-            isChecked={voucher._id === checkedVoucher._id}
-          />
+          <div className=' w-full h-full'>
+            <Voucher
+              key={voucher._id}
+              image={
+                'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7'
+              }
+              title={voucher.discount_name}
+              description={voucher.discount_description}
+              expiry={voucher.discount_end_date}
+              detail={voucher.discount_value}
+              status={orderValue >= voucher.discount_min_order_value}
+              setChecked={setChecked}
+              index={voucher._id}
+              code={voucher.discount_code}
+              isChecked={voucher._id === checked._id}
+              discount_min_order_value={voucher.discount_min_order_value}
+              type={voucher.discount_type}
+              value={voucher.discount_value}
+            />
+            {/* <Divider my='sm' /> */}
+          </div>
         ))}
       {vouchers.isPending && (
         <LoadingOverlay
@@ -81,9 +89,14 @@ const VoucherPayment = ({
       )}
       <Button
         onClick={() => {
-          toast.success('Chọn voucher thành công.');
-          voucherChosen[1](checkedVoucher);
           setOpenedVoucher(false);
+          if (checked._id === 'remove' && checked.code === 'remove') {
+            voucherChosen[1]('');
+            toast.success('Bỏ áp dụng voucher thành công.');
+          } else {
+            voucherChosen[1](checked);
+            toast.success('Áp dụng voucher thành công.');
+          }
           checkOut.mutate();
         }}
         className=' w-full bg-0-primary-color-6 '
