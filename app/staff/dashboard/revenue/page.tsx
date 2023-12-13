@@ -86,7 +86,6 @@ export default function RevenuePage() {
 
     return (
         <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
-
             <Tabs
                 variant='default'
                 orientation="vertical"
@@ -100,7 +99,6 @@ export default function RevenuePage() {
                 </div>
                 {tabPanels}
             </Tabs>
-
         </ScrollArea>
     )
 }
