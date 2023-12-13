@@ -9,6 +9,8 @@ import {
   Divider,
   Rating,
   Badge,
+  Overlay,
+  AspectRatio,
 } from '@mantine/core';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
 import { useContext, useState } from 'react';
@@ -45,21 +47,36 @@ export const PCard = ({ data }: PCardProps) => {
       ? data.product_quantity
       : Math.floor(data.product_quantity / 1000) + 'K';
 
+  let quantityNumber = 0;
+  if (data.product_quantity && data.product_quantity != 0) {
+    quantityNumber = data.product_quantity;
+  }
+
   return (
     <Card
-      className={`${Styles.containerCard}`}
+      className={`${Styles.containerCard} shadow-md mt-[10px] border-[1px] border-gray-300`}
       pos='relative'
       radius='4'
       withBorder
     >
       <Card.Section component={Link} href={`/products/${data._id}`}>
-        <Image
-          alt='product'
-          // height={9}
-          h={147}
-          w={200}
-          src={data.product_thumb}
-        />
+        <AspectRatio ratio={200 / 150}>
+          <Image
+            alt='product'
+            // height={9}
+            h={147}
+            w={200}
+            src={data.product_thumb}
+            className=' border-b-[1px] border-gray-300 '
+          />
+          {quantityNumber == 0 && (
+            <div className='flex w-full absolute top-50 left-30 items-start justify-center'>
+              <Text className=' text-[30px] text-red-400 font-bold'>
+                Hết hàng
+              </Text>
+            </div>
+          )}
+        </AspectRatio>
       </Card.Section>
       <Flex
         justify={'space-around'}
@@ -68,7 +85,6 @@ export const PCard = ({ data }: PCardProps) => {
         w={'100%'}
         className='h-[100px] justify-around w-[100%] flex-col'
       >
-        <Divider />
         <div className='h-[60px]'>
           <Text
             className='my-2 text-[0.875rem] text-ellipsis gap-0 tracking-tighter'
@@ -108,7 +124,9 @@ export const PCard = ({ data }: PCardProps) => {
               // product_ratingAverage: number | null
               // product_categories: string[] | null
               // productId: string | null
-              if (user?.user) {
+              if (quantityNumber == 0) {
+                toast.error('Sản phẩm đã hết hàng.');
+              } else if (user?.user) {
                 if (cart) {
                   const newCart = structuredClone(cart);
                   if (newCart.cart_products == 0) {

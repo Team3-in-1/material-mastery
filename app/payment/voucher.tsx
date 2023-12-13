@@ -58,9 +58,8 @@ const VoucherPayment = ({
     <Stack align='center' justify='center'>
       {vouchers.data &&
         vouchers.data.map((voucher: any) => (
-          <div className=' w-full h-full'>
+          <div key={voucher._id} className=' w-full h-full'>
             <Voucher
-              key={voucher._id}
               image={
                 'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7'
               }

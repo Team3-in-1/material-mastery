@@ -32,7 +32,7 @@ class OrderService {
                 'x-api-key': constant.API_KEY,
                 'x-client-id': this.user.user._id,
                 'authorization': this.user.tokenPair.accessToken,
-            }}).then((res)=>{return res.data.metadata}).catch((err)=>{console.log(err);});
+            }}).then((res)=>{return res.data.statusCode}).catch((err)=>{return err.response.status});
     }
 }
 

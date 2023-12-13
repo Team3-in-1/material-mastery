@@ -153,13 +153,18 @@ const Payment = () => {
     },
     onSuccess: (res) => {
       console.log('res', res);
-      toast.success('Thanh toán thành công.');
+      if (res == 200) {
+        toast.success('Thanh toán thành công.');
+        router.replace('/account/orders');
+      } else if (res == 400) {
+        toast.error('Sản phẩm không còn đủ hàng. ');
+        router.back();
+      }
     },
-    onError: () => {
-      toast.success('Thanh toán thất bại.');
-    },
-    onSettled: () => {
-      router.replace('/');
+    onError: (error) => {
+      console.log('error', error);
+      toast.error('Thanh toán thất bại.');
+      router.back();
     },
   });
 
