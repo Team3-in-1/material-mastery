@@ -77,8 +77,8 @@ function Home() {
             py={10}
             style={{
               textAlign: 'left',
-              borderRadius: '1rem',
             }}
+            className=' rounded-md'
           >
             <Text size='lg' fw={700} pt={10}>
               Trang chủ
@@ -95,6 +95,7 @@ function Home() {
                     fontSize: '0.85rem',
                     textDecoration: 'none',
                   }}
+                  className=' hover:bg-slate-100 rounded-[8px]'
                 >
                   {category.category_name}
                 </Link>
