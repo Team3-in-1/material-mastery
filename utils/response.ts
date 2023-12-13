@@ -121,3 +121,24 @@ export interface Order {
   createdAt: Date
   updatedAt: Date
 }
+export interface VoucherInterface {
+  _id: string
+  discount_name: string
+  discount_description: string
+  discount_code: string
+  discount_value: number
+  discount_max_uses: number
+  discount_max_uses_per_user: number
+  discount_user_used: any[]
+  discount_type: string
+  discount_start_date: string
+  discount_end_date: string
+  discount_uses_count: number
+  discount_min_order_value: number
+  discount_is_active: boolean
+  discount_apply_to: string
+  discount_products: any[]
+  createdAt: string
+  updatedAt: string
+  __v: number
+}

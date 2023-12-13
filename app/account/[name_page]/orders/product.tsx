@@ -8,8 +8,8 @@ const Product = () => {
     <Group className=' items-center justify-between w-full'>
       <Group>
         <Image
-          w={50}
           h={50}
+          w='auto'
           component={NextImage}
           src={logo}
           alt='product image'
@@ -19,7 +19,7 @@ const Product = () => {
           <Text>x10</Text>
         </Stack>
       </Group>
-      <Group>
+      <Group className='gap-0'>
         <Text>{formatMoney(2000)}</Text>
         <Text>đ</Text>
       </Group>

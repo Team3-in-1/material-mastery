@@ -12,6 +12,10 @@ import {
   Radio,
   TextInput,
   Dialog,
+  LoadingOverlay,
+  Box,
+  Loader,
+  Popover,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMapPinFilled, IconArrowNarrowLeft } from '@tabler/icons-react';
@@ -21,10 +25,9 @@ import { CartProduct, User } from '@/utils/response';
 import queryClient from '@/helpers/client';
 import { formatMoney } from '@/utils/string';
 import { useContext, useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import useLogin from '@/helpers/useLogin';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { add } from 'cypress/types/lodash';
 import { checkPhoneFormat } from '@/utils/regex';
@@ -32,6 +35,8 @@ import Voucher from '@/components/Vouchers/voucher';
 import dynamic from 'next/dynamic';
 import '../global.css';
 import UserContext from '@/contexts/UserContext';
+import VoucherPayment from './voucher';
+import OrderService from '@/services/orderService';
 
 const Payment = () => {
   const router = useRouter();
@@ -52,15 +57,10 @@ const Payment = () => {
   const [openedVoucher, setOpenedVoucher] = useState(false);
 
   // cal cost
-  const [cost, setCost] = useState(0);
-  const [totalCost, setTotalCost] = useState(0);
-  useEffect(() => {
-    let cost = 0;
-    products.map((product) => {
-      cost += product.product_price * product.product_quantity;
-    });
-    setCost(cost);
-  }, []);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [feeShip, setFeeShip] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
 
   // get product from cart page
   const products: CartProduct[] =
@@ -130,37 +130,112 @@ const Payment = () => {
     return date + '-' + month + '-' + year;
   };
 
-  // fake voucher
-  const vouchers = [
-    {
-      image: 'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7',
-      title: 'Giảm 20K',
-      description: 'Cho đơn hàng tối thiểu 500k',
-      expiry: '31/12/2023',
-      detail: '',
-      status: true,
-    },
-    {
-      image: 'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7',
-      title: 'Giảm 50K',
-      description: 'Cho đơn hàng tối thiểu 2 triệu',
-      expiry: '31/12/2023',
-      detail: '',
-      status: false,
-    },
+  //const [checkedVoucher, setCheckedVoucher] = useState('');
+  const [checkedProduct, setCheckedProduct] = useState('');
 
-    {
-      image: 'https://i.scdn.co/image/ab671c3d0000f43092e9631e68790de3634409e7',
-      title: 'Giảm 50k',
-      description: 'Cho đơn hàng tối thiểu 500k',
-      expiry: '31/12/2023',
-      detail: '',
-      status: true,
+  const voucherChosen: any = [];
+  const id2Index: any = {};
+  for (let i = 0; i < products.length; i++) {
+    const b = useState('');
+    const c = useState('');
+
+    voucherChosen.push(b);
+
+    const key: any = products[i].productId ? products[i].productId : -1;
+    id2Index[key] = i;
+  }
+
+  const orderMutation = useMutation({
+    mutationKey: ['order'],
+    mutationFn: (orders) => {
+      const orderService = new OrderService(user);
+      return orderService.order(address, 'pending', 'upon receipt', '', orders);
     },
-  ];
+    onSuccess: (res) => {
+      console.log('res', res);
+      if (res == 200) {
+        toast.success('Thanh toán thành công.');
+        router.replace('/account/orders');
+      } else if (res == 400) {
+        toast.error('Sản phẩm không còn đủ hàng. ');
+        router.back();
+      }
+    },
+    onError: (error) => {
+      console.log('error', error);
+      toast.error('Thanh toán thất bại.');
+      router.back();
+    },
+  });
 
-  const [checkedVoucher, setCheckedVoucher] = useState(0);
+  const [method, setMethod] = useState(true);
 
+  const checkOut = useMutation({
+    mutationKey: ['checkout'],
+    mutationFn: () => {
+      const payload: any = [];
+      products.map((product) => {
+        const id: any = product.productId ? product.productId : 0;
+
+        if (voucherChosen[id2Index[id]][0]._id) {
+          payload.push({
+            discounts: [
+              {
+                discountId: voucherChosen[id2Index[id]][0]._id,
+                code: voucherChosen[id2Index[id]][0].code,
+              },
+            ],
+            products: [
+              {
+                price: product.product_price,
+                quantity: product.product_quantity,
+                productId: product.productId,
+              },
+            ],
+          });
+        } else {
+          payload.push({
+            discounts: [],
+            products: [
+              {
+                price: product.product_price,
+                quantity: product.product_quantity,
+                productId: product.productId,
+              },
+            ],
+          });
+        }
+      });
+      const orderService = new OrderService(user);
+      return orderService.checkOut(payload);
+    },
+    onSuccess: (res) => {
+      setTotalPrice(res.totalPrice);
+      setFeeShip(res.feeShip);
+      setTotalDiscount(res.totalDiscount);
+      setFinalPrice(res.finalPrice);
+    },
+    gcTime: 0,
+  });
+
+  if (products.length == 0) {
+    router.replace('/cart');
+  } else {
+    useEffect(() => {
+      checkOut.mutate();
+    }, []);
+  }
+
+  const [isOrderProcessing, setIsOrderProcessing] = useState(false);
+  // if (checkOut.isPending) {
+  //   return (
+  //     <LoadingOverlay
+  //       visible={true}
+  //       zIndex={1000}
+  //       overlayProps={{ radius: 'sm', blur: 2 }}
+  //     />
+  //   );
+  // }
   return (
     // devide page into 2 col
 
@@ -168,7 +243,7 @@ const Payment = () => {
       gap={15}
       justify='center'
       align='start'
-      className='relative z-[1] bg-[#f1f3f5] min-h-full w-full h-fit mt-[120px] mb-[30px] px-[100px] overflow-hidden'
+      className='relative z-[1] bg-[#f1f3f5] min-h-full w-full h-fit mt-[100px] mb-[30px] px-[100px] overflow-hidden'
     >
       {/*col 1*/}
       <Stack className='flex-[2]'>
@@ -178,7 +253,7 @@ const Payment = () => {
             <Group>
               <IconMapPinFilled style={{ color: '#02B1AB' }} />
               <IconArrowNarrowLeft
-                className=' absolute top-[10px] left-[50px] h-[30px] cursor-pointer'
+                className=' absolute top-[8px] left-[50px] h-[30px] cursor-pointer'
                 color='#02B1AB'
                 onClick={() => {
                   router.back();
@@ -186,9 +261,73 @@ const Payment = () => {
               />
               <Text color='#02B1AB'>Thông tin nhận hàng</Text>
             </Group>
-            <Text color='#02B1AB' onClick={toggle} className=' cursor-pointer'>
+
+            <Button
+              c='#02B1AB'
+              bg='white'
+              onClick={toggle}
+              // className=' cursor-pointer'
+            >
               Thay đổi
-            </Text>
+            </Button>
+            {/* <Popover opened={opened} width={300}>
+              <Popover.Target>
+                <Button
+                  c='#02B1AB'
+                  bg='white'
+                  onClick={toggle}
+                  // className=' cursor-pointer'
+                >
+                  Thay đổi
+                </Button>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text size='sm' mb='xs' fw={500}>
+                  Thay đổi thông tin nhận hàng
+                </Text>
+
+                <Stack align='center' justify='center'>
+                  <TextInput
+                    label='Số điện thoại nhận hàng'
+                    withAsterisk
+                    className='w-full'
+                    value={phone}
+                    onChange={(event) => {
+                      setPhone(event.currentTarget.value);
+                    }}
+                  />
+                  <Textarea
+                    label='Địa chỉ nhận hàng'
+                    withAsterisk
+                    className='w-full'
+                    disabled={!enableButton}
+                    value={address}
+                    onChange={(event) => {
+                      setAddress(event.currentTarget.value);
+                    }}
+                  />
+                  <Button
+                    onClick={() => {
+                      if (checkPhoneFormat(phone)) {
+                        toast.error('Số điện thoại không hợp lệ');
+                      } else if (enableButton && address.length == 0) {
+                        toast.error('Địa chỉ giao hàng không được để trống.');
+                      } else {
+                        userObject.user.phone = phone;
+                        if (enableButton) {
+                          userObject.user.user_attributes.address = address;
+                        }
+                        close();
+                        toast.success('Thay đổi thành công.');
+                      }
+                    }}
+                    className=' w-full bg-0-primary-color-6 '
+                  >
+                    Chỉnh sửa
+                  </Button>
+                </Stack>
+              </Popover.Dropdown>
+            </Popover> */}
           </Group>
           <Stack>
             <Group>
@@ -222,7 +361,7 @@ const Payment = () => {
           <Grid>
             <Grid.Col
               style={{ display: 'flex', justifyContent: 'center' }}
-              span={7}
+              span={5}
             >
               <Text color='#252525'>Sản phẩm</Text>
             </Grid.Col>
@@ -244,9 +383,15 @@ const Payment = () => {
             >
               <Text color='#252525'>Thành tiền</Text>
             </Grid.Col>
+            <Grid.Col
+              span={2}
+              style={{ display: 'flex', justifyContent: 'center' }}
+            >
+              <Text color='#252525'>Khuyến mãi</Text>
+            </Grid.Col>
           </Grid>
 
-          {products.map((product) => {
+          {products.map((product, index) => {
             return (
               <Grid key={product.productId}>
                 <Grid.Col span={2}>
@@ -261,7 +406,7 @@ const Payment = () => {
                     />
                   </Group>
                 </Grid.Col>
-                <Grid.Col span={5}>
+                <Grid.Col span={3}>
                   <Group
                     justify='flex-start'
                     align='center'
@@ -322,12 +467,56 @@ const Payment = () => {
                     </Text>
                   </Group>
                 </Grid.Col>
+                <Grid.Col
+                  span={2}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Group align='start' gap={0}>
+                    {voucherChosen[index][0] == '' ? (
+                      <Text
+                        color='#02B1AB'
+                        onClick={() => {
+                          if (!openedVoucher) {
+                            setCheckedProduct(product.productId || '');
+                            setOpenedVoucher(true);
+                          } else {
+                            setOpenedVoucher(false);
+                            if (product.productId != checkedProduct) {
+                              setCheckedProduct(product.productId || '');
+                              setOpenedVoucher(true);
+                            } else {
+                              setOpenedVoucher(false);
+                            }
+                          }
+                        }}
+                        className=' cursor-pointer'
+                      >
+                        Chọn
+                      </Text>
+                    ) : (
+                      <Text
+                        color='#02B1AB'
+                        onClick={() => {
+                          setCheckedProduct(product.productId || '');
+                          setOpenedVoucher(!openedVoucher);
+                        }}
+                        className=' cursor-pointer'
+                      >
+                        {voucherChosen[index][0].code}
+                      </Text>
+                    )}
+                  </Group>
+                </Grid.Col>
               </Grid>
             );
           })}
         </Stack>
 
-        {/*promo*/}
+        {/* promo
         <Group
           className='bg-white rounded-[10px] w-full p-[30px]'
           justify='space-between'
@@ -340,19 +529,24 @@ const Payment = () => {
           >
             Chọn khuyến mãi
           </Text>
-        </Group>
+        </Group> */}
 
         {/*payment method*/}
         <Stack className='w-full rounded-[10px] py-[24px] px-[32px] bg-white'>
           <Text fw={700}>Phương thức thanh toán</Text>
-          <Radio.Group>
-            <Stack>
-              <Radio label='Thanh toán khi nhận hàng' value='1' />
-              <Radio label='Thanh toán khi nhận hàng' value='2' />
+
+          <Stack className=' cursor-pointer'>
+            <Radio
+              label='Thanh toán khi nhận hàng'
+              value='1'
+              checked={method}
+              onChange={(event) => {}}
+              onClick={() => setMethod(!method)}
+            />
+            {/* <Radio label='Thanh toán khi nhận hàng' value='2' />
               <Radio label='Thanh toán khi nhận hàng' value='3' />
-              <Radio label='Thanh toán khi nhận hàng' value='4' />
-            </Stack>
-          </Radio.Group>
+              <Radio label='Thanh toán khi nhận hàng' value='4' /> */}
+          </Stack>
         </Stack>
       </Stack>
       {/*col 2*/}
@@ -368,41 +562,97 @@ const Payment = () => {
           <Divider />
           <Group justify='space-between'>
             <Text>Tạm tính</Text>
-            <Group gap={0} align='start'>
-              <Text>{formatMoney(cost)}</Text>
-              <Text size='10px'>đ</Text>
-            </Group>
+            {checkOut.isPending ? (
+              <Loader color='#02B1AB' size={10} />
+            ) : (
+              <Group gap={0} align='start'>
+                <Text>{formatMoney(totalPrice)}</Text>
+                <Text size='10px'>đ</Text>
+              </Group>
+            )}
           </Group>
           <Group justify='space-between'>
             <Text>Phí vận chuyển</Text>
-            <Group gap={0} align='start'>
-              <Text>00.00</Text>
-              <Text size='10px'>đ</Text>
-            </Group>
+            {checkOut.isPending ? (
+              <Loader color='#02B1AB' size={10} />
+            ) : (
+              <Group gap={0} align='start'>
+                <Text>{formatMoney(feeShip)}</Text>
+                <Text size='10px'>đ</Text>
+              </Group>
+            )}
           </Group>
           <Group justify='space-between'>
             <Text>Khuyến mãi</Text>
-            <Group gap={0} align='start'>
-              <Text>00.00</Text>
-              <Text size='10px'>đ</Text>
-            </Group>
+            {checkOut.isPending ? (
+              <Loader color='#02B1AB' size={10} />
+            ) : (
+              <Group gap={0} align='start'>
+                <Text>{formatMoney(totalDiscount)}</Text>
+                <Text size='10px'>đ</Text>
+              </Group>
+            )}
           </Group>
           <Divider />
           <Group justify='space-between'>
             <Text>Tổng tiền</Text>
-            <Group gap={0} align='start'>
-              <Text color='#02B1AB' fw={600} size='30px'>
-                00.00
-              </Text>
-              <Text color='#02B1AB' fw={600} size='15px'>
-                đ{' '}
-              </Text>
-            </Group>
+            {checkOut.isPending ? (
+              <Loader color='#02B1AB' size={10} />
+            ) : (
+              <Group gap={0} align='start'>
+                <Text color='#02B1AB' fw={600} size='30px'>
+                  {formatMoney(finalPrice)}
+                </Text>
+                <Text color='#02B1AB' fw={600} size='15px'>
+                  đ{' '}
+                </Text>
+              </Group>
+            )}
           </Group>
+
           <Button
             className=' w-full bg-0-primary-color-6'
             onClick={() => {
               if (enableButton) {
+                if (method) {
+                  const orders: any = [];
+                  products.map((product) => {
+                    const id: any = product.productId ? product.productId : 0;
+
+                    if (voucherChosen[id2Index[id]][0]._id) {
+                      orders.push({
+                        discounts: [
+                          {
+                            discountId: voucherChosen[id2Index[id]][0]._id,
+                            code: voucherChosen[id2Index[id]][0].code,
+                          },
+                        ],
+                        products: [
+                          {
+                            price: product.product_price,
+                            quantity: product.product_quantity,
+                            productId: product.productId,
+                          },
+                        ],
+                      });
+                    } else {
+                      orders.push({
+                        discounts: [],
+                        products: [
+                          {
+                            price: product.product_price,
+                            quantity: product.product_quantity,
+                            productId: product.productId,
+                          },
+                        ],
+                      });
+                    }
+                  });
+                  orderMutation.mutate(orders);
+                  setIsOrderProcessing(true);
+                } else {
+                  toast.error('Bạn chưa chọn hình thức thanh toán.');
+                }
               } else {
                 toast.error(
                   'Bạn không thể thanh toán khi không có đỉa chỉ giao hàng.'
@@ -413,12 +663,14 @@ const Payment = () => {
             Thanh toán
           </Button>
         </Stack>
+
         <Stack className='bg-white p-8 rounded-[10px]'>
           <Text className='font-medium'>Ghi chú</Text>
           <Textarea placeholder='Ghi chú' />
         </Stack>
       </Stack>
 
+      {/* change information */}
       <Dialog
         opened={opened}
         withCloseButton
@@ -448,7 +700,7 @@ const Payment = () => {
               setPhone(event.currentTarget.value);
             }}
           />
-          <TextInput
+          <Textarea
             label='Địa chỉ nhận hàng'
             withAsterisk
             className='w-full'
@@ -491,43 +743,38 @@ const Payment = () => {
         size={500}
         position={{ bottom: 10, right: 10 }}
       >
-        <Group className='w-full justify-between mt-3'>
-          <Text size='sm' mb='xs' fw={500}>
-            Khuyến mãi
-          </Text>
-          <Text size='xs' color='gray'>
-            Áp dụng tối đa 1
-          </Text>
-        </Group>
-
-        <Stack align='center' justify='center'>
-          {vouchers.map((voucher, index) => (
-            <Voucher
-              key={voucher.title}
-              image={voucher.image}
-              title={voucher.title}
-              description={voucher.description}
-              expiry={voucher.expiry}
-              detail={voucher.detail}
-              status={voucher.status}
-              setChecked={setCheckedVoucher}
-              index={index}
-              isChecked={index === checkedVoucher}
-            />
-          ))}
-          <Button
-            onClick={() => {
-              toast.success('Chọn voucher thành công.');
-              setOpenedVoucher(false);
-            }}
-            className=' w-full bg-0-primary-color-6 '
-          >
-            Áp dụng
-          </Button>
+        <Stack gap={0} className='w-full mt-3'>
+          <Text className=' text-[12px]'>Khuyến mãi</Text>
+          <Group className='justify-between items-center mb-4'>
+            <Text size='sm' fw={500} className=' text-ellipsis'>
+              {products[id2Index[checkedProduct]]
+                ? products[id2Index[checkedProduct]].product_name
+                : ''}
+            </Text>
+            <Text size='xs' color='gray'>
+              Áp dụng tối đa 1
+            </Text>
+          </Group>
         </Stack>
-      </Dialog>
 
-      <Toaster position='bottom-center' reverseOrder={false} />
+        <VoucherPayment
+          productId={checkedProduct}
+          setOpenedVoucher={setOpenedVoucher}
+          orderValue={
+            products[id2Index[checkedProduct]]
+              ? products[id2Index[checkedProduct]].product_price *
+                products[id2Index[checkedProduct]].product_quantity
+              : 0
+          }
+          voucherChosen={voucherChosen[id2Index[checkedProduct] | 0]}
+          checkOut={checkOut}
+        />
+      </Dialog>
+      <LoadingOverlay
+        visible={isOrderProcessing}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+      />
     </Group>
   );
 };
