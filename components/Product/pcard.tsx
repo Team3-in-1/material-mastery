@@ -38,8 +38,8 @@ export const PCard = ({ data }: PCardProps) => {
       console.log('productId', productId);
       return cartServices.addProduct(productId, 1);
     },
-    onSuccess: () => {},
-    onError: () => {},
+    onSuccess: () => { },
+    onError: () => { },
   });
 
   const productQuantity =
@@ -64,16 +64,14 @@ export const PCard = ({ data }: PCardProps) => {
           <Image
             alt='product'
             // height={9}
-            h={147}
+            // h={147}
             w={200}
             src={data.product_thumb}
             className=' border-b-[1px] border-gray-300 '
           />
           {quantityNumber == 0 && (
-            <div className='flex w-full absolute top-50 left-30 items-start justify-center'>
-              <Text className=' text-[30px] text-red-400 font-bold'>
-                Hết hàng
-              </Text>
+            <div className='flex w-full h-full absolute top-50 left-30 items-start justify-center bg-gray-200/80'>
+              <Badge>Hết hàng</Badge>
             </div>
           )}
         </AspectRatio>
