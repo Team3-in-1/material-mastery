@@ -1,4 +1,4 @@
-
+'use client'
 import { DatePickerInput, DateValue, DatesRangeValue, MonthPickerInput, YearPickerInput } from "@mantine/dates"
 import { IconCalendar } from "@tabler/icons-react"
 import { useState } from "react"
