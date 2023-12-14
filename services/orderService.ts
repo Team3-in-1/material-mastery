@@ -1,15 +1,16 @@
 import { constant } from "@/utils/constant";
+import { UserInterface } from "@/utils/response";
 import axios from "axios";
 
 class OrderService {
-    private user: any;
+    private user: UserInterface;
     private hearders : any;
     constructor(user: any){
         this.user = user;
         this.hearders = {
             'x-api-key': constant.API_KEY,
-            'x-client-id': this.user.user._id,
-            'authorization': this.user.tokenPair.accessToken,
+            'x-client-id': this.user.userId,
+            'authorization': this.user.accessToken,
         }
     }
     checkOut = async (orders: any = []) : Promise<any> => {

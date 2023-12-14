@@ -24,7 +24,7 @@ import defaultAvatar from '@/public/pic/Avatar.png';
 import queryClient from '@/helpers/client';
 import { useRouter } from 'next/navigation';
 import { IconMapPinFilled } from '@tabler/icons-react';
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { event } from 'cypress/types/jquery';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import useLogin from '@/helpers/useLogin';
@@ -40,32 +40,53 @@ import dynamic from 'next/dynamic';
 import UserContext from '@/contexts/UserContext';
 
 const DetailsPage = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
-  if (!user.user) {
-    return <></>;
-  }
+  const userInfor = useQuery({
+    queryKey: ['userInfor'],
+    queryFn: () => {
+      return userService.getUserById(user);
+    },
+    enabled: !!user,
+    staleTime: Infinity,
+    gcTime: 0,
+  });
+
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [avatar, setAvatar] = useState('');
+  const [avatarInput, setAvatarInput] = useState('');
+  const [email, setEmail] = useState('');
 
   const [enableBox1, setEnableBox1] = useState(false);
   const [enableBox2, setEnableBox2] = useState(false);
 
   // store initial value
-  let initialName =
-    typeof window !== 'undefined' ? user?.user.display_name : '';
-  let initialEmail = typeof window !== 'undefined' ? user?.user.email : '';
-  let initialPhone = typeof window !== 'undefined' ? user?.user.phone : '';
-  let initialAddress =
-    typeof window !== 'undefined' ? user?.user.user_attributes.address : '';
-  let initialImage =
-    typeof window !== 'undefined' && user?.user.user_attributes.image
-      ? user?.user.user_attributes.avatar
-      : 'https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/289149087_532680565185439_2587124243099315687_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9c7eae&_nc_eui2=AeHlj-MAcPCkW6Sd1ZZINLX3dnM5XV8os_B2czldXyiz8DYpOp_w7W8fpY4T3y3bu4Av1LeBPAcSUXou-hH6qBbe&_nc_ohc=NLO3EECZx1QAX_XqSm2&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfBz6S6rudC72TW0LONnocrZQ4cIsc4UNFHt9IKBOmWiuw&oe=657B1067';
+  const isSet = useRef(false);
+  let initialName = '';
+  let initialEmail = '';
+  let initialPhone = '';
+  let initialAddress = '';
+  let initialImage = '';
 
-  const [name, setName] = useState(initialName);
-  const [phone, setPhone] = useState(initialPhone);
-  const [address, setAddress] = useState(initialAddress);
-  const [avatar, setAvatar] = useState(initialImage);
-  const [avatarInput, setAvatarInput] = useState('');
+  if (!isSet.current && userInfor.isSuccess) {
+    initialName = userInfor.data.display_name;
+    initialEmail = userInfor.data.email;
+    initialPhone = userInfor.data.phone;
+    initialAddress = userInfor.data.user_attributes.address;
+    initialImage = userInfor.data.user_attributes.avatar
+      ? userInfor.data.user_attributes.avatar
+      : 'https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/289149087_532680565185439_2587124243099315687_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9c7eae&_nc_eui2=AeHlj-MAcPCkW6Sd1ZZINLX3dnM5XV8os_B2czldXyiz8DYpOp_w7W8fpY4T3y3bu4Av1LeBPAcSUXou-hH6qBbe&_nc_ohc=NLO3EECZx1QAX_XqSm2&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfBz6S6rudC72TW0LONnocrZQ4cIsc4UNFHt9IKBOmWiuw&oe=657B1067';
+    setName(initialName);
+    setPhone(initialPhone);
+    setAddress(initialAddress);
+    setAvatar(initialImage);
+    setAvatarInput(initialImage);
+    setEmail(initialEmail);
+
+    isSet.current = true;
+  }
 
   const returnInitialValue = (type: number) => {
     if (type == 0) {
@@ -74,9 +95,9 @@ const DetailsPage = () => {
     } else setAddress(initialAddress);
   };
 
-  const userId = typeof window !== 'undefined' ? user.user._id : '';
+  const userId = user.userId;
 
-  const token = typeof window !== 'undefined' ? user.tokenPair.accessToken : '';
+  const token = user.accessToken;
   const [opened, { open, close }] = useDisclosure(false);
 
   const userMutation = useMutation({
@@ -85,13 +106,6 @@ const DetailsPage = () => {
       userService.updateUser(userId, token, name, phone, address, avatar),
     onSuccess: (res) => {
       toast.success('Cập nhập thành công');
-      initialName = name || '';
-      initialPhone = phone || '';
-      initialAddress = address || '';
-      const newUser = structuredClone(user);
-      newUser.user = res;
-      console.log('user', user);
-      if (newUser) setUser(newUser);
     },
     onError: (err) => {
       toast.error('Cập nhập thất bại.');
@@ -213,7 +227,7 @@ const DetailsPage = () => {
           <TextInput
             withAsterisk
             label={'Email'}
-            value={initialEmail}
+            value={email}
             disabled={true}
           />
           <TextInput
@@ -274,6 +288,13 @@ const DetailsPage = () => {
           }}
         />
       </Stack>
+      {userInfor.isPending && (
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+        />
+      )}
     </Stack>
   );
 };

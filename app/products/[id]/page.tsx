@@ -45,7 +45,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     refetchOnWindowFocus: false,
   });
 
-  const productId = product.data?._id || '';
+  const productId = params.id;
   const category: any = queryClient.getQueryData(['categories']);
   let categoryId = '65427434680cb0bd8f9d776c';
 
@@ -61,11 +61,9 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       return true;
     });
   }
-
   const comments = useQuery({
     queryKey: ['comments'],
-    queryFn: () => CommentService.getAllComments(productId || ''),
-    enabled: !!productId,
+    queryFn: () => CommentService.getAllComments(productId),
     refetchOnWindowFocus: false,
   });
 
@@ -103,9 +101,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       const cartService = new CartService(user);
       return cartService.addProduct(productId, quantity);
     },
-    onSuccess: (res) => {
-      console.log('res', res);
-    },
+    onSuccess: (res) => {},
   });
 
   return (
@@ -208,7 +204,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                 className='w-[110px] lg:w-[300px] bg-[#02B1AB]'
                 disabled={productChosen == null}
                 onClick={() => {
-                  if (user?.user) {
+                  if (user?.userId) {
                     setProductChosen([
                       {
                         product_name: product.data?.product_name,
@@ -371,8 +367,8 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
 
         {/* load comments base on rating score */}
         <Stack>
-          {people?.map(
-            (person: any) =>
+          {people?.map((person: any) => {
+            return (
               (isChoosing == 0 ||
                 isChoosing == (person.comment_rating || 3)) && (
                 <Stack key={person._id}>
@@ -401,7 +397,8 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                   <Divider my='sm' />
                 </Stack>
               )
-          )}
+            );
+          })}
         </Stack>
       </Flex>
       {(product.isRefetching ||

@@ -31,7 +31,6 @@ import UserContext from '@/contexts/UserContext';
 
 export default function Header() {
   const appName = 'Material Mastery';
-  const router = useRouter();
 
   const { user, setUser } = useContext(UserContext);
   if (!user) return <></>;
@@ -50,7 +49,7 @@ export default function Header() {
     >
       <Link
         href={
-          user?.user && user?.user.roles[0] == 'manager'
+          user?.userId && user?.roles[0] == 'manager'
             ? '/staff/dashboard/revenue'
             : '/'
         }
@@ -76,73 +75,9 @@ export default function Header() {
           </Text>
         </Group>
       </Link>
-      {user.user && user?.user.roles[0] != 'manager' && <Search content='' />}
+      {user.userId && user?.roles[0] != 'manager' && <Search content='' />}
 
-      {user?.user ? (
-        // <Flex gap='1rem' align='center' className='hidden-mobile'>
-        //   {/* <LanguagePicker /> */}
-        //   <div className=' relative w-[25px] h-[25px] cursor-pointer'>
-        //     <IconShoppingCart
-        //       onClick={() => {
-        //         router.prefetch('/cart');
-        //         router.push('/cart');
-        //       }}
-        //       color='#02B1AB'
-        //       className={classes.hoverIcon}
-        //     />
-        //     {cartFromServer.data?.cart_products.length != 0 && (
-        //       <Text
-        //         color='red'
-        //         fw={700}
-        //         className='absolute top-[-10px] right-[-10px] text-[red] font-bold'
-        //       >
-        //         {cartFromServer.data?.cart_products.length &&
-        //         cartFromServer.data?.cart_products.length > 99
-        //           ? '+99'
-        //           : cartFromServer.data?.cart_products.length}
-        //       </Text>
-        //     )}
-        //   </div>
-        //   <Menu trigger='hover' openDelay={100} closeDelay={400} zIndex={1002}>
-        //     <Menu.Target>
-        //       <IconUserCircle color='#02B1AB' className={classes.hoverIcon} />
-        //     </Menu.Target>
-        //     <Menu.Dropdown>
-        //       <Menu.Item
-        //         leftSection={
-        //           <IconUser style={{ width: rem(14), height: rem(14) }} />
-        //         }
-        //         onClick={() => handleOnClickOnMenu('details')}
-        //       >
-        //         Thông tin tài khoản
-        //       </Menu.Item>
-        //       <Menu.Item
-        //         leftSection={
-        //           <IconChecklist style={{ width: rem(14), height: rem(14) }} />
-        //         }
-        //         onClick={() => handleOnClickOnMenu('orders')}
-        //       >
-        //         Đơn hàng
-        //       </Menu.Item>
-        //       <Menu.Item
-        //         leftSection={
-        //           <IconTicket style={{ width: rem(14), height: rem(14) }} />
-        //         }
-        //         onClick={() => handleOnClickOnMenu('vouchers')}
-        //       >
-        //         Kho voucher
-        //       </Menu.Item>
-        //       <Menu.Item
-        //         leftSection={
-        //           <IconLogout style={{ width: rem(14), height: rem(14) }} />
-        //         }
-        //         onClick={() => handleOnClickOnMenu('signOut')}
-        //       >
-        //         Đăng xuất
-        //       </Menu.Item>
-        //     </Menu.Dropdown>
-        //   </Menu>
-        // </Flex>
+      {user?.userId ? (
         <LoggedHeader user={user} setUser={setUser} />
       ) : (
         <Flex gap='1rem' align='center' className='hidden-mobile'>

@@ -14,9 +14,6 @@ import NextImage from 'next/image';
 import { CartProduct } from '@/utils/response';
 import { formatMoney } from '@/utils/string';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { string } from 'zod';
-import { is } from 'cypress/types/bluebird';
-import useCart from '@/helpers/useCart';
 
 const CartItem = ({
   data,
@@ -169,7 +166,7 @@ const CartItem = ({
               }
             }}
           >
-            <IconTrash color='#000' stroke={1.5} />
+            <IconTrash color='#000' stroke={1.5} style={{ color: '#000' }} />
           </ActionIcon>
         </Grid.Col>
       </Grid>

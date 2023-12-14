@@ -24,7 +24,7 @@ import exampleImage from '@/public/pic/gach.jpg';
 import { CartProduct, User } from '@/utils/response';
 import queryClient from '@/helpers/client';
 import { formatMoney } from '@/utils/string';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -37,6 +37,7 @@ import '../global.css';
 import UserContext from '@/contexts/UserContext';
 import VoucherPayment from './voucher';
 import OrderService from '@/services/orderService';
+import { userService } from '@/services/userService';
 
 const Payment = () => {
   const router = useRouter();
@@ -46,11 +47,6 @@ const Payment = () => {
   if (!user) {
     return <></>;
   }
-
-  // convert string to object
-  const [userObject, setUserObject] = useState(
-    typeof user == 'string' ? JSON.parse(user) : user
-  );
 
   // control dialog
   const [opened, { toggle, close }] = useDisclosure(false);
@@ -70,16 +66,31 @@ const Payment = () => {
     queryFn: () => products,
   });
 
-  // control text input in dialog
-  const [phone, setPhone] = useState(userObject.user.phone);
-  const [address, setAddress] = useState(
-    userObject.user.user_attributes.address
-  );
+  //get user infor
+  const userInfor = useQuery({
+    queryKey: ['userInfor'],
+    queryFn: () => {
+      return userService.getUserById(user);
+    },
+    enabled: !!user,
+    staleTime: Infinity,
+  });
+
+  // control text input in dialog\
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
 
   // if user address null
-  const [enableButton, setEnableButton] = useState(
-    !!userObject.user.user_attributes.address
-  );
+  const [enableButton, setEnableButton] = useState(false);
+
+  const isSet = useRef(false);
+
+  if (!userInfor.isPending && !isSet.current) {
+    setPhone(userInfor.data.phone);
+    setAddress(userInfor.data.user_attributes.address);
+    setEnableButton(!!userInfor.data.user_attributes.address);
+    isSet.current = true;
+  }
 
   // Estimated delivery date is equal to the current date plus 5
   const getDay = () => {
@@ -236,6 +247,10 @@ const Payment = () => {
   //     />
   //   );
   // }
+
+  if (userInfor.isPending) {
+    return <></>;
+  }
   return (
     // devide page into 2 col
 
@@ -313,9 +328,9 @@ const Payment = () => {
                       } else if (enableButton && address.length == 0) {
                         toast.error('Địa chỉ giao hàng không được để trống.');
                       } else {
-                        userObject.user.phone = phone;
+                        userInfor.data.phone = phone;
                         if (enableButton) {
-                          userObject.user.user_attributes.address = address;
+                          userInfor.data.user_attributes.address = address;
                         }
                         close();
                         toast.success('Thay đổi thành công.');
@@ -331,11 +346,11 @@ const Payment = () => {
           </Group>
           <Stack>
             <Group>
-              <Text>{userObject.user.display_name}</Text>
-              <Text>{userObject.user.phone}</Text>
+              <Text>{userInfor.data.display_name}</Text>
+              <Text>{userInfor.data.phone}</Text>
             </Group>
-            {!!userObject.user.user_attributes.address ? (
-              <Text>{userObject.user.user_attributes.address}</Text>
+            {!!userInfor.data.user_attributes.address ? (
+              <Text>{userInfor.data.user_attributes.address}</Text>
             ) : (
               <Stack gap={0}>
                 <Text className='text-[red]' size='xs'>
@@ -678,8 +693,8 @@ const Payment = () => {
         onClose={() => {
           close();
           setTimeout(() => {
-            setPhone(userObject.user.phone);
-            setAddress(userObject.user.user_attributes.address);
+            setPhone(userInfor.data.phone);
+            setAddress(userInfor.data.user_attributes.address);
           }, 500);
         }}
         radius='md'
@@ -717,9 +732,9 @@ const Payment = () => {
               } else if (enableButton && address.length == 0) {
                 toast.error('Địa chỉ giao hàng không được để trống.');
               } else {
-                userObject.user.phone = phone;
+                userInfor.data.phone = phone;
                 if (enableButton) {
-                  userObject.user.user_attributes.address = address;
+                  userInfor.data.user_attributes.address = address;
                 }
                 close();
                 toast.success('Thay đổi thành công.');
@@ -771,7 +786,7 @@ const Payment = () => {
         />
       </Dialog>
       <LoadingOverlay
-        visible={isOrderProcessing}
+        visible={isOrderProcessing || userInfor.isPending}
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
       />

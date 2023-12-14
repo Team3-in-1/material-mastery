@@ -181,7 +181,11 @@ const Cart = () => {
                 aria-label='Delete'
                 onClick={deleteAll}
               >
-                <IconTrash color='#000' stroke={1.5} />
+                <IconTrash
+                  color='#000'
+                  stroke={1.5}
+                  style={{ color: '#000' }}
+                />
               </ActionIcon>
             </Grid.Col>
           </Grid>

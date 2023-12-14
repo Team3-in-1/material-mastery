@@ -9,7 +9,9 @@ import {
   Alert,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import '../global.css';
 import '@mantine/core/styles.css';
+
 import {
   checkNameFormat,
   checkEmailFormat,
@@ -50,7 +52,7 @@ export function SignUpForm() {
       await userService.register(formdata);
     },
     onSuccess: (res) => {
-      setUser(res);
+      setUser(res).then(router.push('/'));
     },
     onError(error) {
       console.log(error);
@@ -116,7 +118,14 @@ export function SignUpForm() {
           {...form.getInputProps('termsOfService', { type: 'checkbox' })}
         />
       </Stack>
-      <Button id='signup-form-btn' fullWidth h='3rem' mt='1.5rem' type='submit'>
+      <Button
+        id='signup-form-btn'
+        fullWidth
+        h='3rem'
+        mt='1.5rem'
+        type='submit'
+        className=' h-[3rem] mt-[1.5rem] w-full bg-0-primary-color-6 text-white'
+      >
         Đăng ký
       </Button>
       {registerMutation.isPending && (

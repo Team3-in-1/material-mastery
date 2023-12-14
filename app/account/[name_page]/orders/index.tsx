@@ -121,7 +121,7 @@ const OrdersPage = () => {
           })}
         </>
       )}
-      <Pagination total={5} className=' just' />
+      <Pagination total={5} />
     </Stack>
   );
 };

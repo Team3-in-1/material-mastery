@@ -23,32 +23,26 @@ import CartService from '@/services/cartService';
 import { useEffect, useRef, useState } from 'react';
 import queryClient from '@/helpers/client';
 import dynamic from 'next/dynamic';
+import { userService } from '@/services/userService';
+import { UserInterface } from '@/utils/response';
 
 interface OnClickInterface {
   [index: string]: Function;
 }
 
 const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
-  const userObject = typeof user == 'string' ? JSON.parse(user) : user;
-
   const router = useRouter();
   const cartFromServer = useQuery({
     queryKey: ['cart'],
     queryFn: () => {
-      console.log('Get cart');
-
-      const cartService = new CartService(userObject);
+      const cartService = new CartService(user);
       return cartService.getCart();
     },
-    enabled: !!user,
+    enabled: !!user.userId,
     //staleTime: Infinity,
     retry: 5,
+    gcTime: 0,
   });
-
-  if (cartFromServer.failureCount == 5 && userObject) {
-    console.log('Get cart fail');
-    setUser({});
-  }
 
   const onClickFunction: OnClickInterface = {
     details: () => {
@@ -60,17 +54,25 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
       router.push('/account/orders');
     },
     signOut: () => {
-      setUser({});
+      userService.signOut(user);
+      setUser({
+        userId: null,
+        roles: [],
+        accessToken: null,
+      });
     },
   };
   const handleOnClickOnMenu = (type: string) => {
     return onClickFunction[type]();
   };
+  if (cartFromServer.failureCount == 5 && user) {
+    onClickFunction.signOut();
+  }
 
   return (
     <Flex gap='1rem' align='center' className='hidden-mobile'>
       {/* <LanguagePicker /> */}
-      {user?.user.roles[0] != 'manager' && (
+      {user?.roles[0] != 'manager' && (
         <div className=' relative w-[25px] h-[25px] cursor-pointer'>
           <IconShoppingCart
             onClick={() => {
@@ -99,7 +101,7 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
           <IconUserCircle color='#02B1AB' className={classes.hoverIcon} />
         </Menu.Target>
         <Menu.Dropdown>
-          {user?.user.roles[0] != 'manager' && (
+          {user?.roles[0] != 'manager' && (
             <>
               <Menu.Item
                 leftSection={

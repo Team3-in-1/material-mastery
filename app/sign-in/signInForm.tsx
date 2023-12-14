@@ -7,14 +7,15 @@ import {
   LoadingOverlay,
   Alert,
 } from '@mantine/core';
+import '../global.css';
 import '@mantine/core/styles.css';
+
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useForm } from '@mantine/form';
 import { checkNameFormat, checkPasswordFormat } from '@/utils/regex';
 import { userService } from '@/services/userService';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import useLogin from '@/helpers/useLogin';
 import { useContext } from 'react';
 import UserContext from '@/contexts/UserContext';
 
@@ -28,8 +29,8 @@ export function SignInForm() {
       password: '',
     },
     validate: {
-      userInfo: (value) => checkNameFormat(value),
-      password: (value) => checkPasswordFormat(value),
+      // userInfo: (value) => checkNameFormat(value),
+      // password: (value) => checkPasswordFormat(value),
     },
   });
 
@@ -38,7 +39,10 @@ export function SignInForm() {
     mutationFn: (formdata: FormData) => userService.login(formdata),
 
     onSuccess: (res) => {
-      setUser(res);
+      try {
+        setUser(res);
+        router.push('/');
+      } catch {}
     },
 
     onError(error) {
@@ -72,7 +76,14 @@ export function SignInForm() {
           size='md'
         />
       </Stack>
-      <Button id='signin-form-btn' fullWidth h='3rem' mt='1.5rem' type='submit'>
+      <Button
+        id='signin-form-btn'
+        fullWidth
+        h='3rem'
+        mt='1.5rem'
+        type='submit'
+        className=' h-[3rem] mt-[1.5rem] w-full bg-0-primary-color-6 text-white'
+      >
         Đăng nhập
       </Button>
       {loginMutation.isPending && (

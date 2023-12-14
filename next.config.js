@@ -18,7 +18,7 @@ const nextConfig = {
         destination: '/staff/order/online',
         permanent: true,
       },
-    ]
+    ];
   },
 };
 

@@ -11,9 +11,8 @@ class CommentService {
         return this._instance || (this._instance = new this());
     }
 
-    async getAllComments(productId: string): Promise<Comment[]>{
-        console.log('productId: ', productId)
-        
+    async getAllComments(productId: string): Promise<Comment[]>{    
+        console.log(productId)    
         return await axios.post(`${constant.BASE_URL}/comment/product`,{
                 'productId': productId,
             } ,{
