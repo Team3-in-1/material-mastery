@@ -7,7 +7,13 @@ interface ItemInterface {
   label: string;
 }
 
-const Nav = () => {
+const Nav = ({
+  orderStatus,
+  setOrderStatus,
+}: {
+  orderStatus: any;
+  setOrderStatus: any;
+}) => {
   const [positionChecked, setPositionChecked] = useState(0);
   const items: ItemInterface[] = [
     { id: 0, label: 'Tất cả' },
@@ -21,7 +27,7 @@ const Nav = () => {
     <Group className='w-full bg-white justify-between px-3 py-2 items-center rounded-[10px]'>
       {items.map((item) => (
         <Button
-          key={item.id}
+          key={item.label}
           className={
             positionChecked == item.id
               ? ' text-black border-b-2 border-0-primary-color-6 border-x-0 border-t-0 rounded-none font-medium'
@@ -29,6 +35,7 @@ const Nav = () => {
           }
           onClick={() => {
             setPositionChecked(item.id);
+            setOrderStatus(item.id);
           }}
         >
           {item.label}

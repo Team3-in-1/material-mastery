@@ -109,7 +109,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   });
 
   return (
-    <div className='min-h-max relative h-fit z-1'>
+    <div className='min-h-full relative h-fit z-[1]'>
       <Breadcrumbs mt={30} className='ml-[100px] mr-[100px] mb-[5px]'>
         <Link href='/' key={0}>
           Trang chủ
