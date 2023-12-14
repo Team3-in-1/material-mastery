@@ -32,20 +32,9 @@ const OrdersPage = () => {
       ) : (
         <>
           {orders.data.map((order: any) => {
-            switch (orderStatus) {
-              case 0:
-                return (
-                  <Order
-                    key={order._id}
-                    orderId={order._id}
-                    orderStatus={order.order_status}
-                    paymentStatus={order.order_payment.status}
-                    finalPrice={order.order_checkout.finalPrice}
-                    products={order.order_products}
-                  />
-                );
-              case 1:
-                if (order.order_status == 'pending') {
+            if (order.order_products.length > 0) {
+              switch (orderStatus) {
+                case 0:
                   return (
                     <Order
                       key={order._id}
@@ -56,65 +45,78 @@ const OrdersPage = () => {
                       products={order.order_products}
                     />
                   );
-                }
-              case 2:
-                if (order.order_status == 'confirmed') {
-                  return (
-                    <Order
-                      key={order._id}
-                      orderId={order._id}
-                      orderStatus={order.order_status}
-                      paymentStatus={order.order_payment.status}
-                      finalPrice={order.order_checkout.finalPrice}
-                      products={order.order_products}
-                    />
-                  );
-                }
-              case 3:
-                if (order.order_status == 'shipping') {
-                  return (
-                    <Order
-                      key={order._id}
-                      orderId={order._id}
-                      orderStatus={order.order_status}
-                      paymentStatus={order.order_payment.status}
-                      finalPrice={order.order_checkout.finalPrice}
-                      products={order.order_products}
-                    />
-                  );
-                }
-              case 4:
-                if (
-                  order.order_status == 'delivered' ||
-                  order.order_status == 'shipped'
-                ) {
-                  return (
-                    <Order
-                      key={order._id}
-                      orderId={order._id}
-                      orderStatus={order.order_status}
-                      paymentStatus={order.order_payment.status}
-                      finalPrice={order.order_checkout.finalPrice}
-                      products={order.order_products}
-                    />
-                  );
-                }
-              case 5:
-                if (
-                  order.order_status == 'cancelled' ||
-                  order.order_status == 'failed'
-                ) {
-                  return (
-                    <Order
-                      key={order._id}
-                      orderId={order._id}
-                      orderStatus={order.order_status}
-                      paymentStatus={order.order_payment.status}
-                      finalPrice={order.order_checkout.finalPrice}
-                      products={order.order_products}
-                    />
-                  );
-                }
+                case 1:
+                  if (order.order_status == 'pending') {
+                    return (
+                      <Order
+                        key={order._id}
+                        orderId={order._id}
+                        orderStatus={order.order_status}
+                        paymentStatus={order.order_payment.status}
+                        finalPrice={order.order_checkout.finalPrice}
+                        products={order.order_products}
+                      />
+                    );
+                  }
+                case 2:
+                  if (order.order_status == 'confirmed') {
+                    return (
+                      <Order
+                        key={order._id}
+                        orderId={order._id}
+                        orderStatus={order.order_status}
+                        paymentStatus={order.order_payment.status}
+                        finalPrice={order.order_checkout.finalPrice}
+                        products={order.order_products}
+                      />
+                    );
+                  }
+                case 3:
+                  if (order.order_status == 'shipping') {
+                    return (
+                      <Order
+                        key={order._id}
+                        orderId={order._id}
+                        orderStatus={order.order_status}
+                        paymentStatus={order.order_payment.status}
+                        finalPrice={order.order_checkout.finalPrice}
+                        products={order.order_products}
+                      />
+                    );
+                  }
+                case 4:
+                  if (
+                    order.order_status == 'delivered' ||
+                    order.order_status == 'shipped'
+                  ) {
+                    return (
+                      <Order
+                        key={order._id}
+                        orderId={order._id}
+                        orderStatus={order.order_status}
+                        paymentStatus={order.order_payment.status}
+                        finalPrice={order.order_checkout.finalPrice}
+                        products={order.order_products}
+                      />
+                    );
+                  }
+                case 5:
+                  if (
+                    order.order_status == 'cancelled' ||
+                    order.order_status == 'failed'
+                  ) {
+                    return (
+                      <Order
+                        key={order._id}
+                        orderId={order._id}
+                        orderStatus={order.order_status}
+                        paymentStatus={order.order_payment.status}
+                        finalPrice={order.order_checkout.finalPrice}
+                        products={order.order_products}
+                      />
+                    );
+                  }
+              }
             }
           })}
         </>

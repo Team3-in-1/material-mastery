@@ -62,6 +62,8 @@ const Order = ({
     cancelOrderMutation.mutate();
   };
 
+  console.log('render again');
+
   return (
     <Stack className='bg-white p-[20px] rounded-[10px]'>
       {/* infor of order */}
