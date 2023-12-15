@@ -403,7 +403,7 @@ const Payment = () => {
               span={2}
               style={{ display: 'flex', justifyContent: 'center' }}
             >
-              <Text color='#252525'>Thành tiền</Text>
+              <Text color='#252525'>Tổng</Text>
             </Grid.Col>
             <Grid.Col
               span={2}

@@ -25,9 +25,7 @@ import queryClient from '@/helpers/client';
 import { useRouter } from 'next/navigation';
 import { IconMapPinFilled } from '@tabler/icons-react';
 import { useContext, useRef, useState } from 'react';
-import { event } from 'cypress/types/jquery';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import useLogin from '@/helpers/useLogin';
 import toast, { Toaster } from 'react-hot-toast';
 import {
   checkAddressFormat,
@@ -36,7 +34,6 @@ import {
   checkPhoneFormat,
 } from '@/utils/regex';
 import { userService } from '@/services/userService';
-import dynamic from 'next/dynamic';
 import UserContext from '@/contexts/UserContext';
 
 const DetailsPage = () => {
@@ -54,8 +51,8 @@ const DetailsPage = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [avatar, setAvatar] = useState('');
-  const [avatarInput, setAvatarInput] = useState('');
+  const [avatar, setAvatar] = useState<any>(null);
+  const [avatarInput, setAvatarInput] = useState<any>(null);
   const [email, setEmail] = useState('');
 
   const [enableBox1, setEnableBox1] = useState(false);
@@ -63,40 +60,40 @@ const DetailsPage = () => {
 
   // store initial value
   const isSet = useRef(false);
-  let initialName = '';
-  let initialEmail = '';
-  let initialPhone = '';
-  let initialAddress = '';
-  let initialImage = '';
+  let initialName = useRef('');
+  let initialEmail = useRef('');
+  let initialPhone = useRef('');
+  let initialAddress = useRef('');
+  let initialImage = useRef(null);
 
   if (!isSet.current && userInfor.isSuccess) {
-    initialName = userInfor.data.display_name;
-    initialEmail = userInfor.data.email;
-    initialPhone = userInfor.data.phone;
-    initialAddress = userInfor.data.user_attributes.address;
-    initialImage = userInfor.data.user_attributes.avatar
+    initialName.current = userInfor.data.display_name;
+    initialEmail.current = userInfor.data.email;
+    initialPhone.current = userInfor.data.phone;
+    initialAddress.current = userInfor.data.user_attributes.address;
+    initialImage.current = userInfor.data.user_attributes.avatar
       ? userInfor.data.user_attributes.avatar
       : 'https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/289149087_532680565185439_2587124243099315687_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9c7eae&_nc_eui2=AeHlj-MAcPCkW6Sd1ZZINLX3dnM5XV8os_B2czldXyiz8DYpOp_w7W8fpY4T3y3bu4Av1LeBPAcSUXou-hH6qBbe&_nc_ohc=NLO3EECZx1QAX_XqSm2&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfBz6S6rudC72TW0LONnocrZQ4cIsc4UNFHt9IKBOmWiuw&oe=657B1067';
-    setName(initialName);
-    setPhone(initialPhone);
-    setAddress(initialAddress);
-    setAvatar(initialImage);
-    setAvatarInput(initialImage);
-    setEmail(initialEmail);
+    setName(initialName.current);
+    setPhone(initialPhone.current);
+    setAddress(initialAddress.current);
+    setAvatar(initialImage.current);
+    setAvatarInput(initialImage.current);
+    setEmail(initialEmail.current);
 
     isSet.current = true;
   }
 
   const returnInitialValue = (type: number) => {
     if (type == 0) {
-      setName(initialName);
-      setPhone(initialPhone);
-    } else setAddress(initialAddress);
+      setName(initialName.current);
+      setPhone(initialPhone.current);
+    } else setAddress(initialAddress.current);
   };
 
-  const userId = user.userId;
+  const userId = user?.userId;
 
-  const token = user.accessToken;
+  const token = user?.accessToken;
   const [opened, { open, close }] = useDisclosure(false);
 
   const userMutation = useMutation({
@@ -247,11 +244,11 @@ const DetailsPage = () => {
       </Group>
       <Stack className=' p-[20px] bg-white rounded-[10px]'>
         <Group className=' justify-between w-full'>
-          <Group gap={1}>
+          <Group className='gap-2'>
             <IconMapPinFilled style={{ color: '#02B1AB' }} />
-            <Text>Địa chỉ</Text>
+            <Text className='text-[#02B1AB] font-bold'>Địa chỉ</Text>
           </Group>
-          <Group gap={0}>
+          <Group className='gap-0'>
             <Button
               onClick={() => {
                 if (enableBox2) {
@@ -303,4 +300,5 @@ const DetailsPage = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(DetailsPage), { ssr: false });
+// export default dynamic(() => Promise.resolve(DetailsPage), { ssr: false });
+export default DetailsPage;

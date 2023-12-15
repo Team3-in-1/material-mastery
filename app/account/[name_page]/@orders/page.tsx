@@ -50,6 +50,7 @@ const OrdersPage = () => {
     enabled: !!user,
   });
   const [orderStatus, setOrderStatus] = useState(0);
+
   return (
     <Stack className='mx-[100px] h-full justify-center'>
       <Nav orderStatus={orderStatus} setOrderStatus={setOrderStatus} />
@@ -61,7 +62,7 @@ const OrdersPage = () => {
         />
       ) : (
         <>
-          {orders.data.map((order: any) => {
+          {orders.data.orders.map((order: any) => {
             if (order.order_products.length > 0) {
               switch (orderStatus) {
                 case 0:

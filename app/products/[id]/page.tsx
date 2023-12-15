@@ -125,7 +125,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             <Image
               alt='img'
               src={product.data?.product_thumb}
-              component={NImage}
               height={150}
               width={150}
               className=' h-[80px] md:h-[150px] '

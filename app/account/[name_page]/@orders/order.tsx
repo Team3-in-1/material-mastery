@@ -7,6 +7,7 @@ import { useContext } from 'react';
 import UserContext from '@/contexts/UserContext';
 import toast from 'react-hot-toast';
 import queryClient from '@/helpers/client';
+import { useRouter } from 'next/navigation';
 
 const Order = ({
   orderId,
@@ -67,10 +68,15 @@ const Order = ({
     cancelOrderMutation.mutate();
   };
 
-  console.log('render again');
+  const router = useRouter();
 
   return (
-    <Stack className='bg-white p-[20px] rounded-[10px]'>
+    <Stack
+      className='bg-white p-[20px] rounded-[10px]'
+      onClick={() => {
+        router.push(`/account/orders/${orderId}`);
+      }}
+    >
       {/* infor of order */}
       <Group className='w-full justify-between'>
         <Group>
