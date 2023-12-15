@@ -55,7 +55,7 @@ export default function OrderTable({ orders }: Props) {
         {
             id: formatOrderId(i._id, dayjs(i.createdAt).format('DD/MM/YYYY')),
             createAt: dayjs(i.createdAt).format('DD/MM/YYYY'),
-            customer: i.order_userId,
+            customer: i.order_username,
             paymentStatus: i.order_payment.status,
             shipmentStatus: shipmentStatusMapping[i.order_status as keyof typeof shipmentStatusMapping],
             finalPrice: i.order_checkout.finalPrice,
