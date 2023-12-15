@@ -2,9 +2,22 @@ import { constant } from "@/utils/constant";
 import { UserInterface } from "@/utils/response";
 import axios from "axios";
 
+
+const DEFAULT_NUMBER = {
+                pending: 0,
+                confirmed: 0,
+                cancelled: 0,
+                shipping: 0,
+                shipped: 0,
+                delivered: 0,
+                failed: 0
+            };
 class OrderService {
     private user: UserInterface;
     private hearders : any;
+    private currentTime : string;
+    private startTime: string;
+
     constructor(user: any){
         this.user = user;
         this.hearders = {
@@ -12,6 +25,10 @@ class OrderService {
             'x-client-id': this.user.userId,
             'authorization': this.user.accessToken,
         }
+        const time = new Date();
+
+        this.currentTime = `${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}`;
+        this.startTime = `1/${time.getMonth() + 1}/${time.getFullYear()}`;
     }
     checkOut = async (orders: any = []) : Promise<any> => {
         return await axios.post(`${constant.BASE_URL}/checkout/review`, {
@@ -40,9 +57,22 @@ class OrderService {
         })
     }
 
-    modifyOrderStatus = async (orderId : string, status: string = 'cancelled'): Promise<any> => {
-        return await axios.patch(`${constant.BASE_URL}/order/status/${orderId}?status=${status}`, {}, {headers: this.hearders}).then((res)=>{return res.data}).catch((err)=>{err.response.status})
+    cancelOrder = async (orderId : string): Promise<any> => {
+        return await axios.patch(`${constant.BASE_URL}/order/cancel/${orderId}`, {}, {headers: this.hearders}).then((res)=>{return res.data}).catch((err)=>{err.response.status})
     }
+
+    getNumberOfOrder = async(start: string = this.startTime, end: string= this.currentTime) => {
+        return await axios.get(`${constant.BASE_URL}/order/number?start=${start}&end=${end}`, {headers: this.hearders})
+        .then((res)=>{
+            return res.data.metadata;
+        })
+        .catch((err: any)=>{
+            console.log('err', err);
+            return DEFAULT_NUMBER;
+        })
+    }
+
+
 }
 
 

@@ -20,6 +20,35 @@ const OrdersPage = () => {
     },
     enabled: !!user,
   });
+  const numberOfOrder = useQuery({
+    queryKey: ['numberOfOrder'],
+    queryFn: async () => {
+      const orderService = new OrderService(user);
+      const res: any = await orderService.getNumberOfOrder();
+
+      console.log(
+        'numberOfOrder',
+        res.pending +
+          res.confirmed +
+          res.cancelled +
+          res.shipping +
+          res.shipped +
+          res.delivered +
+          res.failed
+      );
+
+      return (
+        res.pending +
+        res.confirmed +
+        res.cancelled +
+        res.shipping +
+        res.shipped +
+        res.delivered +
+        res.failed
+      );
+    },
+    enabled: !!user,
+  });
   const [orderStatus, setOrderStatus] = useState(0);
   return (
     <Stack className='mx-[100px] h-full justify-center'>
@@ -46,6 +75,7 @@ const OrdersPage = () => {
                       products={order.order_products}
                     />
                   );
+                  break;
                 case 1:
                   if (order.order_status == 'pending') {
                     return (
@@ -59,6 +89,7 @@ const OrdersPage = () => {
                       />
                     );
                   }
+                  break;
                 case 2:
                   if (order.order_status == 'confirmed') {
                     return (
@@ -72,6 +103,7 @@ const OrdersPage = () => {
                       />
                     );
                   }
+                  break;
                 case 3:
                   if (order.order_status == 'shipping') {
                     return (
@@ -85,6 +117,7 @@ const OrdersPage = () => {
                       />
                     );
                   }
+                  break;
                 case 4:
                   if (
                     order.order_status == 'delivered' ||
@@ -101,6 +134,7 @@ const OrdersPage = () => {
                       />
                     );
                   }
+                  break;
                 case 5:
                   if (
                     order.order_status == 'cancelled' ||
@@ -117,12 +151,13 @@ const OrdersPage = () => {
                       />
                     );
                   }
+                  break;
               }
             }
           })}
         </>
       )}
-      <Pagination total={5} />
+      <Pagination total={numberOfOrder.isPending ? 0 : numberOfOrder.data} />
     </Stack>
   );
 };
