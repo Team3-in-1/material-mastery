@@ -1,9 +1,17 @@
 'use client'
 import CalendarInput from '@/components/CalendarInput/calendarInput'
 import { chunk } from '@/utils/array'
-import { ComboboxProps, Fieldset, Group, Pagination, ScrollArea, Select, Stack, Table, Checkbox, Text } from '@mantine/core'
+import { ComboboxProps, Fieldset, Group, Pagination, ScrollArea, Select, Stack, Table, Checkbox, Text, LoadingOverlay, Button } from '@mantine/core'
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+
+import { useContext } from 'react';
+import UserContext from '@/contexts/UserContext';
+import { useQuery } from '@tanstack/react-query'
+import OrderService from '@/services/orderService'
+import TableSkeleton from '@/components/Skeleton/tableSkeleton'
+import OrderTable from './orderTable'
+
 
 
 const dates = ['Ngày', 'Tuần', 'Tháng', 'Quý', 'Năm']
@@ -19,17 +27,7 @@ const shipmentState = [
     'Giao thất bại'
 ]
 
-const tableHeadList = [
-    'Mã đơn hàng', 'Ngày tạo', 'Khách hàng', 'Thanh toán', 'Giao hàng', 'Tổng tiền'
-]
-const tableHeadMapping = {
-    'id': 'Mã đơn hàng',
-    'createAt': 'Ngày tạo',
-    'customer': 'Khách hàng',
-    'paymentStatus': 'Thanh toán',
-    'shipmentStatus': 'Giao hàng',
-    'total': 'Tổng tiền'
-}
+
 
 const arr = Array(100)
     .fill(0)
@@ -50,54 +48,26 @@ const mockData = chunk(
 
 const comboboxStyles: ComboboxProps = { transitionProps: { transition: 'pop', duration: 200 }, shadow: 'md' }
 export default function OnlineOrderSegment() {
-
-    let currentPath = usePathname()
-    const router = useRouter()
-    const [date, setDate] = useState<string | null>(dates[0])
     const [activePage, setPage] = useState(1);
-    // const [pa]
-    const [selectedRows, setSelectedRows] = useState<number[]>([]);
-    const [selectAllRow, setSelectAllRow] = useState(false)
-    const tableHead = tableHeadList.map(i => (
-        <Table.Th key={i}>{i}</Table.Th>
-    ))
 
-    const tableBody = mockData[activePage - 1].map((i) => (
-        <Table.Tr
-            key={i.id}
-            bg={selectedRows.includes(i.id) ? 'var(--mantine-color-turquoise-light)' : undefined}
-        >
+    const { user } = useContext(UserContext);
+    const orders = useQuery({
+        queryKey: ['orders', activePage],
+        queryFn: () => {
+            const orderService = new OrderService(user);
+            return orderService.getAllOrder(10, activePage);
+        },
+        enabled: !!user,
+    });
 
-            <Table.Td>
-                <Checkbox
-                    aria-label="Select row"
-                    checked={selectedRows.includes(i.id)}
-                    onChange={(event) =>
-                        setSelectedRows(
-                            event.currentTarget.checked
-                                ? [...selectedRows, i.id]
-                                : selectedRows.filter((position) => position !== i.id)
-                        )
-                    }
-                />
-            </Table.Td>
-            <Table.Td>{i.id}</Table.Td>
-            <Table.Td>{i.createAt}</Table.Td>
-            <Table.Td>{i.customer}</Table.Td>
-            <Table.Td>{i.paymentStatus}</Table.Td>
-            <Table.Td>{i.shipmentStatus}</Table.Td>
-            <Table.Td>{i.total}</Table.Td>
-            <Table.Td className='cursor-pointer' onClick={() => router.push(`${currentPath}/${i.id}`)}>
-                <Text c='turquoise' >Xem</Text>
-            </Table.Td>
-        </Table.Tr>
 
-    ))
+    const [date, setDate] = useState<string | null>(dates[0])
+
     return (
         <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
             <Stack className='flex flex-col gap-[16px]'>
                 <Fieldset className='flex gap-[16px] items-end w-fit' legend="Bộ lọc">
-                    <Group gap='0.5rem'>
+                    {/* <Group gap='0.5rem'>
                         <Select
                             w='100'
                             data={dates}
@@ -107,7 +77,7 @@ export default function OnlineOrderSegment() {
                             comboboxProps={comboboxStyles}
                         />
                         <CalendarInput type={dateMapping[date as keyof typeof dateMapping]} />
-                    </Group>
+                    </Group> */}
                     <Select
                         w='fit-content'
                         label='Trạng thái thanh toán'
@@ -123,32 +93,13 @@ export default function OnlineOrderSegment() {
                         comboboxProps={comboboxStyles}
                     />
                 </Fieldset>
-                <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
-                    <Table verticalSpacing="sm">
-                        <Table.Thead>
-                            <Table.Tr key='head'>
-                                <Table.Th>
-                                    <Checkbox
-                                        checked={selectAllRow}
-                                        onChange={(event) => {
-                                            setSelectAllRow(event.currentTarget.checked)
-                                            setSelectedRows(
-                                                event.currentTarget.checked
-                                                    ? arr.map(i => (i.id)) :
-                                                    [])
-                                        }
-                                        }
-                                    />
-                                </Table.Th>
-                                {tableHead}
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {tableBody}
-                        </Table.Tbody>
-                    </Table>
-                    <Pagination className='self-center' total={mockData.length} value={activePage} onChange={setPage} mt="sm" />
-                </div>
+                {orders.isPending ? (
+                    <TableSkeleton col={8} row={10} />
+                ) :
+                    <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
+                        <OrderTable orders={orders.data} />
+                        <Pagination className='self-center' total={2} value={activePage} onChange={setPage} mt="sm" />
+                    </div>}
             </Stack>
         </ScrollArea>
     )
