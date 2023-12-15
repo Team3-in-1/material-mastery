@@ -8,6 +8,7 @@ import { useDeepCompareEffect } from 'react-use';
 import { ReactNode } from 'react';
 import UserContext from '@/contexts/UserContext';
 import { UserInterface } from '@/utils/response';
+import queryClient from '@/helpers/client';
 
 const Providers = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
@@ -36,6 +37,8 @@ const Providers = ({ children }: { children: ReactNode }) => {
       user?.roles[0] == 'manager' &&
       pathname.split('/')[1] != 'staff'
     ) {
+      queryClient.clear();
+
       redirect('/staff');
     }
     if (

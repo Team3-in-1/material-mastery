@@ -42,6 +42,7 @@ import {
 } from '@/utils/date';
 import dynamic from 'next/dynamic';
 import StatsticCard from '@/components/StatisticChart/StatisticCard/statsticCard';
+import { useRouter } from 'next/navigation';
 
 const tabData = [
   {
@@ -81,6 +82,7 @@ const tabData = [
 ];
 
 export default function RevenuePage() {
+  const router = useRouter();
   const [day, setDay] = useState<Date | null>(new Date());
   const [week, setWeek] = useState<[Date | null, Date | null]>([
     startOfWeek(new Date()),
@@ -92,6 +94,10 @@ export default function RevenuePage() {
     endOfQuarter(new Date()),
   ]);
   const [year, setYear] = useState<Date | null>(new Date());
+  router.prefetch('/staff/dashboard/in-outbound');
+  router.prefetch('/staff/warehouse');
+  router.prefetch('/staff/order/online');
+  router.prefetch('/staff/order/offline');
 
   const tabList = tabData.map((item) => (
     <Tabs.Tab key={item.value} value={item.value}>
@@ -138,19 +144,18 @@ export default function RevenuePage() {
     <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
       <Tabs
         variant='default'
-        orientation="vertical"
+        orientation='vertical'
         placement='right'
         defaultValue={tabData.at(0)?.value}
-        activateTabWithKeyboard={false}>
-        <div className="rounded-[8px] border-[0.5px] p-[12px] h-fit ml-[12px] sticky top-0">
-          <Tabs.List>
-            {tabList}
-          </Tabs.List>
+        activateTabWithKeyboard={false}
+      >
+        <div className='rounded-[8px] border-[0.5px] p-[12px] h-fit ml-[12px] sticky top-0'>
+          <Tabs.List>{tabList}</Tabs.List>
         </div>
         {tabPanels}
       </Tabs>
     </ScrollArea>
-  )
+  );
 }
 
 // export default dynamic(() => Promise.resolve(RevenuePage), { ssr: false });

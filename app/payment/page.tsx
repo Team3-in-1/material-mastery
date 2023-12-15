@@ -74,6 +74,7 @@ const Payment = () => {
     },
     enabled: !!user,
     staleTime: Infinity,
+    gcTime: 0,
   });
 
   // control text input in dialog\
@@ -162,10 +163,16 @@ const Payment = () => {
       const orderService = new OrderService(user);
       return orderService.order(address, 'pending', 'upon receipt', '', orders);
     },
-    onSuccess: (res) => {
-      console.log('res', res);
+    onSuccess: async (res) => {
       if (res == 200) {
         toast.success('Thanh toán thành công.');
+
+        await queryClient.invalidateQueries({
+          queryKey: ['cart'],
+          exact: true,
+          refetchType: 'active',
+        });
+
         router.replace('/account/orders');
       } else if (res == 400) {
         toast.error('Sản phẩm không còn đủ hàng. ');

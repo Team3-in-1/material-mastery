@@ -38,7 +38,7 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
       const cartService = new CartService(user);
       return cartService.getCart();
     },
-    enabled: !!user.userId,
+    enabled: !!user.userId && user?.roles[0] != 'manager',
     //staleTime: Infinity,
     retry: 5,
     gcTime: 0,
@@ -60,6 +60,7 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
         roles: [],
         accessToken: null,
       });
+      queryClient.clear();
     },
   };
   const handleOnClickOnMenu = (type: string) => {

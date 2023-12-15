@@ -16,6 +16,7 @@ import {
   Divider,
   LoadingOverlay,
 } from '@mantine/core';
+import '../../global.css';
 import { IconPlus, IconMinus } from '@tabler/icons-react';
 import exampleImage from '@/public/pic/gach.jpg';
 import NImage from 'next/image';

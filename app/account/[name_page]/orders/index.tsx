@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import UserContext from '@/contexts/UserContext';
 import OrderService from '@/services/orderService';
+import '../../../global.css';
 
 const items: any = [];
 

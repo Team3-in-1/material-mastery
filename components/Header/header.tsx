@@ -82,8 +82,22 @@ export default function Header() {
       ) : (
         <Flex gap='1rem' align='center' className='hidden-mobile'>
           {/* <LanguagePicker /> */}
-          <Link href='/sign-up'>Sign-up</Link>
-          <Link href='/sign-in'>Sign-in</Link>
+          <Link
+            href='/sign-up'
+            onClick={() => {
+              queryClient.clear();
+            }}
+          >
+            Sign-up
+          </Link>
+          <Link
+            href='/sign-in'
+            onClick={() => {
+              queryClient.clear();
+            }}
+          >
+            Sign-in
+          </Link>
         </Flex>
       )}
     </Flex>

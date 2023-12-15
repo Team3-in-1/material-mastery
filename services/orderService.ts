@@ -31,7 +31,7 @@ class OrderService {
             'order_note': note,
             'orders': orders,
 
-        }, { headers: this.hearders}).then((res)=>{return res.data.statusCode}).catch((err)=>{return err.response.status});
+        }, { headers: this.hearders}).then(async(res)=>{return res.data.statusCode}).catch((err)=>{return err.response.status});
     }
 
     getOrders = async(limit: number = 2, page: number = 1, status: string = 'order_status', isAscending: boolean = true ): Promise<any> => {

@@ -49,7 +49,6 @@ const DetailsPage = () => {
     },
     enabled: !!user,
     staleTime: Infinity,
-    gcTime: 0,
   });
 
   const [name, setName] = useState('');
@@ -104,8 +103,13 @@ const DetailsPage = () => {
     mutationKey: ['update-user'],
     mutationFn: () =>
       userService.updateUser(userId, token, name, phone, address, avatar),
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       toast.success('Cập nhập thành công');
+      await queryClient.refetchQueries({
+        queryKey: ['userInfor'],
+        type: 'active',
+        exact: true,
+      });
     },
     onError: (err) => {
       toast.error('Cập nhập thất bại.');

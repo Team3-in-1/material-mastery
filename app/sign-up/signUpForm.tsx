@@ -49,10 +49,12 @@ export function SignUpForm() {
 
   const registerMutation = useMutation({
     mutationFn: async (formdata: FormData) => {
-      await userService.register(formdata);
+      return await userService.register(formdata);
     },
     onSuccess: (res) => {
-      setUser(res).then(router.push('/'));
+      console.log('res', res);
+      setUser(res);
+      router.push('/');
     },
     onError(error) {
       console.log(error);
