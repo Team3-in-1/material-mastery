@@ -48,6 +48,12 @@ class OrderService {
             console.log(err);
         })
     }
+
+    getOrderById = async (id: string): Promise<any> => {
+        return await axios.get(`${constant.BASE_URL}/order/find/${id}`, { headers: this.hearders })
+            .then((res) => { return res.data.metadata; })
+            .catch((err) => { console.log(err); })
+    }
 }
 
 
