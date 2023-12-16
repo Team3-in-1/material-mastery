@@ -44,7 +44,7 @@ const shipmentStatusMapping = {
 
 const paymentStatusMapping = {
     'pending': 'Chưa thanh toán',
-
+    'paid': 'Đã thanh toán'
 }
 export default function OrderTable({ orders }: Props) {
 
@@ -57,7 +57,7 @@ export default function OrderTable({ orders }: Props) {
             createAt: dayjs(i.createdAt).format('DD/MM/YYYY'),
             customer: i.order_username,
             paymentStatus: i.order_payment.status,
-            shipmentStatus: shipmentStatusMapping[i.order_status as keyof typeof shipmentStatusMapping],
+            shipmentStatus: i.order_status,
             finalPrice: i.order_checkout.finalPrice,
         }
     ))
@@ -74,8 +74,8 @@ export default function OrderTable({ orders }: Props) {
             <Table.Td>{formatOrderId(i.id, i.createAt)}</Table.Td>
             <Table.Td>{i.createAt}</Table.Td>
             <Table.Td>{i.customer}</Table.Td>
-            <Table.Td>{i.paymentStatus}</Table.Td>
-            <Table.Td>{i.shipmentStatus}</Table.Td>
+            <Table.Td>{paymentStatusMapping[i.paymentStatus as keyof typeof paymentStatusMapping]}</Table.Td>
+            <Table.Td>{shipmentStatusMapping[i.shipmentStatus as keyof typeof shipmentStatusMapping]}</Table.Td>
             <Table.Td>{formatMoney(i.finalPrice)}<span> đ</span></Table.Td>
             <Table.Td className='cursor-pointer' onClick={() => router.push(`${currentPath}/${i.id}`)}>
                 <Text c='turquoise' >Xem</Text>

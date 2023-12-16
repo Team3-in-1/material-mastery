@@ -17,57 +17,71 @@ import OrderTable from './orderTable'
 const dates = ['Ngày', 'Tuần', 'Tháng', 'Quý', 'Năm']
 const dateMapping = { 'Ngày': 'day', 'Tuần': 'week', 'Tháng': 'month', 'Quý': 'quarter', 'Năm': 'year' }
 
-const paymentState = ['Đã thanh toán', 'Chưa thanh toán']
+const paymentState = ['Tất cả', 'Đã thanh toán', 'Chưa thanh toán']
 const shipmentState = [
-    'Chưa thanh toán',
-    'Đang chuẩn bị hàng',
+    'Tất cả',
+    'Chờ xác nhận',
+    'Chuẩn bị hàng',
     'Đã hủy',
     'Đang giao',
-    'Giao thành công',
+    'Đã giao',
     'Giao thất bại'
 ]
+const shipmentStatusMapping = {
+    'Tất cả': '',
+    'Chờ xác nhận': 'pending',
+    'Chuẩn bị hàng': 'confirmed',
+    'Đang giao': 'shipping',
+    'Đã giao': 'shipped',
+    'Đã hủy': 'cancelled',
+    'Giao thất bại': 'failed',
+}
+
+const paymentStatusMapping = {
+    'Tất cả': '',
+    'Chưa thanh toán': 'pending',
+    'Đã thanh toán': 'paid'
+}
 
 
 
-const arr = Array(100)
-    .fill(0)
-    .map((_, index) => (
-        {
-            id: index,
-            createAt: '27/12/2023',
-            customer: 'Khai khai',
-            paymentStatus: 0,
-            shipmentStatus: 1,
-            total: 100900,
-        }
-    ))
-const mockData = chunk(
-    arr,
-    10
-);
 
 const comboboxStyles: ComboboxProps = { transitionProps: { transition: 'pop', duration: 200 }, shadow: 'md' }
 export default function OnlineOrderSegment() {
     const [activePage, setPage] = useState(1);
-
+    // filter 
+    const [date, setDate] = useState<string | null>(dates[0])
+    const [paymentFilter, setPaymentFilter] = useState<string | null>(paymentState[0])
+    const [shipmentFilter, setShipmentFilter] = useState<string | null>(shipmentState[0])
     const { user } = useContext(UserContext);
     const orders = useQuery({
-        queryKey: ['orders', activePage],
+        queryKey: ['orders', activePage, shipmentFilter],
         queryFn: () => {
             const orderService = new OrderService(user);
-            return orderService.getAllOrder(10, activePage);
+            return orderService.getAllOrder(
+                10,
+                activePage,
+                shipmentStatusMapping[shipmentFilter as keyof typeof shipmentStatusMapping]);
         },
         enabled: !!user,
     });
 
 
-    const [date, setDate] = useState<string | null>(dates[0])
+
+    const handleFilter = (data: any) => {
+        return data.filter((item: any) => {
+            if (paymentFilter === paymentState[0])
+                return true
+            else
+                return item.order_payment.status === paymentStatusMapping[paymentFilter as keyof typeof paymentStatusMapping]
+        })
+    }
 
     return (
         <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
             <Stack className='flex flex-col gap-[16px]'>
                 <Fieldset className='flex gap-[16px] items-end w-fit' legend="Bộ lọc">
-                    {/* <Group gap='0.5rem'>
+                    <Group gap='0.5rem'>
                         <Select
                             w='100'
                             data={dates}
@@ -77,19 +91,21 @@ export default function OnlineOrderSegment() {
                             comboboxProps={comboboxStyles}
                         />
                         <CalendarInput type={dateMapping[date as keyof typeof dateMapping]} />
-                    </Group> */}
+                    </Group>
                     <Select
                         w='fit-content'
                         label='Trạng thái thanh toán'
                         data={paymentState}
-                        defaultValue={paymentState[0]}
+                        value={paymentFilter}
+                        onChange={setPaymentFilter}
                         comboboxProps={comboboxStyles}
                     />
                     <Select
                         w='fit-content'
                         label='Trạng thái giao hàng'
                         data={shipmentState}
-                        defaultValue={shipmentState[0]}
+                        value={shipmentFilter}
+                        onChange={setShipmentFilter}
                         comboboxProps={comboboxStyles}
                     />
                 </Fieldset>
@@ -98,7 +114,7 @@ export default function OnlineOrderSegment() {
                 ) :
                     <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                         <OrderTable orders={orders.data} />
-                        <Pagination className='self-center' total={2} value={activePage} onChange={setPage} mt="sm" />
+                        <Pagination className='self-center' total={10} value={activePage} onChange={setPage} mt="sm" />
                     </div>}
             </Stack>
         </ScrollArea>

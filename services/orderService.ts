@@ -61,8 +61,10 @@ class OrderService {
         return await axios.patch(`${constant.BASE_URL}/order/status/${orderId}?status=${status}`, {}, { headers: this.hearders }).then((res) => { return res.data }).catch((err) => { err.response.status })
     }
 
-    getAllOrder = async (limit: number = 4, page: number = 2, status: string = 'order_status', isAscending: boolean = true): Promise<any> => {
-        return await axios.get(`${constant.BASE_URL}/order/staff?limit=${limit}&page=${page}&sorted[]=${status}&isAscending=${isAscending}`, { headers: this.hearders }).then((res) => { return res.data.metadata; }).catch((err) => {
+    getAllOrder = async (limit: number = 4, page: number = 1, status: string = '', sortBy: string = 'order_date', isAscending: boolean = false): Promise<any> => {
+        const statusParam = status === '' ? '' : `&status=${status}`
+        console.log(`${constant.BASE_URL}/order/staff?limit=${limit}&page=${page}&sorted[]=${sortBy}&isAscending=${isAscending}${statusParam}`)
+        return await axios.get(`${constant.BASE_URL}/order/staff?limit=${limit}&page=${page}&sorted[]=${sortBy}&isAscending=${isAscending}${statusParam}`, { headers: this.hearders }).then((res) => { return res.data.metadata; }).catch((err) => {
             console.log(err);
         })
     }
