@@ -24,6 +24,7 @@ import queryClient from '@/helpers/client';
 import { useMutation } from '@tanstack/react-query';
 import CartService from '@/services/cartService';
 import UserContext from '@/contexts/UserContext';
+import { userService } from '@/services/userService';
 
 const Cart = () => {
   const [cart, setCart] = useCart();
@@ -47,6 +48,15 @@ const Cart = () => {
     }
   }, [numberChecked]);
 
+  useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: ['userInfor'],
+      queryFn: () => {
+        return userService.getUserById(user);
+      },
+    });
+  }, []);
+
   const addCost = (cost: number) => {
     if (cost == -1) setTotalCost(0);
     else setTotalCost((prev) => prev + cost);
@@ -64,6 +74,7 @@ const Cart = () => {
     onError: (err) => {
       console.log('delete fail: ', err);
     },
+    onSettled: () => {},
   });
 
   const updateQuantityMutation = useMutation({
@@ -90,6 +101,7 @@ const Cart = () => {
     onError: (err) => {
       // console.log('update fail: ', err);
     },
+    onSettled: () => {},
   });
 
   const deleteOne = (id: string) => {
@@ -117,8 +129,9 @@ const Cart = () => {
       setCart();
       setTotalCost(0);
       toast.success('Xóa sản phẩm thành công.');
+    } else {
+      toast.error('Bạn không có sản phẩm để xóa.');
     }
-    toast.success('Bạn không có sản phẩm dể xóa.');
   };
 
   const updateQuantity = (

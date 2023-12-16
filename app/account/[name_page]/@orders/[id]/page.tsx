@@ -123,7 +123,7 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
             </Group>
             <Group className='w-full'>
               <Text className=' font-normal text-[15px]'>
-                {detail.data.order_address.city}
+                {detail.data.order_username}
               </Text>
               <Text className=' font-normal text-[15px]'>
                 {detail.data.order_phone}

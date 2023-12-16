@@ -35,6 +35,8 @@ import { useRouter } from 'next/navigation';
 import CartService from '@/services/cartService';
 import UserContext from '@/contexts/UserContext';
 
+const ImageLink = 'https://blog.alliedmarketresearch.com/images/user_icon.png';
+
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const { user } = useContext(UserContext);
   const [quantity, setQuantity] = useState<string | number>(1);
@@ -44,6 +46,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     queryKey: ['product'],
     queryFn: () => productService.getProductById(params.id),
     refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 
   const productId = params.id;
@@ -66,6 +69,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     queryKey: ['comments'],
     queryFn: () => CommentService.getAllComments(productId),
     refetchOnWindowFocus: false,
+    staleTime: Infinity,
   });
 
   const [cart, setCart] = useCart();
@@ -74,7 +78,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     []
   );
 
-  const people = comments.data;
+  const people: any = comments.data;
   const number = '(' + (people?.length || 0) + ' đánh giá)';
 
   const data = [
@@ -376,8 +380,11 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                     <Group>
                       <Image
                         alt='avt'
-                        src={exampleImage}
-                        component={NImage}
+                        src={
+                          people.user_avatar == null || people.user_avatar == ''
+                            ? ImageLink
+                            : people.user_avatar
+                        }
                         className=' rounded-full w-[35px]'
                       />
                       <Stack className=' gap-0'>

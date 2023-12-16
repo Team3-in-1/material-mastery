@@ -40,6 +40,7 @@ export const PCard = ({ data }: PCardProps) => {
     },
     onSuccess: () => {},
     onError: () => {},
+    onSettled: () => {},
   });
 
   const productQuantity =

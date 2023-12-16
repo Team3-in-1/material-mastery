@@ -32,8 +32,20 @@ const getAllProductsByCategory = async (id: string, limit = 5, page = 1, sortTyp
     .catch(error => {throw new Error(error.response.data.message)})
 }
 
+const search = async(keyWord: string = '') => {
+    return await axios.get(`${constant.BASE_URL}/product/search?keySearch=${keyWord}`, 
+    { 
+        headers: {
+            'x-api-key': constant.API_KEY
+        }
+    })
+    .then((res)=>(res.data.metadata))
+    .catch((err)=>{console.log(`err: ${err}`);})
+}
+
 export const productService = {
     getAllProducts,
     getProductById,
     getAllProductsByCategory,
+    search,
 }
