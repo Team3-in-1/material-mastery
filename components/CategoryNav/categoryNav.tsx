@@ -1,10 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Stack } from '@mantine/core';
 import classes from './categoryNav.module.css';
 import { Category } from '@/utils/response';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { data } from 'cypress/types/jquery';
 
 export const CategoryNav = ({ data }: { data: Category[] }) => {
   const searchParams = useSearchParams();
@@ -14,6 +13,10 @@ export const CategoryNav = ({ data }: { data: Category[] }) => {
   const [active, setActive] = useState(
     searchParams.get('category') || data[0]._id
   );
+
+  useEffect(() => {
+    setActive(searchParams.get('category') || data[0]._id);
+  }, [searchParams.get('category')]);
 
   const handleOnclick = (id: string): void => {
     setActive(id);

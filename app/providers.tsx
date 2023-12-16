@@ -7,44 +7,47 @@ import { useDeepCompareEffect } from 'react-use';
 
 import { ReactNode } from 'react';
 import UserContext from '@/contexts/UserContext';
-
-interface UserInterface {
-  user: any;
-  tokenPair: any;
-}
+import { UserInterface } from '@/utils/response';
+import queryClient from '@/helpers/client';
 
 const Providers = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const defaultUser: UserInterface = { user: null, tokenPair: {} };
+
+  const defaultUser: UserInterface = {
+    userId: null,
+    roles: [],
+    accessToken: null,
+  };
   const [user, setUser, isUserSet] = useLocalStorage('user', defaultUser);
+
   useDeepCompareEffect(() => {
     if (!isUserSet) return;
-    if (!user?.user && pathname.split('/')[1] == 'account') {
+    if (
+      !user?.userId &&
+      (pathname.split('/')[1] == 'account' || pathname.split('/')[1] == 'staff')
+    ) {
       redirect('/');
     }
-    if (!user?.user && pathname.split('/')[1] == 'staff') {
-      redirect('/');
-    }
-    if (user?.user && (pathname === '/sign-in' || pathname === '/sign-up')) {
+    if (user?.userId && (pathname === '/sign-in' || pathname === '/sign-up')) {
       redirect('/');
     }
     if (
-      user?.user &&
-      user?.user.roles[0] == 'manager' &&
+      user?.userId &&
+      user?.roles[0] == 'manager' &&
       pathname.split('/')[1] != 'staff'
     ) {
-      console.log('pathName', pathname.split('/'));
+      queryClient.clear();
+
       redirect('/staff');
     }
     if (
-      user?.user &&
-      user?.user.roles[0] != 'manager' &&
+      user?.userId &&
+      user?.roles[0] != 'manager' &&
       pathname.split('/')[1] == 'staff'
     ) {
       redirect('/');
     }
-    console.log('provider', user);
   }, [pathname, searchParams, user, isUserSet]);
 
   return (

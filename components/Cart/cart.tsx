@@ -9,6 +9,7 @@ import {
   Group,
   Button,
 } from '@mantine/core';
+import '../../app/global.css';
 import { IconTrash } from '@tabler/icons-react';
 import CartItem from '../CartItem/cartItem';
 import useCart from '@/helpers/useCart';
@@ -181,7 +182,11 @@ const Cart = () => {
                 aria-label='Delete'
                 onClick={deleteAll}
               >
-                <IconTrash color='#000' stroke={1.5} />
+                <IconTrash
+                  color='#000'
+                  stroke={1.5}
+                  style={{ color: '#000' }}
+                />
               </ActionIcon>
             </Grid.Col>
           </Grid>

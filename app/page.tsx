@@ -51,6 +51,7 @@ function Home() {
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,
     staleTime: Infinity,
+    gcTime: Infinity,
   });
 
   const { user } = useContext(UserContext);

@@ -3,6 +3,7 @@ import { constant } from '@/utils/constant';
 import { UserAttributesRequest, UserRequest } from '@/utils/request';
 import queryClient from '@/helpers/client';
 import { metadata } from '@/app/layout';
+import { UserInterface } from '@/utils/response';
 
 
 
@@ -13,10 +14,15 @@ const login = async (request: FormData): Promise<any> => {
         }
     })
     .then((res) => {
-        return res.data.metadata;
+        if(!res.data.metadata.user._id || !res.data.metadata.user.roles || !res.data.metadata.tokenPair.accessToken){
+            throw new Error('Đăng nhập thất bại.');
+        }
+        const data = {userId: res.data.metadata.user._id, roles: res.data.metadata.user.roles , accessToken:  res.data.metadata.tokenPair.accessToken}
+        return data;
     })
     .catch((error) => {throw new Error(error.response.data.message)})
 }
+
 
 const register = async (formData: any): Promise<any> => {
 
@@ -41,15 +47,23 @@ const register = async (formData: any): Promise<any> => {
         }
     })
     .then(res => {
-        //localStorage.setItem('user', JSON.stringify(res.data.metadata))
-        return res.data.metadata;
+        if(!res.data.metadata.user._id || !res.data.metadata.user.roles || !res.data.metadata.tokenPair.accessToken){
+            throw new Error('Đăng ký thất bại.');
+        }
+        const data = {userId: res.data.metadata.user._id, roles: res.data.metadata.user.roles , accessToken:  res.data.metadata.tokenPair.accessToken}
+        return data;
     })
     .catch(error => {throw new Error(error.response.data.message)})
 }
 
-// const getUserById = async () : Promise<> => {
 
-// }
+
+const getUserById = async (user: UserInterface) : Promise<any> => {
+    return axios.get(`${constant.BASE_URL}/user/`, {headers: {
+        'x-api-key': constant.API_KEY,
+        'x-client-id': user.userId,
+        'authorization': user.accessToken,}}).then((res)=>{return res.data.metadata;}).catch((err)=>{console.log(err);})
+}
 
 const updateUser = async(user_id: string, token:string, name: string, phone: string, address: string, avatar: string | null): Promise<any> => {
     return await axios.patch(`${constant.BASE_URL}/user/${user_id}`, {
@@ -71,10 +85,16 @@ const updateUser = async(user_id: string, token:string, name: string, phone: str
         return res.data.metadata}).catch((error)=>error)
 }
 
+const signOut = async (user: UserInterface) => {
+    return await axios.post(`${constant.BASE_URL}/user/signOut`, {userId:user.userId, accessToken: user.accessToken}).then((res)=>{return res.data}).catch((err)=>{console.log(err)})
+}
+
 
 
 export const userService = {
     login,
     register,
     updateUser,
+    getUserById,
+    signOut,
 };

@@ -143,3 +143,9 @@ export interface VoucherInterface {
   updatedAt: string
   __v: number
 }
+
+export interface UserInterface {
+  userId: any;
+  roles: any;
+  accessToken: any;
+}

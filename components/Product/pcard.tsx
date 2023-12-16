@@ -38,8 +38,8 @@ export const PCard = ({ data }: PCardProps) => {
       console.log('productId', productId);
       return cartServices.addProduct(productId, 1);
     },
-    onSuccess: () => { },
-    onError: () => { },
+    onSuccess: () => {},
+    onError: () => {},
   });
 
   const productQuantity =
@@ -124,7 +124,7 @@ export const PCard = ({ data }: PCardProps) => {
               // productId: string | null
               if (quantityNumber == 0) {
                 toast.error('Sản phẩm đã hết hàng.');
-              } else if (user?.user) {
+              } else if (user?.userId) {
                 if (cart) {
                   const newCart = structuredClone(cart);
                   if (newCart.cart_products == 0) {
