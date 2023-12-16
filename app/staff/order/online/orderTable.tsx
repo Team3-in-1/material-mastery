@@ -9,7 +9,7 @@ import { formatMoney, formatOrderId } from '@/utils/string';
 
 type tableType = {
     id: string;
-    createAt: Date;
+    createAt: string;
     customer: string;
     paymentStatus: string;
     shipmentStatus: string;
@@ -53,7 +53,7 @@ export default function OrderTable({ orders }: Props) {
 
     const orderData: tableType = orders.map((i: Order) => (
         {
-            id: formatOrderId(i._id, dayjs(i.createdAt).format('DD/MM/YYYY')),
+            id: i._id,
             createAt: dayjs(i.createdAt).format('DD/MM/YYYY'),
             customer: i.order_username,
             paymentStatus: i.order_payment.status,
@@ -61,7 +61,6 @@ export default function OrderTable({ orders }: Props) {
             finalPrice: i.order_checkout.finalPrice,
         }
     ))
-    const data = chunk(orderData, 10)
 
     const tableHead = tableHeadList.map(i => (
         <Table.Th key={i}>{i}</Table.Th>
@@ -72,8 +71,8 @@ export default function OrderTable({ orders }: Props) {
             key={i.id}
 
         >
-            <Table.Td>{i.id}</Table.Td>
-            <Table.Td>{i.createAt.toString()}</Table.Td>
+            <Table.Td>{formatOrderId(i.id, i.createAt)}</Table.Td>
+            <Table.Td>{i.createAt}</Table.Td>
             <Table.Td>{i.customer}</Table.Td>
             <Table.Td>{i.paymentStatus}</Table.Td>
             <Table.Td>{i.shipmentStatus}</Table.Td>
