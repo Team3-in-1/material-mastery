@@ -10,7 +10,13 @@ import {
 } from '@mantine/core';
 import Nav from './nav';
 import Order from './order';
-import { useContext, useEffect, useRef, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import UserContext from '@/contexts/UserContext';
 import OrderService from '@/services/orderService';
@@ -25,7 +31,9 @@ const OrdersPage = () => {
   const [orderStatus, setOrderStatus] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [numberPage, setNumberPage] = useState(0);
-  const start = useRef(1);
+  // const start = useRef(1);
+  const [start, setStart] = useState(1);
+
   let temp = 1;
   const numberOfOrder = useQuery({
     queryKey: ['numberOfOrder'],
@@ -45,8 +53,12 @@ const OrdersPage = () => {
     },
     enabled: !!user,
   });
-  useEffect(() => {
-    start.current = page * LIMIT_ORDERS;
+  useLayoutEffect(() => {
+    if (page == 1) {
+      setStart(1);
+    } else {
+      setStart((page - 1) * LIMIT_ORDERS + 1);
+    }
   }, [page]);
   useEffect(() => {
     if (numberOfOrder.isSuccess) {
@@ -96,13 +108,14 @@ const OrdersPage = () => {
     enabled: !!user && !!numberOfOrder,
     placeholderData: keepPreviousData,
   });
-
+  console.log('setStart() * LIMIT_ORDERS - 1', start * LIMIT_ORDERS - 1);
+  console.log('setStart()', start);
   return (
     <Stack className='mx-[100px] h-full justify-center'>
       <Nav
         orderStatus={orderStatus}
         setOrderStatus={setOrderStatus}
-        start={start}
+        setStart={setStart}
         setPage={setPage}
       />
       {orders.isPending ? (
@@ -117,17 +130,14 @@ const OrdersPage = () => {
             if (order.order_products.length > 0) {
               switch (orderStatus) {
                 case 0:
-                  if (
-                    temp >= start.current &&
-                    temp <= start.current * LIMIT_ORDERS - 1
-                  ) {
+                  if (temp >= start && temp < start + LIMIT_ORDERS) {
+                    console.log('temp', temp);
                     temp++;
-
                     // console.log(
-                    //   temp <= start.current * LIMIT_ORDERS - 1
+                    //   temp <= setStart() * LIMIT_ORDERS - 1
                     // );
                     // console.log('temp', temp);
-                    // console.log(start.current * LIMIT_ORDERS - 1);
+
                     return (
                       <Order
                         key={order._id}
@@ -142,14 +152,10 @@ const OrdersPage = () => {
                     temp++;
                   }
 
-                  console.log('aa');
                   break;
                 case 1:
                   if (order.order_status == 'pending') {
-                    if (
-                      temp >= start.current &&
-                      temp <= start.current * LIMIT_ORDERS - 1
-                    ) {
+                    if (temp >= start && temp < start + LIMIT_ORDERS) {
                       temp++;
 
                       return (
@@ -171,10 +177,7 @@ const OrdersPage = () => {
                   break;
                 case 2:
                   if (order.order_status == 'confirmed') {
-                    if (
-                      temp >= start.current &&
-                      temp <= start.current * LIMIT_ORDERS - 1
-                    ) {
+                    if (temp >= start && temp < start + LIMIT_ORDERS) {
                       temp++;
 
                       return (
@@ -196,10 +199,7 @@ const OrdersPage = () => {
                   break;
                 case 3:
                   if (order.order_status == 'shipping') {
-                    if (
-                      temp >= start.current &&
-                      temp <= start.current * LIMIT_ORDERS - 1
-                    ) {
+                    if (temp >= start && temp < start + LIMIT_ORDERS) {
                       temp++;
 
                       return (
@@ -224,10 +224,7 @@ const OrdersPage = () => {
                     order.order_status == 'delivered' ||
                     order.order_status == 'shipped'
                   ) {
-                    if (
-                      temp >= start.current &&
-                      temp <= start.current * LIMIT_ORDERS - 1
-                    ) {
+                    if (temp >= start && temp < start + LIMIT_ORDERS) {
                       temp++;
                       return (
                         <Order
@@ -251,10 +248,7 @@ const OrdersPage = () => {
                     order.order_status == 'cancelled' ||
                     order.order_status == 'failed'
                   ) {
-                    if (
-                      temp >= start.current &&
-                      temp <= start.current * LIMIT_ORDERS - 1
-                    ) {
+                    if (temp >= start && temp < start + LIMIT_ORDERS) {
                       temp++;
 
                       return (
