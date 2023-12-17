@@ -57,7 +57,7 @@ class OrderService {
         })
     }
 
-    modifyOrderStatus = async (orderId: string, status: string = 'cancelled'): Promise<any> => {
+    modifyOrderStatus = async (orderId: string | undefined, status: string = 'cancelled'): Promise<any> => {
         return await axios.patch(`${constant.BASE_URL}/order/status/${orderId}?status=${status}`, {}, { headers: this.hearders }).then((res) => { return res.data }).catch((err) => { err.response.status })
     }
 

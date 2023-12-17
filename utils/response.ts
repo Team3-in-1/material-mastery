@@ -101,7 +101,7 @@ export interface Order_Checkout {
   finalPrice: number
 }
 
-export enum Order_StatusEnum { 'pending', 'confirmed', 'shipped', 'cancelled', 'delivered' }
+export enum Order_StatusEnum { 'pending', 'confirmed', 'shipped', 'cancelled', 'shipping' }
 export interface Order_Payment {
   status: string
   method: string
