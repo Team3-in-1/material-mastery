@@ -71,12 +71,7 @@ const Order = ({
   const router = useRouter();
 
   return (
-    <Stack
-      className='bg-white p-[20px] rounded-[10px]'
-      onClick={() => {
-        router.push(`/account/orders/${orderId}`);
-      }}
-    >
+    <Stack className='bg-white p-[20px] rounded-[10px]'>
       {/* infor of order */}
       <Group className='w-full justify-between'>
         <Group>
@@ -109,7 +104,15 @@ const Order = ({
       <Divider />
 
       {/* cost of order */}
-      <Group className=' w-full flex-row-reverse'>
+      <Group className=' w-full justify-between'>
+        <Button
+          className=' bg-transparent text-[#02B1AB] '
+          onClick={() => {
+            router.push(`/account/orders/${orderId}`);
+          }}
+        >
+          Xem chi tiết
+        </Button>
         <Group className=' justify-center items-center'>
           <Text className='mt-[3px]'>Thành tiền</Text>
           <Group className=' gap-0 mt-[3px] text-[#02B1AB] items-start'>

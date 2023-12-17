@@ -46,6 +46,7 @@ const DetailsPage = () => {
     },
     enabled: !!user,
     staleTime: Infinity,
+    refetchOnMount: false,
   });
 
   const [name, setName] = useState('');
