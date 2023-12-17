@@ -47,6 +47,9 @@ for (let index = 0; index < 14; index++) {
 }
 
 function Home() {
+  const router = useRouter();
+  router.prefetch('/cart');
+  router.prefetch('/account/orders');
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,

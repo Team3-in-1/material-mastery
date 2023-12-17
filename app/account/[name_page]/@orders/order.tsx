@@ -1,5 +1,13 @@
 import { formatMoney } from '@/utils/string';
-import { Stack, Group, Text, Divider, Image, Button } from '@mantine/core';
+import {
+  Stack,
+  Group,
+  Text,
+  Divider,
+  Image,
+  Button,
+  Modal,
+} from '@mantine/core';
 import Product from './product';
 import { useMutation } from '@tanstack/react-query';
 import OrderService from '@/services/orderService';
@@ -8,6 +16,7 @@ import UserContext from '@/contexts/UserContext';
 import toast from 'react-hot-toast';
 import queryClient from '@/helpers/client';
 import { useRouter } from 'next/navigation';
+import { useDisclosure } from '@mantine/hooks';
 
 const Order = ({
   orderId,
@@ -56,16 +65,23 @@ const Order = ({
       toast.success('Hủy đơn hàng thành công.');
       await queryClient.refetchQueries({
         queryKey: ['orders'],
-        exact: true,
       });
     },
     onError: () => {
       toast.error('Hủy đơn hàng thất bại.');
     },
   });
+  const [opened, { open, close }] = useDisclosure(false);
 
-  const handleCancelButton = () => {
-    cancelOrderMutation.mutate();
+  const handleCancelButton = (type: number = 0) => {
+    if (opened) {
+      if (type === 1) {
+        cancelOrderMutation.mutate();
+      }
+      close();
+    } else {
+      open();
+    }
   };
 
   const router = useRouter();
@@ -123,13 +139,41 @@ const Order = ({
             <Button
               bg={'transparent'}
               className=' bg-transparent w-[80px] h-full text-[15px] text-red-500'
-              onClick={handleCancelButton}
+              onClick={() => {
+                handleCancelButton();
+              }}
             >
               Hủy
             </Button>
           )}
         </Group>
       </Group>
+      <Modal
+        opened={opened}
+        onClose={close}
+        centered
+        className='flex flex-col justify-center items-center'
+      >
+        <Text className=''>Xác nhận hủy đơn hàng?</Text>
+        <Group className='w-full justify-evenly'>
+          <Button
+            className=' bg-0-primary-color-6'
+            onClick={() => {
+              handleCancelButton(1);
+            }}
+          >
+            Xác nhận
+          </Button>
+          <Button
+            className=' bg-0-primary-color-6'
+            onClick={() => {
+              handleCancelButton();
+            }}
+          >
+            Hủy
+          </Button>
+        </Group>
+      </Modal>
     </Stack>
   );
 };

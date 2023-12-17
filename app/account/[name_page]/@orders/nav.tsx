@@ -10,9 +10,13 @@ interface ItemInterface {
 const Nav = ({
   orderStatus,
   setOrderStatus,
+  start,
+  setPage,
 }: {
   orderStatus: any;
   setOrderStatus: any;
+  start: any;
+  setPage: any;
 }) => {
   const [positionChecked, setPositionChecked] = useState(0);
   const items: ItemInterface[] = [
@@ -34,6 +38,8 @@ const Nav = ({
               : ' text-[gray] font-medium'
           }
           onClick={() => {
+            start.current = 1;
+            setPage(1);
             setPositionChecked(item.id);
             setOrderStatus(item.id);
           }}
