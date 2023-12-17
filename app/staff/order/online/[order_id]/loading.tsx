@@ -2,7 +2,7 @@ import { LoadingOverlay, Container, Flex, Skeleton } from '@mantine/core';
 export default function Loading() {
     // You can add any UI inside Loading, including a Skeleton.
     return (
-        <div className='p-[24px] mt-[40px]'>
+        <div className='p-[24px] mt-[40px] h-full w-full'>
             <Flex justify='space-between' align='center'>
                 <Skeleton circle height={50} />
                 <Flex direction='column' gap='10px' w='10%'>

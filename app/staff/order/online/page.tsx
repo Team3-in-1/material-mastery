@@ -66,22 +66,36 @@ export default function OnlineOrderSegment() {
         enabled: !!user,
     });
 
+    const numberOfOrder = useQuery({
+        queryKey: ['numberOfOrder'],
+        queryFn: () => {
+            const orderService = new OrderService(user);
+            return orderService.getNumberOfOrder()
+        },
+        enabled: !!user,
+    });
 
 
-    const handleFilter = (data: any) => {
-        return data.filter((item: any) => {
-            if (paymentFilter === paymentState[0])
-                return true
-            else
-                return item.order_payment.status === paymentStatusMapping[paymentFilter as keyof typeof paymentStatusMapping]
-        })
+
+    // const handleFilter = (data: any) => {
+    //     return data.filter((item: any) => {
+    //         if (paymentFilter === paymentState[0])
+    //             return true
+    //         else
+    //             return item.order_payment.status === paymentStatusMapping[paymentFilter as keyof typeof paymentStatusMapping]
+    //     })
+    // }
+    const calPages = (num: any) => {
+        let total: number = num.pending + num.confirmed + num.cancelled + num.shipping + num.shipped + num.failed
+        // total = total % 10 !== 0 ? Math.ceil(total / 10) : Math.floor(total / 10);
+        return Math.ceil(total / 10)
     }
 
     return (
         <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
             <Stack className='flex flex-col gap-[16px]'>
                 <Fieldset className='flex gap-[16px] items-end w-fit' legend="Bộ lọc">
-                    <Group gap='0.5rem'>
+                    {/* <Group gap='0.5rem'>
                         <Select
                             w='100'
                             data={dates}
@@ -91,7 +105,7 @@ export default function OnlineOrderSegment() {
                             comboboxProps={comboboxStyles}
                         />
                         <CalendarInput type={dateMapping[date as keyof typeof dateMapping]} />
-                    </Group>
+                    </Group> */}
                     <Select
                         w='fit-content'
                         label='Trạng thái thanh toán'
@@ -109,12 +123,12 @@ export default function OnlineOrderSegment() {
                         comboboxProps={comboboxStyles}
                     />
                 </Fieldset>
-                {orders.isPending ? (
+                {orders.isPending || numberOfOrder.isPending ? (
                     <TableSkeleton col={8} row={10} />
                 ) :
                     <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                         <OrderTable orders={orders.data} />
-                        <Pagination className='self-center' total={10} value={activePage} onChange={setPage} mt="sm" />
+                        <Pagination className='self-center' total={calPages(numberOfOrder.data)} value={activePage} onChange={setPage} mt="sm" />
                     </div>}
             </Stack>
         </ScrollArea>
