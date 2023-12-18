@@ -1,4 +1,5 @@
 'use client';
+import '../../app/global.css';
 import NextImage from 'next/image';
 import { Flex, Group, Image, Text, Anchor, Menu, rem } from '@mantine/core';
 import logo from '@/public/icon.svg';
@@ -75,7 +76,9 @@ export default function Header() {
           </Text>
         </Group>
       </Link>
-      {user.userId && user?.roles[0] != 'manager' && <Search content='' />}
+      {((user.userId && user?.roles[0] != 'manager') || !user.userId) && (
+        <Search content='' />
+      )}
 
       {user?.userId ? (
         <LoggedHeader user={user} setUser={setUser} />

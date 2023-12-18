@@ -53,10 +53,7 @@ export default function Search({ content }: SearchText) {
     <TextInput
       w='37.5rem'
       rightSection={
-        <ActionIcon
-          color='#8E8E8E'
-          className=' cursor-pointer hover:bg-slate-100 rounded-full p-[2px] w-fit h-fit'
-        >
+        <ActionIcon className=' bg-transparent  cursor-pointer hover:bg-slate-100 rounded-full p-[2px] w-fit h-fit'>
           <IconSearch
             color='#8E8E8E'
             onClick={() => {

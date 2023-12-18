@@ -1,10 +1,13 @@
 'use client';
+import '../../../global.css';
 import {
   Button,
   Group,
+  Loader,
   LoadingOverlay,
   Modal,
   Pagination,
+  Skeleton,
   Stack,
   Text,
 } from '@mantine/core';
@@ -20,8 +23,8 @@ import {
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import UserContext from '@/contexts/UserContext';
 import OrderService from '@/services/orderService';
-import '../../../global.css';
 import { useDisclosure } from '@mantine/hooks';
+import TableSkeleton from '@/components/Skeleton/tableSkeleton';
 
 const LIMIT_ORDERS = 3;
 
@@ -111,7 +114,7 @@ const OrdersPage = () => {
   console.log('setStart() * LIMIT_ORDERS - 1', start * LIMIT_ORDERS - 1);
   console.log('setStart()', start);
   return (
-    <Stack className='mx-[100px] h-full justify-center'>
+    <Stack className='mx-[100px] h-full justify-center items-center'>
       <Nav
         orderStatus={orderStatus}
         setOrderStatus={setOrderStatus}
@@ -119,19 +122,19 @@ const OrdersPage = () => {
         setPage={setPage}
       />
       {orders.isPending ? (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: 'sm', blur: 2 }}
-        />
+        // <LoadingOverlay
+        //   visible={true}
+        //   zIndex={1000}
+        //   overlayProps={{ radius: 'sm', blur: 2 }}
+        // />
+        <Skeleton height={150} />
       ) : (
-        <>
+        <div className=' w-full flex gap-3 flex-col'>
           {orders.data.orders.map((order: any) => {
             if (order.order_products.length > 0) {
               switch (orderStatus) {
                 case 0:
                   if (temp >= start && temp < start + LIMIT_ORDERS) {
-                    console.log('temp', temp);
                     temp++;
                     // console.log(
                     //   temp <= setStart() * LIMIT_ORDERS - 1
@@ -172,7 +175,6 @@ const OrdersPage = () => {
                       temp++;
                     }
                   }
-                  console.log('bb');
 
                   break;
                 case 2:
@@ -194,7 +196,6 @@ const OrdersPage = () => {
                       temp++;
                     }
                   }
-                  console.log('bb');
 
                   break;
                 case 3:
@@ -216,7 +217,6 @@ const OrdersPage = () => {
                       temp++;
                     }
                   }
-                  console.log('bb');
 
                   break;
                 case 4:
@@ -240,7 +240,6 @@ const OrdersPage = () => {
                       temp++;
                     }
                   }
-                  console.log('bb');
 
                   break;
                 case 5:
@@ -265,16 +264,19 @@ const OrdersPage = () => {
                       temp++;
                     }
                   }
-                  console.log('bb');
 
                   break;
               }
-              // console.log('temp', temp);
             }
           })}
-        </>
+        </div>
       )}
-      <Pagination total={numberPage} value={page} onChange={setPage} />
+      <Pagination
+        total={numberPage}
+        value={page}
+        onChange={setPage}
+        className=' w-fit'
+      />
     </Stack>
   );
 };

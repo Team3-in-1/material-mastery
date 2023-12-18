@@ -22,6 +22,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
   const [user, setUser, isUserSet] = useLocalStorage('user', defaultUser);
 
   useDeepCompareEffect(() => {
+    console.log('user', user);
     if (!isUserSet) return;
     if (
       !user?.userId &&
