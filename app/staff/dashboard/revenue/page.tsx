@@ -9,7 +9,7 @@ import {
   Stack,
   Divider,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { chartData as DayChart, statsData as DayStats } from './day-data';
 import {
   chartData as WeekChart,
@@ -83,21 +83,23 @@ const tabData = [
 
 export default function RevenuePage() {
   const router = useRouter();
-  const [day, setDay] = useState<Date | null>(new Date());
-  const [week, setWeek] = useState<[Date | null, Date | null]>([
-    startOfWeek(new Date()),
-    endOfWeek(new Date()),
-  ]);
-  const [month, setMonth] = useState<Date | null>(new Date());
-  const [quarter, setQuarter] = useState<[Date | null, Date | null]>([
-    startOfQuarter(new Date()),
-    endOfQuarter(new Date()),
-  ]);
-  const [year, setYear] = useState<Date | null>(new Date());
-  router.prefetch('/staff/dashboard/in-outbound');
-  router.prefetch('/staff/warehouse');
-  router.prefetch('/staff/order/online');
-  router.prefetch('/staff/order/offline');
+  // const [day, setDay] = useState<Date | null>(new Date());
+  // const [week, setWeek] = useState<[Date | null, Date | null]>([
+  //   startOfWeek(new Date()),
+  //   endOfWeek(new Date()),
+  // ]);
+  // const [month, setMonth] = useState<Date | null>(new Date());
+  // const [quarter, setQuarter] = useState<[Date | null, Date | null]>([
+  //   startOfQuarter(new Date()),
+  //   endOfQuarter(new Date()),
+  // ]);
+  // const [year, setYear] = useState<Date | null>(new Date());
+  useEffect(() => {
+    router.prefetch('/staff/dashboard/in-outbound');
+    router.prefetch('/staff/warehouse');
+    router.prefetch('/staff/order/online');
+    router.prefetch('/staff/order/offline');
+  }, [])
 
   const tabList = tabData.map((item) => (
     <Tabs.Tab key={item.value} value={item.value}>
@@ -156,6 +158,7 @@ export default function RevenuePage() {
       </Tabs>
     </ScrollArea>
   );
+
 }
 
 // export default dynamic(() => Promise.resolve(RevenuePage), { ssr: false });
