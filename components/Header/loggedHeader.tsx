@@ -1,11 +1,12 @@
 'use client';
+import '../../app/global.css';
+import '@mantine/core/styles.css';
 import NextImage from 'next/image';
 import { Flex, Group, Image, Text, Anchor, Menu, rem } from '@mantine/core';
 import logo from '@/public/icon.svg';
 import Search from '../Search/search';
 // import '../../app/global.css';
 import LanguagePicker from '../LanguagePicker/languagePicker';
-import '@mantine/core/styles.css';
 import {
   IconShoppingCart,
   IconUserCircle,
@@ -46,11 +47,9 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
 
   const onClickFunction: OnClickInterface = {
     details: () => {
-      router.prefetch('/account/details');
       router.push('/account/details');
     },
     orders: () => {
-      router.prefetch('/account/orders');
       router.push('/account/orders');
     },
     signOut: () => {

@@ -1,8 +1,7 @@
 'use client';
-
+import '../global.css';
 import { ProductCards } from '@/components/Product/productCards';
 import { CategoryNav } from '@/components/CategoryNav/categoryNav';
-import '../global.css';
 import { Grid, Pagination, Flex } from '@mantine/core';
 import {
   useQuery,

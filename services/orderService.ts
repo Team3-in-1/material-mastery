@@ -51,7 +51,8 @@ class OrderService {
         }, { headers: this.hearders }).then(async (res) => { return res.data.statusCode }).catch((err) => { return err.response.status });
     }
 
-    getOrders = async (limit: number = 2, page: number = 1, status: string = 'order_status', isAscending: boolean = true): Promise<any> => {
+    // get order by customer
+    getOrders = async (page: number = 1, limit: number = 2, status: string = 'order_status', isAscending: boolean = true): Promise<any> => {
         return await axios.get(`${constant.BASE_URL}/order?limit=${limit}&page=${page}&sorted[]=${status}&isAscending=${isAscending}`, { headers: this.hearders }).then((res) => { return res.data.metadata; }).catch((err) => {
             console.log(err);
         })
@@ -62,7 +63,7 @@ class OrderService {
     }
 
     getAllOrder = async (limit: number = 4, page: number = 1, status: string = '', sortBy: string = 'order_date', isAscending: boolean = false): Promise<any> => {
-        const statusParam = status === '' ? '' : `&status=${status}`
+        const statusParam = status === '' ? '' : `& status=${status}`
         console.log(`${constant.BASE_URL}/order/staff?limit=${limit}&page=${page}&sorted[]=${sortBy}&isAscending=${isAscending}${statusParam}`)
         return await axios.get(`${constant.BASE_URL}/order/staff?limit=${limit}&page=${page}&sorted[]=${sortBy}&isAscending=${isAscending}${statusParam}`, { headers: this.hearders }).then((res) => { return res.data.metadata; }).catch((err) => {
             console.log(err);
@@ -84,6 +85,17 @@ class OrderService {
             })
     }
 
+    
+    getNumberOfOrderByCustomer = async () => {
+        return await axios.get(`${constant.BASE_URL}/order/customer/number`, { headers: this.hearders })
+            .then((res) => {
+                return res.data.metadata;
+            })
+            .catch((err: any) => {
+                console.log('err', err);
+                return 0;
+            })
+    }
 
     getOrderById = async (id: string): Promise<any> => {
         return await axios.get(`${constant.BASE_URL}/order/find/${id}`, { headers: this.hearders })

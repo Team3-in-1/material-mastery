@@ -1,9 +1,7 @@
-
 import './global.css';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/dates/styles.css';
-
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -16,7 +14,6 @@ import BottomNavBar from '@/components/Mobile/BottomNavBar/bottomNavBar';
 import { Suspense } from 'react';
 import Loading from './loading';
 import Providers from './providers';
-
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -50,7 +47,6 @@ export default function RootLayout({
             </TanStackProvider>
           </MantineProvider>
         </Providers>
-
       </body>
     </html>
   );

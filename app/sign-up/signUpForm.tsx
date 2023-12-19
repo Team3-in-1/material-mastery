@@ -1,4 +1,5 @@
 'use client';
+import '../global.css';
 import {
   Button,
   Stack,
@@ -9,7 +10,6 @@ import {
   Alert,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import '../global.css';
 import '@mantine/core/styles.css';
 
 import {

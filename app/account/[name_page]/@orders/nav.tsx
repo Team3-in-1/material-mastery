@@ -10,9 +10,13 @@ interface ItemInterface {
 const Nav = ({
   orderStatus,
   setOrderStatus,
+  setStart,
+  setPage,
 }: {
   orderStatus: any;
   setOrderStatus: any;
+  setStart: any;
+  setPage: any;
 }) => {
   const [positionChecked, setPositionChecked] = useState(0);
   const items: ItemInterface[] = [
@@ -30,10 +34,12 @@ const Nav = ({
           key={item.label}
           className={
             positionChecked == item.id
-              ? ' text-black border-b-2 border-0-primary-color-6 border-x-0 border-t-0 rounded-none font-medium'
-              : ' text-[gray] font-medium'
+              ? 'flex-1 text-black border-b-2 border-0-primary-color-6 border-x-0 border-t-0 rounded-none font-medium'
+              : 'flex-1 text-[gray] font-medium'
           }
           onClick={() => {
+            setStart(1);
+            setPage(1);
             setPositionChecked(item.id);
             setOrderStatus(item.id);
           }}

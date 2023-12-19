@@ -1,4 +1,5 @@
 'use client';
+import '../global.css';
 import {
   Button,
   Stack,
@@ -7,7 +8,6 @@ import {
   LoadingOverlay,
   Alert,
 } from '@mantine/core';
-import '../global.css';
 import '@mantine/core/styles.css';
 
 import { IconInfoCircle } from '@tabler/icons-react';
