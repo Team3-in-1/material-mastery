@@ -1,19 +1,59 @@
+'use client';
+import SideBar from '@/components/SideBar/SideBar';
+import UserContext from '@/contexts/UserContext';
+import { constant } from '@/utils/constant';
+import { Button, Group } from '@mantine/core';
+import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { io } from 'socket.io-client';
 
-import SideBar from "@/components/SideBar/SideBar"
-import { Button, Group } from "@mantine/core";
-
+let socket;
 
 export default function StaffLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
+  const [notify, setNotify] = useState<any>(null);
+  const socketInitializer = () => {
+    socket = io('http://mm.khangdev.id.vn/');
 
+    socket.on('connect', () => {
+      console.log('connected');
+    });
 
-    return (
-        <Group w='100%' h='100%' pos='fixed' className="z-[2]" bg='white' pt={72} gap='0' wrap='nowrap'>
-            <SideBar from='staff' />
-            {children}
-        </Group>
-    )
+    socket.on('notificationChange', (notification) => {
+      console.log('Received notification change:', notification);
+      if (!notification) {
+        setNotify(1);
+      }
+    });
+  };
+  useEffect(() => {
+    if (notify) {
+      toast.error('Hết hàng rồi');
+      setNotify(null);
+    }
+  }, [notify]);
+
+  useEffect(() => {
+    socketInitializer();
+  }, []);
+
+  return (
+    <Group
+      w='100%'
+      h='100%'
+      pos='fixed'
+      className='z-[2]'
+      bg='white'
+      pt={72}
+      gap='0'
+      wrap='nowrap'
+    >
+      <SideBar from='staff' />
+      {children}
+    </Group>
+  );
 }

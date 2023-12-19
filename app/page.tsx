@@ -1,6 +1,6 @@
 'use client';
+import '@/styles/global.css';
 import Link from 'next/link';
-import './global.css';
 import {
   Grid,
   Container,

@@ -1,5 +1,5 @@
 'use client';
-
+import '@/styles/global.css';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { redirect, usePathname, useSearchParams } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';

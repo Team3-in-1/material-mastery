@@ -1,3 +1,4 @@
+import '@/styles/global.css';
 import AccountNav from '@/components/Account/nav';
 import { Flex, Group, Stack } from '@mantine/core';
 
@@ -11,9 +12,15 @@ const AccountLayout = ({
   params: { name_page: string };
 }) => {
   return (
-    <Group className=' bg-[#f1f3f5] z-[1] min-h-full relative h-fit w-full items-start'>
+    <Group
+      bg={'#f1f3f5'}
+      align='flex-start'
+      h={'fit-content'}
+      w={'100%'}
+      className='z-[1] min-h-full relative'
+    >
       <AccountNav namePage={params.name_page} />
-      <Flex className='flex-1 pt-[100px] h-full flex-col pb-[30px]'>
+      <Flex pt={100} h={'100%'} pb={30} direction={'column'} className='flex-1'>
         {params.name_page == 'details' ? details : orders}
       </Flex>
     </Group>

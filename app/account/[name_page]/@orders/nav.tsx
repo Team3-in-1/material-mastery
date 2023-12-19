@@ -1,4 +1,5 @@
 'use client';
+import '@/styles/global.css';
 import { Button, Group } from '@mantine/core';
 import { useState } from 'react';
 
@@ -28,10 +29,19 @@ const Nav = ({
     { id: 5, label: 'Đã hủy' },
   ];
   return (
-    <Group className='w-full bg-white justify-between px-3 py-2 items-center rounded-[10px]'>
+    <Group
+      justify='between'
+      px={12}
+      py={8}
+      align='center'
+      w={'100%'}
+      bg={'white'}
+      className='rounded-[10px]'
+    >
       {items.map((item) => (
         <Button
           key={item.label}
+          bg={'transparent'}
           className={
             positionChecked == item.id
               ? 'flex-1 text-black border-b-2 border-0-primary-color-6 border-x-0 border-t-0 rounded-none font-medium'

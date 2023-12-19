@@ -1,4 +1,4 @@
-import '../global.css';
+import '@/styles/global.css';
 
 import { Container } from '@mantine/core';
 

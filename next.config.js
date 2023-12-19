@@ -6,6 +6,7 @@ const nextConfig = {
   images: {
     domains: ['biiibo.com'],
   },
+  //http://mm.khangdev.id.vn/';
   async redirects() {
     return [
       {

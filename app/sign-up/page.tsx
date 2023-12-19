@@ -1,5 +1,5 @@
 'use client';
-import '../global.css';
+import '@/styles/global.css';
 import NextImage from 'next/image';
 import Link from 'next/link';
 import {

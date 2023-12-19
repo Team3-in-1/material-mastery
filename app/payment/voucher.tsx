@@ -1,4 +1,5 @@
 'use client';
+import '@/styles/global.css';
 import Voucher from '@/components/Vouchers/voucher';
 import voucherService from '@/services/voucherService';
 import { Button, Divider, LoadingOverlay, Stack } from '@mantine/core';

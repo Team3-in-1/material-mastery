@@ -1,5 +1,5 @@
 'use client';
-import '../../app/global.css';
+import '@/styles/global.css';
 import { productService } from '@/services/productService';
 import { ActionIcon, Button, LoadingOverlay, TextInput } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';

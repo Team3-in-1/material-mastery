@@ -1,5 +1,6 @@
 'use client';
-import '../../../global.css';
+import '@/styles/global.css';
+
 import {
   Button,
   Group,
@@ -25,17 +26,24 @@ import UserContext from '@/contexts/UserContext';
 import OrderService from '@/services/orderService';
 import { useDisclosure } from '@mantine/hooks';
 import TableSkeleton from '@/components/Skeleton/tableSkeleton';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 
 const LIMIT_ORDERS = 3;
 
 const OrdersPage = () => {
   const { user } = useContext(UserContext);
+  // const router = useRouter();
   const [page, setPage] = useState(1);
   const [orderStatus, setOrderStatus] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [numberPage, setNumberPage] = useState(0);
   // const start = useRef(1);
   const [start, setStart] = useState(1);
+
+  // useEffect(() => {
+  //   router.refresh();
+  // }, []);
 
   let temp = 1;
   const numberOfOrder = useQuery({
@@ -77,16 +85,16 @@ const OrdersPage = () => {
 
           break;
         case 3:
-          setNumberPage(Math.ceil(numberOfOrder.data.shipping / LIMIT_ORDERS));
-
-          break;
-        case 4:
           setNumberPage(
             Math.ceil(
-              (numberOfOrder.data.delivered + numberOfOrder.data.shipped) /
+              (numberOfOrder.data.shipping + numberOfOrder.data.shipped) /
                 LIMIT_ORDERS
             )
           );
+
+          break;
+        case 4:
+          setNumberPage(Math.ceil(numberOfOrder.data.delivered / LIMIT_ORDERS));
 
           break;
         case 5:
@@ -109,28 +117,26 @@ const OrdersPage = () => {
     },
     staleTime: 500000,
     enabled: !!user && !!numberOfOrder,
-    placeholderData: keepPreviousData,
+    // placeholderData: keepPreviousData,
   });
-  console.log('setStart() * LIMIT_ORDERS - 1', start * LIMIT_ORDERS - 1);
-  console.log('setStart()', start);
   return (
-    <Stack className='mx-[100px] h-full justify-center items-center'>
+    <Stack
+      justify='center'
+      align='center'
+      mx={100}
+      className='mx-[100px] h-full'
+    >
       <Nav
         orderStatus={orderStatus}
         setOrderStatus={setOrderStatus}
         setStart={setStart}
         setPage={setPage}
       />
-      {orders.isPending ? (
-        // <LoadingOverlay
-        //   visible={true}
-        //   zIndex={1000}
-        //   overlayProps={{ radius: 'sm', blur: 2 }}
-        // />
+      {orders.isPending || numberOfOrder.isPending ? (
         <Skeleton height={150} />
       ) : (
-        <div className=' w-full flex gap-3 flex-col'>
-          {orders.data.orders.map((order: any) => {
+        <Stack w={'100%'} gap={12}>
+          {orders.data?.orders.map((order: any) => {
             if (order.order_products.length > 0) {
               switch (orderStatus) {
                 case 0:
@@ -199,7 +205,10 @@ const OrdersPage = () => {
 
                   break;
                 case 3:
-                  if (order.order_status == 'shipping') {
+                  if (
+                    order.order_status == 'shipping' ||
+                    order.order_status == 'shipped'
+                  ) {
                     if (temp >= start && temp < start + LIMIT_ORDERS) {
                       temp++;
 
@@ -220,10 +229,7 @@ const OrdersPage = () => {
 
                   break;
                 case 4:
-                  if (
-                    order.order_status == 'delivered' ||
-                    order.order_status == 'shipped'
-                  ) {
+                  if (order.order_status == 'delivered') {
                     if (temp >= start && temp < start + LIMIT_ORDERS) {
                       temp++;
                       return (
@@ -269,16 +275,17 @@ const OrdersPage = () => {
               }
             }
           })}
-        </div>
+        </Stack>
       )}
       <Pagination
         total={numberPage}
         value={page}
         onChange={setPage}
-        className=' w-fit'
+        w={'fit-content'}
       />
     </Stack>
   );
 };
 
 export default OrdersPage;
+// export default dynamic(() => Promise.resolve(OrdersPage), { ssr: false });

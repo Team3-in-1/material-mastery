@@ -1,3 +1,5 @@
+import '@/styles/global.css';
+
 import { formatMoney } from '@/utils/string';
 import {
   Stack,
@@ -87,9 +89,9 @@ const Order = ({
   const router = useRouter();
 
   return (
-    <Stack className='bg-white p-[20px] rounded-[10px]'>
+    <Stack bg={'white'} p={20} className='rounded-[10px]'>
       {/* infor of order */}
-      <Group className='w-full justify-between'>
+      <Group w={'100%'} justify='space-between'>
         <Group>
           <Text className='  text-[#8E8E8E]'>Mã đơn hàng</Text>
           <Text className='text-[#8E8E8E]'>{orderId}</Text>
@@ -120,25 +122,28 @@ const Order = ({
       <Divider />
 
       {/* cost of order */}
-      <Group className=' w-full justify-between'>
+      <Group w={'100%'} justify='space-between'>
         <Button
-          className=' bg-transparent text-[#02B1AB] '
+          bg={'transparent'}
+          className='text-[#02B1AB] '
           onClick={() => {
             router.push(`/account/orders/${orderId}`);
           }}
         >
           Xem chi tiết
         </Button>
-        <Group className=' justify-center items-center'>
-          <Text className='mt-[3px]'>Thành tiền</Text>
-          <Group className=' gap-0 mt-[3px] text-[#02B1AB] items-start'>
+        <Group justify='center' align='center'>
+          <Text mt={3}>Thành tiền</Text>
+          <Group gap={0} mt={3} align='flex-start' className=' text-[#02B1AB]'>
             <Text>{formatMoney(finalPrice)}</Text>
             <Text className=' text-[10px]'>đ</Text>
           </Group>
           {status == 'Chờ xác nhận' && (
             <Button
               bg={'transparent'}
-              className=' bg-transparent w-[80px] h-full text-[15px] text-red-500'
+              w={80}
+              h={'100%'}
+              className='text-[15px] text-red-500'
               onClick={() => {
                 handleCancelButton();
               }}
@@ -154,23 +159,27 @@ const Order = ({
         centered
         className='flex flex-col justify-center items-center'
       >
-        <Text className=''>Xác nhận hủy đơn hàng?</Text>
-        <Group className='w-full justify-evenly'>
+        <Text className=' font-bold mb-[40px] text-[20px]'>
+          Xác nhận hủy đơn hàng?
+        </Text>
+        <Group w={'100%'} justify='space-evenly'>
           <Button
-            className=' bg-0-primary-color-6'
-            onClick={() => {
-              handleCancelButton(1);
-            }}
-          >
-            Xác nhận
-          </Button>
-          <Button
-            className=' bg-0-primary-color-6'
+            bg={'transparent'}
+            className=' border-[#02B1AB] text-[#02B1AB] flex-1'
             onClick={() => {
               handleCancelButton();
             }}
           >
             Hủy
+          </Button>
+          <Button
+            bg={'#02B1AB'}
+            className=' flex-1 text-white'
+            onClick={() => {
+              handleCancelButton(1);
+            }}
+          >
+            Xác nhận
           </Button>
         </Group>
       </Modal>

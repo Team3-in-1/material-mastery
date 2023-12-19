@@ -1,6 +1,5 @@
+import '@/styles/global.css';
 import { Container } from '@mantine/core';
-
-import '../global.css';
 
 export default function ProductsLayout({
   children,

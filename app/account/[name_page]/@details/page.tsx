@@ -1,5 +1,5 @@
 'use client';
-
+import '@/styles/global.css';
 import {
   Stack,
   Group,
@@ -14,10 +14,6 @@ import {
   Textarea,
   Box,
 } from '@mantine/core';
-// import '@mantine/core/styles.layer.css';
-// import '@mantine/carousel/styles.layer.css';
-// import '@mantine/dates/styles.css';
-import '../../../global.css';
 import NextImage from 'next/image';
 import { useDisclosure } from '@mantine/hooks';
 
@@ -122,7 +118,7 @@ const DetailsPage = () => {
   };
 
   return (
-    <Stack className='w-full h-full px-[100px]'>
+    <Stack w={'100%'} h={'100%'} px={100}>
       <Modal opened={opened} onClose={close} centered>
         <Stack>
           <Stack>
@@ -134,9 +130,11 @@ const DetailsPage = () => {
               }}
             />
           </Stack>
-          <Group className='w-full justify-evenly'>
+          <Group w={'100%'} justify='space-evenly'>
             <Button
-              className=' h-5 text-[#02B1AB] bg-transparent border-0'
+              h={'1.25 rem'}
+              bg={'transparent'}
+              className='text-[#02B1AB] border-0'
               onClick={() => {
                 if (avatarInput != '') {
                   setAvatar(avatarInput);
@@ -150,7 +148,9 @@ const DetailsPage = () => {
               Lưu
             </Button>
             <Button
-              className=' h-5 text-[#02B1AB] bg-transparent border-0'
+              h={'1.25 rem'}
+              bg={'transparent'}
+              className=' text-[#02B1AB] border-0'
               onClick={() => {
                 setAvatarInput('');
                 close();
@@ -163,7 +163,13 @@ const DetailsPage = () => {
       </Modal>
       <Group>
         <Stack align='center' justify='center' className='flex-[1]'>
-          <div className='w-[140px] h-[140px] rounded-full flex items-center justify-center'>
+          <Group
+            w={140}
+            h={140}
+            justify='center'
+            align='center'
+            className=' rounded-full '
+          >
             <Image
               alt='avatar'
               h={120}
@@ -172,10 +178,13 @@ const DetailsPage = () => {
               className='rounded-full '
               src={avatar}
             />
-          </div>
+          </Group>
 
           <Button
-            className=' h-[25px] w-[120px] bg-transparent text-[#02B1AB] font-light border-[1.5px] border-[#02B1AB] rounded-[5px]'
+            bg={'transparent'}
+            h={25}
+            w={120}
+            className=' text-[#02B1AB] font-light border-[1.5px] border-[#02B1AB] rounded-[5px]'
             onClick={() => {
               open();
             }}
@@ -183,11 +192,16 @@ const DetailsPage = () => {
             Thay đổi
           </Button>
         </Stack>
-        <Stack className='flex-[2] bg-white rounded-[10px] p-[20px] box-content'>
-          <Flex className=' w-full flex-row-reverse'>
+        <Stack
+          bg={'white'}
+          p={20}
+          className='flex-[2] rounded-[10px] box-content'
+        >
+          <Flex w={'100%'} direction={'row-reverse'}>
             {enableBox1 && (
               <Button
-                className=' h-5 text-[#02B1AB] bg-transparent border-0'
+                bg={'transparent'}
+                className=' h-5 text-[#02B1AB] border-0'
                 //style={{ height: '1.25rem', color: '#02B1AB' }}
                 onClick={() => {
                   returnInitialValue(0);
@@ -198,7 +212,8 @@ const DetailsPage = () => {
               </Button>
             )}
             <Button
-              className=' h-5 text-[#02B1AB] bg-transparent border-0'
+              bg={'transparent'}
+              className=' h-5 text-[#02B1AB] border-0'
               onClick={() => {
                 if (enableBox1) {
                   // input valid check function will return null
@@ -244,13 +259,13 @@ const DetailsPage = () => {
           />
         </Stack>
       </Group>
-      <Stack className=' p-[20px] bg-white rounded-[10px]'>
-        <Group className=' justify-between w-full'>
+      <Stack p={20} bg={'white'} className='rounded-[10px]'>
+        <Group justify='space-between' w={'100%'}>
           <Group className='gap-2'>
             <IconMapPinFilled style={{ color: '#02B1AB' }} />
             <Text className='text-[#02B1AB] font-bold'>Địa chỉ</Text>
           </Group>
-          <Group className='gap-0'>
+          <Group gap={0}>
             <Button
               onClick={() => {
                 if (enableBox2) {
@@ -264,8 +279,8 @@ const DetailsPage = () => {
                 }
                 setEnableBox2(!enableBox2);
               }}
-              // sua cho nay
-              className=' h-5 cursor-pointer text-[#02B1AB] bg-transparent border-0'
+              bg={'transparent'}
+              className=' h-5 cursor-pointer text-[#02B1AB]  border-0'
             >
               {enableBox2 ? 'Lưu' : 'Thay đổi'}
             </Button>
@@ -275,7 +290,8 @@ const DetailsPage = () => {
                   returnInitialValue(1);
                   setEnableBox2(!enableBox2);
                 }}
-                className=' h-5 text-[#02B1AB] bg-transparent border-0'
+                bg={'transparent'}
+                className=' h-5 text-[#02B1AB] border-0'
               >
                 Hủy
               </Button>

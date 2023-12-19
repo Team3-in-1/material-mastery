@@ -1,3 +1,4 @@
+import '@/styles/global.css';
 import { LoadingOverlay, Container } from '@mantine/core';
 export default function Loading() {
   // You can add any UI inside Loading, including a Skeleton.

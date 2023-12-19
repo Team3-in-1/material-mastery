@@ -1,3 +1,4 @@
+import '@/styles/global.css';
 import { Title } from '@mantine/core';
 import Cart from '@/components/Cart/cart';
 

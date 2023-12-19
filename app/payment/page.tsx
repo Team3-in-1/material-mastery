@@ -1,4 +1,5 @@
 'use client';
+import '@/styles/global.css';
 import {
   Flex,
   Stack,
@@ -33,7 +34,6 @@ import { add } from 'cypress/types/lodash';
 import { checkPhoneFormat } from '@/utils/regex';
 import Voucher from '@/components/Vouchers/voucher';
 import dynamic from 'next/dynamic';
-import '../global.css';
 import UserContext from '@/contexts/UserContext';
 import VoucherPayment from './voucher';
 import OrderService from '@/services/orderService';
@@ -169,8 +169,6 @@ const Payment = () => {
 
         await queryClient.invalidateQueries({
           queryKey: ['cart'],
-          exact: true,
-          refetchType: 'active',
         });
 
         router.replace('/account/orders');
@@ -801,4 +799,5 @@ const Payment = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(Payment), { ssr: false });
+// export default dynamic(() => Promise.resolve(Payment), { ssr: false });
+export default Payment;

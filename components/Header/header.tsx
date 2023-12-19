@@ -1,5 +1,5 @@
 'use client';
-import '../../app/global.css';
+import '@/styles/global.css';
 import NextImage from 'next/image';
 import { Flex, Group, Image, Text, Anchor, Menu, rem } from '@mantine/core';
 import logo from '@/public/icon.svg';

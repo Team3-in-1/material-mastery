@@ -1,11 +1,10 @@
 'use client';
-
+import '@/styles/global.css';
 import queryClient from '@/helpers/client';
 import { productService } from '@/services/productService';
 import { ActionIcon, Grid, LoadingOverlay } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import '../global.css';
 import { PCard } from '@/components/Product/pcard';
 import { IconArrowNarrowLeft } from '@tabler/icons-react';
 

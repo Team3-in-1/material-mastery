@@ -1,3 +1,5 @@
+import '@/styles/global.css';
+
 import { formatMoney } from '@/utils/string';
 import { Flex, Group, Image, Loader, Stack, Text } from '@mantine/core';
 import logo from '@/public/icon.svg';
@@ -25,22 +27,9 @@ const Product = ({
     return <Loader color='#02B1AB' size={10} />;
   }
   return (
-    <Group className=' items-center justify-between w-full'>
-      {/* <Group>
-        <Image
-          h={50}
-          w='auto'
-          component={NextImage}
-          src={logo}
-          alt='product image'
-        />
-        <Stack>
-          <Text>Cuc gach xay mang ten Nokia</Text>
-          <Text>x10</Text>
-        </Stack>
-      </Group> */}
-      <Group className=' justify-start items-center'>
-        <Flex className='w-[50px] h-fit justify-center items-center'>
+    <Group align='center' justify='space-between' w={'100%'}>
+      <Group justify='flex-start' align='center'>
+        <Flex w={50} h={'fit'} justify={'center'} align={'center'}>
           <Image
             src={productData.data?.product_thumb}
             className=' w-auto h-[30px]'
@@ -49,7 +38,7 @@ const Product = ({
         <Text>{productData.data?.product_name}</Text>
         <Text>{`x${quantity}`}</Text>
       </Group>
-      <Group className='gap-0'>
+      <Group gap={0}>
         <Text>{formatMoney(priceRaw)}</Text>
         <Text>đ</Text>
       </Group>

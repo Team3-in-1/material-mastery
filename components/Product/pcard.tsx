@@ -1,4 +1,5 @@
 'use client';
+import '@/styles/global.css';
 import {
   Card,
   Image,
@@ -11,9 +12,10 @@ import {
   Badge,
   Overlay,
   AspectRatio,
+  Stack,
 } from '@mantine/core';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Styles from './pcard.module.css';
 import Link from 'next/link';
 import { Product } from '@/utils/response';
@@ -21,7 +23,6 @@ import useRQGlobalState from '@/helpers/useRQGlobalState';
 import { formatMoney } from '@/utils/string';
 import { useMutation } from '@tanstack/react-query';
 import useCart from '@/helpers/useCart';
-import '../../app/global.css';
 import CartService from '@/services/cartService';
 import queryClient from '@/helpers/client';
 import toast, { Toaster } from 'react-hot-toast';
@@ -31,6 +32,8 @@ export const PCard = ({ data }: PCardProps) => {
   const [value, setValue] = useState(2);
   const { user } = useContext(UserContext);
   const [cart, setCart] = useCart();
+  const [discount, setDiscount] = useState(0);
+
   const addMutation = useMutation({
     mutationKey: ['addProductCart'],
     mutationFn: (productId: string) => {
@@ -53,6 +56,25 @@ export const PCard = ({ data }: PCardProps) => {
     quantityNumber = data.product_quantity;
   }
 
+  const random = (max: number = 80, min: number = 0) => {
+    return Math.floor(Math.random() * (max - min)) + min;
+  };
+
+  const randomDiscount = (setDiscount: any) => {
+    useEffect(() => {
+      setDiscount(random());
+    }, []);
+  };
+
+  const calPriceBefore = (
+    discount: any = 0,
+    priceAfter: number = 0
+  ): number => {
+    return Math.ceil(priceAfter / ((100 - discount) * 0.01));
+  };
+
+  randomDiscount(setDiscount);
+
   return (
     <Card
       className={`${Styles.containerCard} shadow-md mt-[10px] border-[1px] border-gray-300`}
@@ -71,9 +93,16 @@ export const PCard = ({ data }: PCardProps) => {
             className=' border-b-[1px] border-gray-300 '
           />
           {quantityNumber == 0 && (
-            <div className='flex w-full h-full absolute top-50 left-30 items-start justify-center bg-gray-200/80'>
+            <Flex
+              h={'100%'}
+              w={'100%'}
+              pos={'absolute'}
+              justify={'center'}
+              align={'center'}
+              className='top-50 left-30 bg-gray-200/80'
+            >
               <Badge>Hết hàng</Badge>
-            </div>
+            </Flex>
           )}
         </AspectRatio>
       </Card.Section>
@@ -93,36 +122,47 @@ export const PCard = ({ data }: PCardProps) => {
           </Text>
         </div>
 
-        <Group justify='space-between' className=' justify-between'>
-          <Group
-            gap={0}
-            align='start'
-            justify='flex-start'
-            className=' items-start'
-          >
-            <Text className='text-[1rem]'>
-              {formatMoney(data.product_price)}
-            </Text>
-            <Text size='12px' className=' text-[12px]'>
-              đ
-            </Text>
-          </Group>
+        <Group justify='space-between'>
+          <Stack gap={0}>
+            <Group
+              gap={0}
+              align='start'
+              justify='flex-start'
+              className=' items-start'
+            >
+              <Text className='text-[1rem]'>
+                {formatMoney(data.product_price)}
+              </Text>
+              <Text className=' text-[12px]'>đ</Text>
+            </Group>
+            <Group
+              gap={0}
+              align='start'
+              justify='flex-start'
+              h={17}
+              className=' items-start'
+            >
+              {discount !== 0 ? (
+                <>
+                  <Text td='line-through' className='text-[14px] text-red-400'>
+                    {formatMoney(calPriceBefore(discount, data.product_price))}
+                  </Text>
+                  <Text td='line-through' className=' text-[10px] text-red-400'>
+                    đ
+                  </Text>
+                </>
+              ) : (
+                <></>
+              )}
+            </Group>
+          </Stack>
 
           <ActionIcon
             color='#E9F9F8'
             variant='filled'
             aria-label='Add'
+            bg={'transparent'}
             onClick={() => {
-              // product_name: string
-              // product_thumb: string | null
-              // product_description: string | null
-              // product_price: number
-              // product_quantity: number
-              // product_brand: string | null
-              // product_unit: string | null
-              // product_ratingAverage: number | null
-              // product_categories: string[] | null
-              // productId: string | null
               if (quantityNumber == 0) {
                 toast.error('Sản phẩm đã hết hàng.');
               } else if (user?.userId) {
@@ -192,12 +232,14 @@ export const PCard = ({ data }: PCardProps) => {
           </Group>
         </Group>
       </Flex>
-      <Badge
-        className='absolute top-3 right-1 text-sx font-light'
-        color='#F76D6D'
-      >
-        -99 %
-      </Badge>
+      {discount !== 0 && (
+        <Badge
+          className='absolute top-3 right-1 text-sx font-light'
+          color='#F76D6D'
+        >
+          {`-${discount} %`}
+        </Badge>
+      )}
     </Card>
   );
 };

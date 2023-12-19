@@ -1,4 +1,6 @@
 'use client';
+import '@/styles/global.css';
+
 import UserContext from '@/contexts/UserContext';
 import OrderService from '@/services/orderService';
 import {
@@ -12,15 +14,18 @@ import {
   Divider,
   Textarea,
   Image,
+  Rating,
 } from '@mantine/core';
 import { IconArrowNarrowLeft, IconMapPinFilled } from '@tabler/icons-react';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
-import '../../../../global.css';
 import { formatMoney } from '@/utils/string';
 import queryClient from '@/helpers/client';
 import { productService } from '@/services/productService';
+import StepperOrder from './stepper';
+import CommentService from '@/services/commentService';
+import toast from 'react-hot-toast';
 
 interface Product {
   _id: string;
@@ -43,10 +48,17 @@ interface ProductCategory {
   _id: string;
   category_name: string;
 }
-
+const items = [
+  { id: 0, label: 'Chờ xác nhận' },
+  { id: 1, label: 'Đang xử lý' },
+  { id: 2, label: 'Vận chuyển' },
+  { id: 3, label: 'Hoàn thành' },
+];
 const DetailProductPage = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const { user } = useContext(UserContext);
+  // const [content, setContent] = useState('');
+  // const [rating, setRating] = useState(5);
   const detail = useQuery({
     queryKey: ['orderDetail', params.id],
     queryFn: () => {
@@ -80,6 +92,58 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
     }
   }, [detail.isPending]);
 
+  // const commentMutation = useMutation({
+  //   mutationKey: ['createComment'],
+  //   mutationFn: async ({
+  //     productId,
+  //     content,
+  //     rating,
+  //   }: {
+  //     productId: string;
+  //     content: string;
+  //     rating: number;
+  //   }) => {
+  //     const commentService = new CommentService(user);
+  //     return await commentService.createComment(productId, content, rating);
+  //   },
+  //   onSuccess: () => {
+  //     toast.success('Đánh giá sản phẩm thành công');
+  //   },
+  // });
+
+  // const createComment = (
+  //   productId: string,
+  //   content: string,
+  //   rating: number
+  // ) => {
+  //   commentMutation.mutate({ productId, content, rating });
+  // };
+  const convertStatusToNumberStep = (status: string): number => {
+    switch (status) {
+      // 'pending', 'confirmed', 'shipping', 'shipped', 'cancelled', 'failed', 'delivered'
+      case 'pending':
+        return 0;
+      case 'confirmed':
+        return 1;
+
+      case 'shipping':
+        return 1;
+
+      case 'shipped':
+        return 2;
+
+      case 'cancelled':
+        return 0;
+
+      case 'failed':
+        return 3;
+
+      case 'delivered':
+        return 3;
+    }
+    return 0;
+  };
+
   return (
     <>
       {detail.isPending || products.length == 0 ? (
@@ -111,6 +175,13 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
             >{`Mã đơn hàng ${params.id}`}</Text>
           </Group>
           {/* status */}
+          <Group className=' w-full bg-white justify-center items-start rounded-md'>
+            <StepperOrder
+              numberStep={convertStatusToNumberStep(detail.data?.order_status)}
+            />
+          </Group>
+
+          {/* order information */}
           <Stack className='w-full bg-white rounded-md p-[20px]'>
             <Group className='w-full gap-1'>
               <IconMapPinFilled
@@ -281,6 +352,33 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
                     </Text>
                   </Group>
                 </Group>
+
+                {convertStatusToNumberStep(detail.data?.order_status) == 2 && (
+                  <Button className=' border-[#02B1AB] bg-0-primary-color-6 text-white'>
+                    Xác nhận đã nhận hàng
+                  </Button>
+                )}
+                {/* {convertStatusToNumberStep(detail.data?.order_status) == 3 && (
+                  <Stack className='w-full gap-2'>
+                    <Textarea
+                      className='w-full'
+                      placeholder='Nhận xét về sản phẩm'
+                      value={content}
+                      onChange={(event) => {
+                        setContent(event.currentTarget.value);
+                      }}
+                    />
+                    <Rating value={rating} onChange={setRating} />
+                    <Button
+                      className=' border-[#02B1AB] w-full bg-0-primary-color-6 text-white'
+                      onClick={() => {
+                        // createComment();
+                      }}
+                    >
+                      Đánh giá
+                    </Button>
+                  </Stack>
+                )} */}
               </Stack>
               <Stack className='bg-white rounded-md p-[20px]'>
                 <Text className='text-[15px]'>Ghi chú</Text>

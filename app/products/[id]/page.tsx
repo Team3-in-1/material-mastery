@@ -1,4 +1,5 @@
 'use client';
+import '@/styles/global.css';
 import {
   Center,
   Flex,
@@ -16,7 +17,6 @@ import {
   Divider,
   LoadingOverlay,
 } from '@mantine/core';
-import '../../global.css';
 import { IconPlus, IconMinus } from '@tabler/icons-react';
 import exampleImage from '@/public/pic/gach.jpg';
 import NImage from 'next/image';
@@ -67,7 +67,10 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   }
   const comments = useQuery({
     queryKey: ['comments'],
-    queryFn: () => CommentService.getAllComments(productId),
+    queryFn: () => {
+      const commentService = new CommentService();
+      return commentService.getAllComments(productId);
+    },
     refetchOnWindowFocus: false,
     staleTime: Infinity,
   });
