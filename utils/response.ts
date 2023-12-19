@@ -1,3 +1,6 @@
+import { Bill_Info_Export, Bill_Info_Import, Bill_Product } from "./object"
+
+
 export interface Category {
   _id: string
   category_name: string
@@ -148,4 +151,16 @@ export interface UserInterface {
   userId: any;
   roles: any;
   accessToken: any;
+}
+
+
+
+export interface Bill_Import {
+  bill_info: Bill_Info_Import
+  products_info: Bill_Product[]
+}
+
+export interface Bill_Export {
+  bill_info: Bill_Info_Export
+  products_info: Bill_Product[]
 }
