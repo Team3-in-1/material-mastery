@@ -36,9 +36,7 @@ for (let index = 0; index < 14; index++) {
     product_brand: 'empty',
     product_unit: 'Panel',
     product_ratingAverage: 4.5,
-    product_categories: [
-      { _id: '654272bffe4d153ff2b3078e', category_name: 'drywall' },
-    ],
+    product_categories: ['654272bffe4d153ff2b3078e'],
     createdAt: '2023-11-02T14:05:58.429Z',
     updatedAt: '2023-11-02T14:10:58.765Z',
     product_slug: "12\"-x-4'-x-8'-drywall-panel",

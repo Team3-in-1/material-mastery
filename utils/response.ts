@@ -53,7 +53,7 @@ export interface Product {
   product_brand: string
   product_unit: string
   product_ratingAverage: number
-  product_categories: Product_Category[]
+  product_categories: string[]
   createdAt: string
   updatedAt: string
   product_slug: string
@@ -163,4 +163,9 @@ export interface Bill_Import {
 export interface Bill_Export {
   bill_info: Bill_Info_Export
   products_info: Bill_Product[]
+}
+
+export interface NumOfBill {
+  import: number
+  export: number
 }
