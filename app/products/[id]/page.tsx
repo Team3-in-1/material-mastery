@@ -57,7 +57,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   if (category) {
     category.every((item: any) => {
       if (
-        item.category_name == product.data?.product_categories[0].category_name
+        item.category_name == product.data?.product_categories[0]
       ) {
         categoryId = item._id;
         return false;
@@ -109,7 +109,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       const cartService = new CartService(user);
       return cartService.addProduct(productId, quantity);
     },
-    onSuccess: (res) => {},
+    onSuccess: (res) => { },
   });
 
   return (
@@ -119,7 +119,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
           Trang chủ
         </Link>
         <Link href={`/products?category=${categoryId}`}>
-          {product.data?.product_categories[0].category_name}
+          {product.data?.product_categories[0]}
         </Link>
         <Link href={`/products/${product.data?._id}`}>
           {product.data?.product_name}
@@ -415,12 +415,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         comments.isRefetching ||
         product.isPending ||
         comments.isPending) && (
-        <LoadingOverlay
-          visible={true}
-          zIndex={1000}
-          overlayProps={{ radius: 'sm', blur: 2 }}
-        />
-      )}
+          <LoadingOverlay
+            visible={true}
+            zIndex={1000}
+            overlayProps={{ radius: 'sm', blur: 2 }}
+          />
+        )}
     </div>
   );
 }

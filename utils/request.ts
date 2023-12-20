@@ -1,4 +1,4 @@
-import { Bill_Address, Customer_In_Bill, Supplier } from "./object"
+import { Bill_Address, Bill_Payment, Customer_In_Bill, Supplier } from "./object"
 
 export interface UserRequest {
   username: string
@@ -17,16 +17,20 @@ export interface UserAttributesRequest {
   address?: string
 }
 
-interface Item_Products {
+export interface Item_Products {
   price: number,
   quantity: number,
   productId: string
+}
+
+export interface Products {
+  products: Item_Products[]
 }
 export interface Bill_Import_Request {
   bill_note: string
   tax: number,
   supplier: Supplier
-  products: Item_Products[]
+  products: Products[]
   bill_payment: {
     infomation: "đã thanh toán trước"
   }
@@ -37,9 +41,7 @@ export interface Bill_Import_Request {
 export interface Bill_Export_Request {
   bill_note: string
   customer: Customer_In_Bill
-  products: Item_Products[]
-  bill_payment: {
-    method: 'in store'
-  }
+  products: Products[]
+  bill_payment: Bill_Payment
   bill_address: Bill_Address
 }

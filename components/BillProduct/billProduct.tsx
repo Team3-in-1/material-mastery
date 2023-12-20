@@ -1,10 +1,12 @@
 
 import { Product } from "@/utils/response";
-import { Button, Divider, Group, NumberInput, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Button, Divider, Group, NumberInput, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
 import { formatMoney, formatProductId } from "@/utils/string";
 import dayjs from "dayjs";
 import { Bill_Product } from "@/utils/object";
 import { useState } from "react";
+import { number } from "zod";
+import { IconX } from "@tabler/icons-react";
 
 const mockData: Bill_Product = {
     _id: "655f10ef4bf37f313fb9552e",
@@ -33,31 +35,36 @@ export default function BillProduct({
     data = mockData,
     order,
     max = 10,
-    refQuantity,
-    refSetQuantity
+    refBills,
+    refSetBills,
+    deleteFn
 }: {
     data?: Bill_Product,
     order: number,
     max?: number,
-    refQuantity: number[] | string[],
-    refSetQuantity: any
+    refBills: Bill_Product[],
+    refSetBills: any,
+    deleteFn: any
 }) {
-    const [resData, setResData] = useState(data)
     const [quantity, setQuantity] = useState<number | string>(1)
 
     return (
-        <Stack key={resData._id} w='fit-content' className="rounded-[8px] border-[1px]" p='16'>
-            <Group>
+        <Stack key={data._id} w='fit-content' className="rounded-[8px] border-[1px]" p='16'>
+            <Group justify="space-between">
                 <Title order={5} c='orange.8' bg='orange.0' px='8' py='4'>Mặt hàng {order}</Title>
                 <Group>
                     <Text fw={700} size='sm' c='dimmed'>Mã mặt hàng</Text>
-                    <Text c='turquoise'>{formatProductId(resData._id, resData.product_price.toString())}</Text>
+                    <Text c='turquoise'>{formatProductId(data._id, data.product_price.toString())}</Text>
                 </Group>
+                <Tooltip label="Xóa sản phẩm" color='red'>
+                    <Button size='sm' variant="light" c='red' bg='red.0'
+                        onClick={() => deleteFn(data._id)}><IconX></IconX></Button>
+                </Tooltip>
             </Group>
             <Divider />
             <Group align="flex-center">
-                <ProductInfo label='Loại vật liệu' content={resData.product_category} />
-                <ProductInfo label='Tên vật liệu' content={resData.product_name} />
+                <ProductInfo label='Loại vật liệu' content={data.product_category} />
+                <ProductInfo label='Tên vật liệu' content={data.product_name} />
                 <Stack gap='0' w='150'>
                     <Text fw={700} size='sm' c='dimmed'>Số lượng</Text>
                     <NumberInput
@@ -65,20 +72,21 @@ export default function BillProduct({
                         value={quantity}
                         onChange={(value) => {
                             setQuantity(value)
-                            const tmp = refQuantity
-                            tmp[order] = value
-                            refSetQuantity(tmp)
+                            const tmp = refBills
+                            tmp[order].quantity = value as number
+                            refSetBills(tmp)
                         }}
                         allowNegative={false}
                         clampBehavior="strict"
                         min={1}
                         max={max} />
+                    <Text fs='italic' c='gray.6' size='sm'>Tồn kho: {max}</Text>
                 </Stack>
             </Group>
             <Group align="flex-center">
-                <ProductInfo label='Đơn vị tính' content={resData.product_unit} />
-                <ProductInfo label='Đơn giá' content={`${formatMoney(resData.product_price)} đ`} />
-                <ProductInfo label='Thành tiền' content={`${formatMoney(resData.totalPrice)} đ`} />
+                <ProductInfo label='Đơn vị tính' content={data.product_unit} />
+                <ProductInfo label='Đơn giá' content={`${formatMoney(data.product_price)} đ`} />
+                <ProductInfo label='Thành tiền' content={`${formatMoney(data.totalPrice * (quantity as number))} đ`} />
             </Group>
         </Stack>
     )

@@ -17,8 +17,18 @@ const formatOrderId = (id: string, createdAt: string) => {
     return 'MM' + `${parts[0]}${parts[1]}${parts[2].slice(2)}`.split('').reverse().join('') + id.slice(-3)
 }
 
+const formatExportBillId = (id: string, createdAt: string) => {
+    const parts = [...createdAt.split('/')];
+    return 'EB' + `${parts[0]}${parts[1]}${parts[2].slice(2)}`.split('').reverse().join('') + id.slice(-3)
+}
+
+const formatImportBillId = (id: string, createdAt: string) => {
+    const parts = [...createdAt.split('/')];
+    return 'IB' + `${parts[0]}${parts[1]}${parts[2].slice(2)}`.split('').reverse().join('') + id.slice(-3)
+}
+
 const formatProductId = (id: string, price: string) => {
     return 'PD' + id.slice(0, 3) + price.slice(0, 3) + id.slice(-3)
 }
 
-export { formatMoney, formatOrderId, formatProductId }
+export { formatMoney, formatOrderId, formatProductId, formatExportBillId, formatImportBillId }

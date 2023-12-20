@@ -1,103 +1,200 @@
 'use client'
 import BillProduct from "@/components/BillProduct/billProduct";
 import ProductPicker from "@/components/ProductPicker/productPicker";
+import UserContext from "@/contexts/UserContext";
+import BillService from "@/services/billService";
 import { categoryService } from "@/services/categoryService";
-import { Bill_Product } from "@/utils/object";
+import { Bill_Address, Bill_Payment, Bill_Product, Customer_In_Bill } from "@/utils/object";
+import { checkNameFormat, checkPhoneFormat } from "@/utils/regex";
+import { Bill_Export_Request, Item_Products, Products } from "@/utils/request";
 import { Product } from "@/utils/response";
 import { ActionIcon, Button, Flex, Group, Modal, NativeSelect, ScrollArea, Stack, Text, TextInput, Textarea, Title } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconArrowLeft, IconMapPin, IconMapPinFilled, IconPlus } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 
 
 
 export default function CreateExportBillPage() {
     const router = useRouter()
+    const { user } = useContext(UserContext)
     const categories = useQuery({
         queryKey: ['categories'],
         queryFn: categoryService.getAllCategories,
         staleTime: Infinity,
         gcTime: Infinity,
     });
+    const createExportBillMutation = useMutation({
+        mutationKey: ['create_ex_bill'],
+        mutationFn: (body: Bill_Export_Request) => {
+            const billService = new BillService(user)
+            return billService.createExportBill(body)
+        },
+        onSuccess: () => {
+            toast.success('Tạo thành công')
+        },
+        onError: () => {
+            toast.error('Thất bại. Hãy thử lại')
+        }
+    })
+
     const [opened, { open, close }] = useDisclosure(false);
 
     const [addedProduct, setAddedProduct] = useState<Bill_Product[]>([])
     const [quantity, setQuantity] = useState<number[]>([])
     const [maximum, setMaximum] = useState<number[]>([])
 
+    const handleDeleteProduct = (id: string) => {
+        setAddedProduct((prev) => prev.filter(item => item._id !== id))
+    }
     const AddedProduct = addedProduct.map((item, index) => (
-        <BillProduct order={index} refQuantity={quantity} refSetQuantity={setQuantity} />
+        <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} deleteFn={handleDeleteProduct} />
     ))
 
     const handleChooseProduct = (data: Product) => {
         let billProduct: Bill_Product = {
             _id: data._id,
-            product_category: data.product_categories[0].category_name,
+            product_category: categories.data?.find((item) => item._id == data.product_categories[0])?.category_name as string,
             product_name: data.product_name,
             quantity: 1,
             product_price: data.product_price,
             product_unit: data.product_unit,
             totalPrice: data.product_price
         }
-        setQuantity([...quantity, 1])
-        setAddedProduct([...addedProduct, billProduct])
-        setMaximum([...maximum, data.product_quantity])
+        const fooFind = addedProduct.find((item) => item._id == billProduct._id)
+        if (fooFind !== undefined) {
+            toast.error('Sản phẩm đã tồn tại')
+        }
+        else {
+            setQuantity([...quantity, 1])
+            setAddedProduct((prev) => [...prev, billProduct])
+            setMaximum([...maximum, data.product_quantity])
+        }
+    }
+
+
+    const form = useForm({
+        initialValues: {
+            customer_name: '',
+            phone: '',
+            address_from: '',
+            address_to: '',
+        },
+        validate: {
+            customer_name: (value) => checkNameFormat(value),
+            phone: (value) => checkPhoneFormat(value),
+            address_from: (value) => (value.length === 0 ? 'Vui lòng nhập địa chỉ!' : null),
+            address_to: (value) => (value.length === 0 ? 'Vui lòng nhập địa chỉ!' : null),
+        },
+    });
+
+    const handleCreateBill = (formData: any) => {
+        if (addedProduct.length === 0)
+            toast.error('Chưa chọn sản phẩm nào!')
+        else {
+            const BillAddress: Bill_Address = {
+                from: formData.address_from,
+                to: formData.address_to
+            }
+            const BillPayment: Bill_Payment = {
+                method: 'in store'
+            }
+            const Customer: Customer_In_Bill = {
+                id: '',
+                phone: formData.phone,
+                name: formData.customer_name
+            }
+            const bill: Bill_Export_Request = {
+                products: addedProduct.map(item => {
+                    const iProduct: Item_Products = {
+                        price: item.product_price,
+                        quantity: item.quantity,
+                        productId: item._id
+                    }
+                    const products: Products = {
+                        products: [iProduct]
+                    }
+                    return products
+                }),
+                bill_note: '',
+                bill_address: BillAddress,
+                bill_payment: BillPayment,
+                customer: Customer
+            }
+
+            createExportBillMutation.mutate(bill)
+        }
     }
     return (
-        <ScrollArea className='h-full w-full z-[0]' >
-            <div className='flex flex-col gap-[24px] py-[16px] px-[16px]'>
-                <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
-                    onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
-                <Group justify="space-between" >
-                    <Stack gap='0' px='32px'>
-                        <Title order={2} mb='4'>Phiếu xuất hàng</Title>
-                        <Text fs='italic' size='sm'>*Tạo phiếu khi khách đặt đơn tại cửa hàng</Text>
-                    </Stack>
-                    <Button.Group>
-                        <Button variant='outline'>Xóa phiếu</Button>
-                        <Button>Tạo phiếu</Button>
-                    </Button.Group>
-                </Group>
-                <Flex className="rounded-[8px] border-[1px] " p='16'>
-                    <Stack w='250'>
-                        <TextInput
-                            label="Tên khách hàng"
-                            placeholder="VD: Nguyễn Văn Material"
-                            withAsterisk
-                        />
-                        <Textarea
-                            label="Địa chỉ kho đi"
-                            placeholder="VD: Đường Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh"
-                            withAsterisk
-                            autosize
-                        />
-                        <Textarea
-                            label="Địa chỉ nhận"
-                            placeholder="VD: làng Địa Ngục, xã Vần Chải, huyện Đồng Văn, tỉnh Hà Giang"
-                            withAsterisk
-                        />
-                        <TextInput
-                            label="Số điện thoại"
-                            placeholder="VD: 0123456789"
-                            withAsterisk
-                        />
+        // <ScrollArea className='h-full w-full z-[0]' >
+        <div className='flex flex-col gap-[24px] py-[16px] px-[16px] h-full w-full '>
+            <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
+                onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
+            <form onSubmit={form.onSubmit(handleCreateBill)}>
+                <Flex direction='column-reverse'>
+                    <Flex className="rounded-[8px] border-[1px] " p='16'>
+                        <Stack w='250' className="basis-1/3">
+                            <TextInput
+                                label="Tên khách hàng"
+                                placeholder="VD: Nguyễn Văn Material"
+                                withAsterisk
+                                {...form.getInputProps('customer_name')}
+                            />
+                            <Textarea
+                                label="Địa chỉ kho đi"
+                                placeholder="VD: Đường Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh"
+                                withAsterisk
+                                autosize
+                                {...form.getInputProps('address_from')}
+                            />
+                            <Textarea
+                                label="Địa chỉ nhận"
+                                placeholder="VD: làng Địa Ngục, xã Vần Chải, huyện Đồng Văn, tỉnh Hà Giang"
+                                withAsterisk
+                                {...form.getInputProps('address_to')}
+                            />
+                            <TextInput
+                                label="Số điện thoại"
+                                placeholder="VD: 0123456789"
+                                withAsterisk
+                                {...form.getInputProps('phone')}
+                            />
 
-                        <NativeSelect
-                            label="Hình thức thanh toán"
-                            data={['Tiền mặt', 'Quẹt thẻ']}
-                            withAsterisk
-                        />
-                    </Stack>
-                    <Stack p='16'>
-                        {AddedProduct}
-                        <ProductPicker categories={categories.data} label="Thêm sản phẩm" onChoose={handleChooseProduct} />
-                        <Button onClick={() => console.log(quantity)}>in</Button>
-                    </Stack>
+                            <NativeSelect
+                                label="Hình thức thanh toán"
+                                data={['Tiền mặt', 'Quẹt thẻ']}
+                                withAsterisk
+                            />
+
+                        </Stack>
+
+                        <ScrollArea className='h-[450px] w-full'>
+                            <Stack className="basis-2/3" p='16' align="center">
+                                {addedProduct.map((item, index) => (
+                                    <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} deleteFn={handleDeleteProduct} />
+                                ))}
+                                <ProductPicker categories={categories.data} label="Thêm sản phẩm" onChoose={handleChooseProduct} />
+                            </Stack>
+
+                        </ScrollArea>
+                    </Flex>
+                    <Group justify="space-between" >
+                        <Stack gap='0' px='32px'>
+                            <Title order={2} mb='4'>Phiếu xuất kho</Title>
+                            <Text fs='italic' size='sm'>*Tạo phiếu khi khách đặt đơn tại cửa hàng</Text>
+                        </Stack>
+                        <Button.Group>
+                            <Button variant='outline'>Xóa phiếu</Button>
+                            <Button type='submit'>Tạo phiếu</Button>
+                        </Button.Group>
+                    </Group>
                 </Flex>
-
-            </div>
-        </ScrollArea>
+            </form>
+        </div >
+        // </ScrollArea>
     )
 }

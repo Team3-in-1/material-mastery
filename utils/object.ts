@@ -16,7 +16,7 @@ export interface Bill_Checkout {
 }
 
 export interface Bill_Payment {
-    information: string
+    method: string
 }
 
 export interface Bill_Address {
