@@ -8,12 +8,14 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import queryClient from '@/helpers/client';
+import { useHover } from '@mantine/hooks';
 type SearchText = {
   content: string;
 };
 export default function Search({ content }: SearchText) {
   const [keyWord, setKeyWord] = useState<string>('');
   const router = useRouter();
+  const { hovered, ref } = useHover<any>();
 
   const search = async (keyWord: string) => {
     let isSuccess = false;
@@ -55,7 +57,20 @@ export default function Search({ content }: SearchText) {
       rightSection={
         <ActionIcon
           bg={'transparent'}
-          className=' bg-transparent  cursor-pointer hover:bg-slate-100 rounded-full p-[2px] w-fit h-fit'
+          ref={ref}
+          h={'fit-content'}
+          w={'fit-content'}
+          p={2}
+          style={
+            hovered
+              ? {
+                  borderRadius: 9999,
+                  backgroundColor: '#F1f5f9',
+                }
+              : {
+                  borderRadius: 9999,
+                }
+          }
         >
           <IconSearch
             color='#8E8E8E'

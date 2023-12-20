@@ -21,6 +21,23 @@ import {
 } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useState } from 'react';
+
+const RATING_DATA = [
+  'Tất cả',
+  'Một sao',
+  'Hai sao',
+  'Ba sao',
+  'Bốn sao',
+  'Năm sao',
+];
+
+const SORT_DATA = [
+  'Giá cao nhất',
+  'Giá thấp nhất',
+  'Đánh giá cao nhất',
+  'Đánh giá thấp nhất',
+];
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -38,6 +55,11 @@ export default function ProductsPage() {
     queryKey: ['products', id],
     queryFn: () => productService.getAllProductsByCategory(id),
   });
+
+  const [selectedRating, setSelectedRating] = useState<string | null>('Tất cả');
+  const [selectedSort, setSelectedSort] = useState<string | null>(
+    'Giá cao nhất'
+  );
 
   return (
     <Container fluid>
@@ -70,32 +92,41 @@ export default function ProductsPage() {
                 w='6rem'
                 size='xs'
                 radius='md'
+                allowDeselect={false}
                 value={'Tất cả'}
-                data={['Tất cả', 'Angular', 'Vue', 'Svelte']}
+                data={['Tất cả']}
               />
               <p className='text-[0.8rem]'>Đánh giá</p>
               <Select
                 w='6rem'
                 size='xs'
                 radius='md'
-                value={'Tất cả'}
-                data={['Tất cả', 'Angular', 'Vue', 'Svelte']}
+                onChange={setSelectedRating}
+                allowDeselect={false}
+                value={selectedRating}
+                data={RATING_DATA}
               />
             </Group>
             <Group>
               <Divider orientation='vertical' />
               <p className='text-[0.8rem]'>Sắp xếp</p>
               <Select
-                w='8rem'
+                w='9rem'
                 size='xs'
                 radius='xl'
-                value={'Tất cả'}
-                data={['Tất cả', 'Angular', 'Vue', 'Svelte']}
+                onChange={setSelectedSort}
+                allowDeselect={false}
+                value={selectedSort}
+                data={SORT_DATA}
               />
             </Group>
           </Group>
           <Container fluid py={10} className='bg-white rounded'>
-            <ProductCards data={products.data || []} />
+            <ProductCards
+              data={products.data || []}
+              selectedRating={selectedRating}
+              selectedSort={selectedSort}
+            />
             <Flex className='w-full items-center justify-center p-[10px]'>
               {/* <Pagination
                 total={11}

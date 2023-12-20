@@ -27,9 +27,9 @@ import CartService from '@/services/cartService';
 import queryClient from '@/helpers/client';
 import toast, { Toaster } from 'react-hot-toast';
 import UserContext from '@/contexts/UserContext';
+import NImage from 'next/image';
 
 export const PCard = ({ data }: PCardProps) => {
-  const [value, setValue] = useState(2);
   const { user } = useContext(UserContext);
   const [cart, setCart] = useCart();
   const [discount, setDiscount] = useState(0);
@@ -86,10 +86,11 @@ export const PCard = ({ data }: PCardProps) => {
         <AspectRatio ratio={200 / 150}>
           <Image
             alt='product'
-            // height={9}
-            // h={147}
             w={200}
+            width={200}
+            height={200}
             src={data.product_thumb}
+            component={NImage}
             className=' border-b-[1px] border-gray-300 '
           />
           {quantityNumber == 0 && (
@@ -106,13 +107,7 @@ export const PCard = ({ data }: PCardProps) => {
           )}
         </AspectRatio>
       </Card.Section>
-      <Flex
-        justify={'space-around'}
-        direction={'column'}
-        h={'100%'}
-        w={'100%'}
-        className='h-[100px] justify-around w-[100%] flex-col'
-      >
+      <Flex justify={'space-around'} direction={'column'} h={'100%'} w={'100%'}>
         <div className='h-[60px]'>
           <Text
             className='my-2 text-[0.875rem] text-ellipsis gap-0 tracking-tighter'
@@ -225,7 +220,7 @@ export const PCard = ({ data }: PCardProps) => {
           </ActionIcon>
         </Group>
         <Group justify='space-between' wrap='nowrap'>
-          <Rating value={value} readOnly onChange={setValue} />
+          <Rating value={data.product_ratingAverage} readOnly />
           <Group wrap='nowrap'>
             <Divider size='xs' orientation='vertical' />
             <Text c='dimmed'>{productQuantity}</Text>

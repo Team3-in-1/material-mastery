@@ -38,12 +38,15 @@ import UserContext from '@/contexts/UserContext';
 const ImageLink = 'https://blog.alliedmarketresearch.com/images/user_icon.png';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
+  if (typeof window == 'undefined') {
+    return <></>;
+  }
   const { user } = useContext(UserContext);
   const [quantity, setQuantity] = useState<string | number>(1);
   const router = useRouter();
   router.prefetch('/payment');
   const product = useQuery({
-    queryKey: ['product'],
+    queryKey: ['product', params.id],
     queryFn: () => productService.getProductById(params.id),
     refetchOnWindowFocus: false,
     staleTime: Infinity,
@@ -66,7 +69,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     });
   }
   const comments = useQuery({
-    queryKey: ['comments'],
+    queryKey: ['comments', params.id],
     queryFn: () => {
       const commentService = new CommentService();
       return commentService.getAllComments(productId);

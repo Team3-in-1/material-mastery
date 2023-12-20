@@ -32,7 +32,11 @@ const Product = ({
         <Flex w={50} h={'fit'} justify={'center'} align={'center'}>
           <Image
             src={productData.data?.product_thumb}
-            className=' w-auto h-[30px]'
+            // className=' w-auto h-[30px]'
+            width={30}
+            height={30}
+            component={NextImage}
+            alt='product'
           />
         </Flex>
         <Text>{productData.data?.product_name}</Text>
