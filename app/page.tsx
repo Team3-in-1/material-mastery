@@ -23,6 +23,7 @@ import queryClient from '@/helpers/client';
 import dynamic from 'next/dynamic';
 import { useContext } from 'react';
 import UserContext from '@/contexts/UserContext';
+import { productService } from '@/services/productService';
 
 const data: Product[] = [];
 for (let index = 0; index < 14; index++) {
@@ -58,6 +59,15 @@ function Home() {
   });
 
   const { user } = useContext(UserContext);
+
+  const promotionalProducts = useQuery({
+    queryKey: ['Promotional Products'],
+    queryFn: () => {
+      return productService.getAllProducts();
+    },
+    staleTime: 500000,
+    gcTime: 0,
+  });
 
   return (
     <Container
@@ -127,13 +137,17 @@ function Home() {
           <Container className='bg-white rounded-md' fluid mt={20} py={10}>
             <p className='text-[1rem] py-1 font-bold'>Sản phẩm mới</p>
             <Carousel withIndicators withControls={false}>
-              {splitArray(data, 5).map((slide) => {
-                return (
-                  <Carousel.Slide key={Math.floor(Math.random() * Date.now())}>
-                    <ProductCards data={slide} />
-                  </Carousel.Slide>
-                );
-              })}
+              <Carousel.Slide key={0}>
+                <ProductCards
+                  data={
+                    promotionalProducts.data
+                      ? promotionalProducts.data.slice(0)
+                      : data
+                  }
+                  selectedRating={'Tất cả'}
+                  selectedSort={'Sản phẩm mới'}
+                />
+              </Carousel.Slide>
             </Carousel>
           </Container>
           <Container
@@ -147,18 +161,22 @@ function Home() {
           >
             <p className='text-[1rem] py-1 font-bold'>Bán chạy</p>
             <Carousel withIndicators withControls={false}>
-              {splitArray(data, 5).map((slide) => {
-                return (
-                  <Carousel.Slide key={Math.floor(Math.random() * Date.now())}>
-                    <ProductCards data={slide} />
-                  </Carousel.Slide>
-                );
-              })}
+              <Carousel.Slide key={1}>
+                <ProductCards
+                  data={
+                    promotionalProducts.data ? promotionalProducts.data : data
+                  }
+                  selectedRating={'Tất cả'}
+                  selectedSort={null}
+                />
+              </Carousel.Slide>
             </Carousel>
           </Container>
         </Grid.Col>
       </Grid>
-      {(categories.isPending || categories.isRefetching || (true && !user)) && (
+      {(promotionalProducts.isPending ||
+        categories.isPending ||
+        (true && !user)) && (
         <LoadingOverlay
           visible={true}
           zIndex={1000}

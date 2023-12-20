@@ -17,7 +17,7 @@ export default function StaffLayout({
 }) {
   const [notify, setNotify] = useState<any>(null);
   const socketInitializer = () => {
-    socket = io('http://mm.khangdev.id.vn/');
+    socket = io(constant.SOCKET_URL);
 
     socket.on('connect', () => {
       console.log('connected');
@@ -28,6 +28,10 @@ export default function StaffLayout({
       if (!notification) {
         setNotify(1);
       }
+    });
+
+    socket.on('disconnect', () => {
+      console.log('disconnected');
     });
   };
   useEffect(() => {

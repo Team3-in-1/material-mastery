@@ -2,8 +2,8 @@ import axios from "axios";
 import { Product } from "@/utils/response";
 import { constant } from "@/utils/constant";
 
-const getAllProducts = async (): Promise<Product[]> => {
-    return await axios.get(`${constant.BASE_URL}/product`, {
+const getAllProducts = async (limit: number = 8, page: number = 1, sortType: string = 'product_price', isAscending: boolean = false): Promise<Product[]> => {
+    return await axios.get(`${constant.BASE_URL}/product?limit=${limit}&page=${page}&sorted[]=${sortType}&isAscending=${isAscending}`, {
         headers: {
             'x-api-key': constant.API_KEY
         }

@@ -1,6 +1,6 @@
 'use client';
 import '@/styles/global.css';
-import { Button, Group } from '@mantine/core';
+import { Button, Group, Text } from '@mantine/core';
 import { useState } from 'react';
 
 interface ItemInterface {
@@ -42,10 +42,18 @@ const Nav = ({
         <Button
           key={item.label}
           bg={'transparent'}
-          className={
+          style={
             positionChecked == item.id
-              ? 'flex-1 text-black border-b-2 border-0-primary-color-6 border-x-0 border-t-0 rounded-none font-medium'
-              : 'flex-1 text-[gray] font-medium'
+              ? {
+                  flex: 1,
+                  borderBottomWidth: 2,
+                  borderTopWidth: 0,
+                  borderRightWidth: 0,
+                  borderLeftWidth: 0,
+                  borderColor: '#02B1AB',
+                  borderRadius: 0,
+                }
+              : { flex: 1 }
           }
           onClick={() => {
             setStart(1);
@@ -54,7 +62,17 @@ const Nav = ({
             setOrderStatus(item.id);
           }}
         >
-          {item.label}
+          <Text
+            fw={500}
+            // color={positionChecked == item.id ? '#000' : '#808080'}
+            style={
+              positionChecked == item.id
+                ? { color: '#000' }
+                : { color: '#808080' }
+            }
+          >
+            {item.label}
+          </Text>
         </Button>
       ))}
     </Group>

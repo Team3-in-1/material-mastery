@@ -3,6 +3,7 @@ import '@/styles/global.css';
 
 import UserContext from '@/contexts/UserContext';
 import OrderService from '@/services/orderService';
+import NextImage from 'next/image';
 import {
   Stack,
   Group,
@@ -250,7 +251,11 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
                     >
                       <Image
                         src={products[index]?.product_thumb}
-                        className='h-[30px] w-auto'
+                        // className='h-[30px] w-auto'
+                        alt='product'
+                        height={35}
+                        width={35}
+                        component={NextImage}
                       />
                     </Grid.Col>
                     <Grid.Col

@@ -4,7 +4,7 @@ const nextConfig = {
     serverActions: true,
   },
   images: {
-    domains: ['biiibo.com'],
+    domains: ['biiibo.com', 'drive.google.com'],
   },
   //http://mm.khangdev.id.vn/';
   async redirects() {
