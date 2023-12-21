@@ -18,7 +18,11 @@ class BillService {
 
     createExportBill = async (body: Bill_Export_Request): Promise<any> => {
         return await axios.post(`${constant.BASE_URL}/bill/export/`, {
-            body
+            products: body.products,
+            bill_note: body.bill_note,
+            bill_address: body.bill_address,
+            bill_payment: body.bill_payment,
+            customer: body.customer
         }, { headers: this.hearders })
             .then((res) => { return res.data.statusCode; })
             .catch((err) => { console.log(err); })
