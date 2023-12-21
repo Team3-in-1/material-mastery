@@ -3,10 +3,10 @@ import { IconArrowLeft } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
-export default function BackButton() {
+export default function BackButton({ fn }: { fn?: any }) {
     const router = useRouter()
     return (
         <ActionIcon variant="light" size='lg' aria-label="Back to previous page"
-            onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
+            onClick={fn === undefined ? () => router.back() : () => fn()}><IconArrowLeft /></ActionIcon>
     )
 }

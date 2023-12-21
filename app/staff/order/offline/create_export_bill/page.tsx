@@ -13,14 +13,16 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconArrowLeft, IconMapPin, IconMapPinFilled, IconPlus } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
+import Loading from "./loading";
 
 
 
 export default function CreateExportBillPage() {
     const router = useRouter()
+    const currentPath = usePathname()
     const { user } = useContext(UserContext)
     const categories = useQuery({
         queryKey: ['categories'],
@@ -34,8 +36,9 @@ export default function CreateExportBillPage() {
             const billService = new BillService(user)
             return billService.createExportBill(body)
         },
-        onSuccess: () => {
+        onSuccess: (res) => {
             toast.success('Tạo thành công')
+            router.replace(`${currentPath.substring(0, currentPath.lastIndexOf('/'))}`)
         },
         onError: () => {
             toast.error('Thất bại. Hãy thử lại')
@@ -49,7 +52,13 @@ export default function CreateExportBillPage() {
     const [maximum, setMaximum] = useState<number[]>([])
 
     const handleDeleteProduct = (id: string) => {
-        setAddedProduct((prev) => prev.filter(item => item._id !== id))
+        const indexToRemove = addedProduct.findIndex(i => i._id === id)
+        if (indexToRemove !== -1) {
+            setMaximum(maximum.filter((_, index) => index !== indexToRemove))
+            setAddedProduct(addedProduct.filter((_, index) => index !== indexToRemove))
+            console.log(addedProduct)
+        }
+        else toast.error('Không xóa được do không tìm thấy id')
     }
     const AddedProduct = addedProduct.map((item, index) => (
         <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} deleteFn={handleDeleteProduct} />
@@ -130,71 +139,75 @@ export default function CreateExportBillPage() {
         }
     }
     return (
-        // <ScrollArea className='h-full w-full z-[0]' >
-        <div className='flex flex-col gap-[24px] py-[16px] px-[16px] h-full w-full '>
-            <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
-                onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
-            <form onSubmit={form.onSubmit(handleCreateBill)}>
-                <Flex direction='column-reverse'>
-                    <Flex className="rounded-[8px] border-[1px] " p='16'>
-                        <Stack w='250' className="basis-1/3">
-                            <TextInput
-                                label="Tên khách hàng"
-                                placeholder="VD: Nguyễn Văn Material"
-                                withAsterisk
-                                {...form.getInputProps('customer_name')}
-                            />
-                            <Textarea
-                                label="Địa chỉ kho đi"
-                                placeholder="VD: Đường Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh"
-                                withAsterisk
-                                autosize
-                                {...form.getInputProps('address_from')}
-                            />
-                            <Textarea
-                                label="Địa chỉ nhận"
-                                placeholder="VD: làng Địa Ngục, xã Vần Chải, huyện Đồng Văn, tỉnh Hà Giang"
-                                withAsterisk
-                                {...form.getInputProps('address_to')}
-                            />
-                            <TextInput
-                                label="Số điện thoại"
-                                placeholder="VD: 0123456789"
-                                withAsterisk
-                                {...form.getInputProps('phone')}
-                            />
+        <ScrollArea className='h-full w-full z-[0]' >
+            <div className='flex flex-col gap-[24px] py-[16px] px-[16px] h-full w-full '>
+                <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
+                    onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
+                {createExportBillMutation.isPending ? <Loading /> :
+                    <form onSubmit={form.onSubmit(handleCreateBill)}>
+                        <Flex direction='column-reverse'>
+                            <Flex className="rounded-[8px] border-[1px] " p='16'>
+                                <Stack w='250' className="basis-1/3">
+                                    <TextInput
+                                        label="Tên khách hàng"
+                                        placeholder="VD: Nguyễn Văn Material"
+                                        withAsterisk
+                                        {...form.getInputProps('customer_name')}
+                                    />
+                                    <Textarea
+                                        label="Địa chỉ kho đi"
+                                        placeholder="VD: Đường Hàn Thuyên, khu phố 6 P, Thủ Đức, Thành phố Hồ Chí Minh"
+                                        withAsterisk
+                                        autosize
+                                        {...form.getInputProps('address_from')}
+                                    />
+                                    <Textarea
+                                        label="Địa chỉ nhận"
+                                        placeholder="VD: làng Địa Ngục, xã Vần Chải, huyện Đồng Văn, tỉnh Hà Giang"
+                                        withAsterisk
+                                        {...form.getInputProps('address_to')}
+                                    />
+                                    <TextInput
+                                        label="Số điện thoại"
+                                        placeholder="VD: 0123456789"
+                                        withAsterisk
+                                        {...form.getInputProps('phone')}
+                                    />
 
-                            <NativeSelect
-                                label="Hình thức thanh toán"
-                                data={['Tiền mặt', 'Quẹt thẻ']}
-                                withAsterisk
-                            />
+                                    <NativeSelect
+                                        label="Hình thức thanh toán"
+                                        data={['Tiền mặt', 'Quẹt thẻ']}
+                                        withAsterisk
+                                    />
 
-                        </Stack>
+                                </Stack>
 
-                        <ScrollArea className='h-[450px] w-full'>
-                            <Stack className="basis-2/3" p='16' align="center">
-                                {addedProduct.map((item, index) => (
-                                    <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} deleteFn={handleDeleteProduct} />
-                                ))}
-                                <ProductPicker categories={categories.data} label="Thêm sản phẩm" onChoose={handleChooseProduct} />
-                            </Stack>
+                                <ScrollArea className='h-[450px] w-full'>
+                                    <Stack className="basis-2/3" p='16' align="center">
+                                        {addedProduct.map((item, index) => (
+                                            <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} deleteFn={handleDeleteProduct} />
+                                        ))}
+                                        <ProductPicker categories={categories.data} label="Thêm sản phẩm" onChoose={handleChooseProduct} />
+                                    </Stack>
 
-                        </ScrollArea>
-                    </Flex>
-                    <Group justify="space-between" >
-                        <Stack gap='0' px='32px'>
-                            <Title order={2} mb='4'>Phiếu xuất kho</Title>
-                            <Text fs='italic' size='sm'>*Tạo phiếu khi khách đặt đơn tại cửa hàng</Text>
-                        </Stack>
-                        <Button.Group>
-                            <Button variant='outline'>Xóa phiếu</Button>
-                            <Button type='submit'>Tạo phiếu</Button>
-                        </Button.Group>
-                    </Group>
-                </Flex>
-            </form>
-        </div >
-        // </ScrollArea>
+                                </ScrollArea>
+                            </Flex>
+                            <Group justify="space-between" >
+                                <Stack gap='0' px='32px'>
+                                    <Title order={2} mb='4'>Phiếu xuất kho</Title>
+                                    <Text fs='italic' size='sm'>*Tạo phiếu khi khách đặt đơn tại cửa hàng</Text>
+                                </Stack>
+                                <Button.Group>
+                                    <Button variant='outline' onClick={() => {
+                                        form.reset()
+                                        setAddedProduct([])
+                                    }}>Xóa phiếu</Button>
+                                    <Button type='submit'>Tạo phiếu</Button>
+                                </Button.Group>
+                            </Group>
+                        </Flex>
+                    </form>}
+            </div >
+        </ScrollArea>
     )
 }

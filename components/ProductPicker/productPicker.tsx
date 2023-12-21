@@ -3,12 +3,13 @@ import queryClient from "@/helpers/client";
 import { categoryService } from "@/services/categoryService";
 import { productService } from "@/services/productService";
 import { Category, Product } from "@/utils/response";
-import { Image, ActionIcon, AspectRatio, Box, Button, Card, ComboboxProps, Divider, Flex, Group, Modal, ScrollArea, Select, Skeleton, Stack, Table, Text, TextInput, Badge, UnstyledButton } from "@mantine/core";
+import { Image, ActionIcon, AspectRatio, Box, Button, Card, ComboboxProps, Divider, Flex, Group, Modal, ScrollArea, Select, Skeleton, Stack, Table, Text, TextInput, Badge, UnstyledButton, Loader } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
 import { IconLayoutList, IconCategory, IconSearch, IconX } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import BackButton from "../BackButton/backButton";
 
 
 function ProductSkeleton() {
@@ -68,6 +69,7 @@ export default function ProductPicker({
     const [keyword, setKeyword] = useState('')
     const [searching, setSearching] = useState('sleeping')
     const [productData, setProductData] = useState<Product[]>()
+    const [categoryId, setCategoryId] = useState<string>('')
 
     const searchMutation = useMutation({
         mutationKey: ['search', keyword],
@@ -82,6 +84,12 @@ export default function ProductPicker({
             else setSearching('failed')
         }
     })
+    const productByCategory = useQuery({
+        queryKey: ['products_by_category', categoryId],
+        queryFn: () => {
+            return productService.getAllProductsByCategory(categoryId)
+        },
+    })
 
     const search = async () => {
         setSearching('pending')
@@ -94,7 +102,11 @@ export default function ProductPicker({
         onChoose(data)
     }
 
-    const productsBySearch =
+    const handleChooseCategory = (id: string) => {
+        setCategoryId(id)
+    }
+
+    const productsBySearchElement =
         <Flex wrap='wrap' gap='16'>
             {productData?.map(product => (
                 <ProductCard data={product} onChoose={() => handleChooseProduct(product)} />
@@ -109,7 +121,7 @@ export default function ProductPicker({
                 else
                     return i.category_name.toLowerCase().includes(keyword.toLowerCase())
             }).map(category => (
-                <Button variant='default' >{category.category_name}</Button>
+                <Button variant='default' onClick={() => handleChooseCategory(category._id)}>{category.category_name}</Button>
             ))
             }
         </Flex>
@@ -191,24 +203,46 @@ export default function ProductPicker({
                                 </ActionIcon>
                             </ActionIcon.Group>
                         </Group>
-                        <ScrollArea h='450'>
-                            {displayType[0] === 'filled' ? categoryCards : categoryList}
-                            <Divider my='32px' />
-                            {(() => {
-                                switch (searching) {
-                                    case 'sleeping':
-                                        return <></>
-                                    case 'pending':
-                                        return <ProductSkeleton />
-                                    case 'success':
-                                        return productsBySearch
-                                    case 'failed':
-                                        return <p className="mt-[24px]">Không tìm thấy</p>
-                                    default:
-                                        return <></>
+                        {categoryId === '' ?
+                            <ScrollArea h='450'>
+                                {displayType[0] === 'filled' ? categoryCards : categoryList}
+                                <Divider my='32px' />
+                                {(() => {
+                                    switch (searching) {
+                                        case 'sleeping':
+                                            return <></>
+                                        case 'pending':
+                                            return <ProductSkeleton />
+                                        case 'success':
+                                            return productsBySearchElement
+                                        case 'failed':
+                                            return <p className="mt-[24px]">Không tìm thấy</p>
+                                        default:
+                                            return <></>
+                                    }
+                                })()}
+                            </ScrollArea>
+                            :
+                            <ScrollArea h='450'>
+                                {productByCategory.isPending ? <Loader /> :
+                                    <>
+                                        <BackButton fn={() => setCategoryId('')} />
+                                        {productByCategory.data?.length !== 0 ?
+                                            <Flex wrap='wrap' gap='16' mt='16'>
+                                                {productByCategory.data?.map(product => {
+                                                    const productWithCategory: Product = { ...product, product_categories: [categoryId] }
+                                                    return (
+                                                        <ProductCard data={productWithCategory} onChoose={() => handleChooseProduct(productWithCategory)} />
+                                                    )
+                                                })}
+                                            </Flex>
+                                            :
+                                            <div className="h-full w-full text-center">Không có sản phẩm nào</div>
+                                        }
+                                    </>
                                 }
-                            })()}
-                        </ScrollArea>
+                            </ScrollArea>
+                        }
                     </Modal.Body>
 
                 </Modal.Content>

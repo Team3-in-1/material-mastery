@@ -1,7 +1,7 @@
 'use client'
 import CalendarInput from '@/components/CalendarInput/calendarInput'
 import { chunk } from '@/utils/array'
-import { ComboboxProps, Fieldset, Group, Pagination, ScrollArea, Select, Stack, Table, Checkbox, Text, LoadingOverlay, Button } from '@mantine/core'
+import { ComboboxProps, Fieldset, Group, Pagination, ScrollArea, Select, Stack, Table, Checkbox, Text, LoadingOverlay, Button, Skeleton } from '@mantine/core'
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 
@@ -124,7 +124,7 @@ export default function OnlineOrderSegment() {
                     />
                 </Fieldset>
                 {orders.isPending || numberOfOrder.isPending ? (
-                    <TableSkeleton col={8} row={10} />
+                    <Skeleton mt='lg' height={500} radius="md" />
                 ) :
                     <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                         <OrderTable orders={orders.data} />
