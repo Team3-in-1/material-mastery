@@ -19,6 +19,21 @@ const nextConfig = {
         destination: '/staff/order/online',
         permanent: true,
       },
+      {
+        source: '/manager',
+        destination: '/manager/dashboard/revenue',
+        permanent: true,
+      },
+      {
+        source: '/manager/order',
+        destination: '/manager/order/online',
+        permanent: true,
+      },
+      {
+        source: '/manager/warehouse',
+        destination: '/manager/warehouse/instock',
+        permanent: true,
+      },
     ];
   },
 };

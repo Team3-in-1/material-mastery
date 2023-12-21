@@ -12,6 +12,7 @@ export interface Category {
 }
 export interface User {
   _id: string
+  avatar: string
   username: string
   password: string
   email: string
@@ -28,13 +29,15 @@ export interface User {
 
 export interface UserAttributes {
   positionId: string
-  manager_start_date: string
+  manager_start_date?: string
   salary: number
   _id: string
   createdAt: string
   updatedAt: string
   __v: number
 }
+
+
 
 
 export interface Product_Category {

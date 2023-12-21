@@ -1,0 +1,68 @@
+'use client'
+import { ActionIcon, ScrollArea } from '@mantine/core'
+import { IconArrowLeft } from '@tabler/icons-react';
+import { useContext } from 'react';
+import UserContext from '@/contexts/UserContext';
+import { useMutation, useQuery } from '@tanstack/react-query'
+import OrderService from '@/services/orderService'
+import Loading from './loading';
+import { useRouter } from 'next/navigation';
+import { Toaster } from 'react-hot-toast';
+import OrderStepper from './stepper';
+import queryClient from '@/helpers/client';
+
+
+
+export default function OrderDetailsForStaffPage({ params }: { params: { order_id: string } }) {
+
+    const router = useRouter()
+    const { user } = useContext(UserContext);
+
+    const target_order = useQuery({
+        queryKey: ['target_order', params.order_id],
+        queryFn: () => {
+            const orderService = new OrderService(user);
+            return orderService.getOrderById(params.order_id);
+        },
+        enabled: !!user,
+        refetchOnMount: 'always'
+    })
+
+
+    const updateOrderStatusMutation = useMutation({
+        mutationKey: ['update_order_status'],
+        mutationFn: ({ orderId, status }: { orderId: string | undefined, status: string }) => {
+            const orderService = new OrderService(user);
+            return orderService.modifyOrderStatus(orderId, status)
+        },
+        onSuccess: () => {
+            return queryClient.invalidateQueries({
+                queryKey: ['target_order', params.order_id],
+            });
+        }
+    })
+
+
+
+    return (
+        <ScrollArea className='h-full w-full z-[0]' >
+            {target_order.isPending || updateOrderStatusMutation.isPending ?
+                (<Loading />) :
+                (
+
+                    <div className='flex flex-col gap-[24px] py-[16px] px-[16px]'>
+                        <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
+                            onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
+                        <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate} />
+                    </div>
+
+                )
+            }
+            < Toaster position='bottom-center' reverseOrder={false} />
+        </ScrollArea >
+    )
+
+
+}
+
+

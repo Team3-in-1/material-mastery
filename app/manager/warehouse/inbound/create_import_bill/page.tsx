@@ -6,7 +6,7 @@ import { IconPlus } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react'
 
-export default function page() {
+export default function CreateImportBillPage() {
 
     const categories = useQuery({
         queryKey: ['categories'],
@@ -26,7 +26,7 @@ export default function page() {
                     </Modal.Header>
                     <Modal.Body >
                         <Group align="flex-start">
-                            <ProductPicker categories={categories.data} label="Chọn sản phẩm có sẵn" type='square' />
+                            <ProductPicker categories={categories.data} label="Chọn sản phẩm có sẵn" type='square' onChoose={undefined} />
                             <UnstyledButton
                                 style={{
                                     border: '1px solid #02B1AB'

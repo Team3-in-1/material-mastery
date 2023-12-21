@@ -26,7 +26,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
     if (!isUserSet) return;
     if (
       !user?.userId &&
-      (pathname.split('/')[1] == 'account' || pathname.split('/')[1] == 'staff')
+      (pathname.split('/')[1] == 'account' || pathname.split('/')[1] == 'staff' || pathname.split('/')[1] == 'manager')
     ) {
       redirect('/');
     }
@@ -35,7 +35,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
     }
     if (
       user?.userId &&
-      user?.roles[0] == 'manager' &&
+      user?.roles[0] == 'staff' &&
       pathname.split('/')[1] != 'staff'
     ) {
       queryClient.clear();
@@ -44,8 +44,24 @@ const Providers = ({ children }: { children: ReactNode }) => {
     }
     if (
       user?.userId &&
-      user?.roles[0] != 'manager' &&
+      user?.roles[0] != 'staff' &&
       pathname.split('/')[1] == 'staff'
+    ) {
+      redirect('/');
+    }
+    if (
+      user?.userId &&
+      user?.roles[0] == 'manager' &&
+      pathname.split('/')[1] != 'manager'
+    ) {
+      queryClient.clear();
+
+      redirect('/manager');
+    }
+    if (
+      user?.userId &&
+      user?.roles[0] != 'manager' &&
+      pathname.split('/')[1] == 'manager'
     ) {
       redirect('/');
     }

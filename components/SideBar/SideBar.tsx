@@ -6,6 +6,7 @@ import {
     IconLayoutDashboard,
     IconBuildingWarehouse,
     IconChecklist,
+    IconUsersGroup,
 } from '@tabler/icons-react';
 
 const staffData = [
@@ -46,7 +47,7 @@ const staffData = [
         ],
     },
 ];
-const adminData = [
+const managerData = [
     {
         slug: 'dashboard',
         icon: IconLayoutDashboard,
@@ -66,7 +67,16 @@ const adminData = [
         slug: 'warehouse',
         icon: IconBuildingWarehouse,
         label: 'Kho',
-        child: [],
+        child: [
+            {
+                slug: 'instock',
+                label: 'Tồn kho',
+            },
+            {
+                slug: 'inbound',
+                label: 'Nhập kho',
+            },
+        ],
     },
     {
         slug: 'order',
@@ -83,9 +93,19 @@ const adminData = [
             },
         ],
     },
+    {
+        slug: 'staff',
+        icon: IconUsersGroup,
+        label: 'Nhân viên',
+        child: [],
+    },
 ];
 const defaultSearchParams = {
     'warehouse': {
+        key: 'tab',
+        param: 'publish'
+    },
+    'instock': {
         key: 'tab',
         param: 'publish'
     }
@@ -108,16 +128,33 @@ export default function SideBar({ from }: { from: string }) {
         router.push(`/${active[0]}/${targetSlug[0]}` + href);
     };
 
-    const data = from === 'staff' ? staffData : adminData;
+    const data = from === 'staff' ? staffData : managerData;
 
     const items = data.map((item) => (
         <NavLink
             key={item.label}
-            active={item.slug === active[1]}
-            variant={item.child.length === 0 ? 'light' : 'subtle'}
+            active={item.child.length === 0 ? item.slug === active[1] : false}
             label={item.label}
-            leftSection={<item.icon size='1rem' stroke={1.5} />}
-            className='rounded-[8px]'
+            leftSection={
+                <div style={(item.child.length === 0 && item.slug === active[1]) ?
+                    {
+                        padding: '4px',
+                        borderRadius: '4px',
+                        color: 'var(--mantine-color-turquoise-6)'
+                    }
+                    : {
+                        padding: '4px',
+                        borderRadius: '4px',
+                        backgroundColor: 'var(--mantine-color-turquoise-1)',
+                        color: 'var(--mantine-color-turquoise-6)'
+                    }}>
+                    <item.icon size='1rem' stroke={1.5} />
+                </div>}
+            className='rounded-[4px]'
+            // style={(item.child.length === 0 && item.slug === active[1]) ? {
+            //     backgroundColor: '#fff'
+            // } : {}}
+            fw={500}
             onClick={() => {
                 const tmp = defaultSearchParams[item.slug as keyof typeof defaultSearchParams]
                 if (tmp === undefined)
@@ -127,21 +164,38 @@ export default function SideBar({ from }: { from: string }) {
             }}
             rightSection={<></>}
             opened={item.slug === active[1]}
-            childrenOffset={0}
-            w='180px'
+            childrenOffset={20}
+            w='190px'
             my='4px'
             px='1rem'
             py='0.8rem'
         >
-            <Stack>
+            <Stack gap='0'>
                 {item.child.map((child, index) => (
                     <NavLink
                         key={child.label}
                         active={child.slug === active[2]}
+                        component='button'
+                        style={
+                            child.slug === active[2] ?
+                                {
+                                    borderLeft: '1px solid var(--mantine-color-turquoise-6)'
+                                }
+                                :
+                                {
+                                    borderLeft: '1px solid var(--mantine-color-gray-3)',
+                                    color: 'var(--mantine-color-gray-6)'
+                                }}
                         label={child.label}
-                        onClick={() => handleOnclick(item, index)}
-                        w='180px'
-                        ta='end'
+                        onClick={() => {
+                            const tmp = defaultSearchParams[child.slug as keyof typeof defaultSearchParams]
+                            if (tmp === undefined)
+                                handleOnclick(item, index)
+                            else
+                                handleOnclick(item, index, tmp.key, tmp.param)
+                        }}
+                        w='170px'
+                        ta='left'
                     />
                 ))}
             </Stack>
