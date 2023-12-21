@@ -20,11 +20,11 @@ function BillInfoField({
     children: React.ReactNode
 }) {
     return (
-        <Group className="basis-1/3 px-[8px]">
+        <Group className="basis-1/3 px-[8px] h-[70px]">
             <Divider size="sm" orientation="vertical" variant='dashed' color="turquoise.4" />
             <div>
                 <Text fw='700' c='gray.6' size='sm'>{label}</Text>
-                <Text>{children}</Text>
+                <Text lineClamp={3} w='300'>{children}</Text>
             </div>
         </Group>
     )

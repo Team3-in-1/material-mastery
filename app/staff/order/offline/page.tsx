@@ -2,7 +2,7 @@
 import UserContext from "@/contexts/UserContext";
 import queryClient from "@/helpers/client";
 import BillService from "@/services/billService";
-import { Button, Group, Pagination, Skeleton, Stack, Title } from "@mantine/core";
+import { Button, Group, Loader, Pagination, Skeleton, Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -48,7 +48,9 @@ export default function OfflineOrderSegment() {
                 <Title order={4}>Danh sách phiếu xuất kho</Title>
                 <Button onClick={() => { router.push(`${currentPath}/create_export_bill`) }}>Tạo phiếu</Button>
             </Group>
-            {bills.isPending ? <Skeleton mt='lg' height={500} radius="md" /> :
+            {bills.isPending ? <div className='w-full h-[500px] flex justify-center items-center'>
+                <Loader type="dots" />
+            </div> :
                 <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                     <ExportBillTable bills={bills.data} />
                     <Pagination className='self-center' total={calPages(numberOfBill.data?.export)} value={activePage} onChange={setPage} mt="sm" />
