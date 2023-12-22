@@ -106,6 +106,16 @@ class OrderService {
     notification = async () => {
         return axios.get(`${constant.BASE_URL}/notification/STAFF`, {headers: this.hearders})
     }
+
+    confirmDeliveredByCustomer = async (orderId: string = '') => {
+        return await axios.patch(`${constant.BASE_URL}/order/confirm/${orderId}`, {}, {headers: this.hearders})
+            .then((res)=> {
+                return res.data.metadata;
+            })
+            .catch((err)=>{
+                console.log('Err::confirmOrderByCustomer:: ', err);
+            })
+    }
 }
 
 

@@ -119,6 +119,29 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
   // ) => {
   //   commentMutation.mutate({ productId, content, rating });
   // };
+
+  const confirmOderMutation = useMutation({
+    mutationKey: ['cofirm order', params.id],
+    mutationFn: (orderId: string) => {
+      const orderService = new OrderService(user);
+      return orderService.confirmDeliveredByCustomer(orderId);
+    },
+    onSuccess: async () => {
+      toast.success('Nhận hàng thành công');
+      await queryClient.refetchQueries({
+        queryKey: ['orders'],
+      });
+    },
+    onError: () => {},
+    onSettled: () => {
+      router.push('/account/orders');
+    },
+  });
+
+  const confirmOrder = (orderId: string) => {
+    confirmOderMutation.mutate(orderId);
+  };
+
   const convertStatusToNumberStep = (status: string): number => {
     switch (status) {
       // 'pending', 'confirmed', 'shipping', 'shipped', 'cancelled', 'failed', 'delivered'
@@ -359,7 +382,13 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
                 </Group>
 
                 {convertStatusToNumberStep(detail.data?.order_status) == 2 && (
-                  <Button className=' border-[#02B1AB] bg-0-primary-color-6 text-white'>
+                  <Button
+                    bg={'#02B1AB'}
+                    className=' border-[#02B1AB] bg-0-primary-color-6 text-white'
+                    onClick={() => {
+                      confirmOrder(params.id);
+                    }}
+                  >
                     Xác nhận đã nhận hàng
                   </Button>
                 )}
