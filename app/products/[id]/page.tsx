@@ -41,10 +41,10 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   if (typeof window == 'undefined') {
     return <></>;
   }
+  const router = useRouter();
   const { user } = useContext(UserContext);
   const [quantity, setQuantity] = useState<string | number>(1);
-  const router = useRouter();
-  router.prefetch('/payment');
+
   const product = useQuery({
     queryKey: ['product', params.id],
     queryFn: () => productService.getProductById(params.id),
@@ -59,9 +59,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   // get category name by category id
   if (category) {
     category.every((item: any) => {
-      if (
-        item.category_name == product.data?.product_categories[0]
-      ) {
+      if (item.category_name == product.data?.product_categories[0]) {
         categoryId = item._id;
         return false;
       }
@@ -112,7 +110,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       const cartService = new CartService(user);
       return cartService.addProduct(productId, quantity);
     },
-    onSuccess: (res) => { },
+    onSuccess: (res) => {},
   });
 
   return (
@@ -121,17 +119,22 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         <Link href='/' key={0}>
           Trang chủ
         </Link>
-        <Link href={`/products?category=${categoryId}`}>
-          {product.data?.product_categories[0]}
+        <Link href={`/products?category=${categoryId}`} key={1}>
+          {product.data?.product_categories[0].category_name}
         </Link>
-        <Link href={`/products/${product.data?._id}`}>
+        <Link href={`/products/${product.data?._id}`} key={2}>
           {product.data?.product_name}
         </Link>
       </Breadcrumbs>
 
-      <Flex className=' w-full h-full'>
+      <Flex w={'100%'} h={'100%'}>
         <Flex className=' ml-[100px] mr-[100px] h-fit h-min-[279px] w-full md:flex-row'>
-          <Flex className=' justify-center items-center bg-white mr-[10px] rounded-[10px] flex-[4] p-[30px]'>
+          <Flex
+            justify={'center'}
+            align={'center'}
+            p={30}
+            className='bg-white mr-[10px] rounded-[10px] flex-[4]'
+          >
             <Image
               alt='img'
               src={product.data?.product_thumb}
@@ -418,12 +421,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         comments.isRefetching ||
         product.isPending ||
         comments.isPending) && (
-          <LoadingOverlay
-            visible={true}
-            zIndex={1000}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-          />
-        )}
+        <LoadingOverlay
+          visible={true}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+        />
+      )}
     </div>
   );
 }
