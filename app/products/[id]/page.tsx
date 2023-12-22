@@ -404,7 +404,11 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                       </Stack>
                     </Group>
                     <Text className=' ml-[55px] text-[#BBB] text-[12px]'>
-                      {person.createdAt}
+                      {person.createdAt.split('T')[0].split('-')[2] +
+                        '/' +
+                        person.createdAt.split('T')[0].split('-')[1] +
+                        '/' +
+                        person.createdAt.split('T')[0].split('-')[0]}
                     </Text>
                   </Stack>
                   <Text className=' ml-[60px] text-overflow: ellipsis;'>
