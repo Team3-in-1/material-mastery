@@ -18,7 +18,6 @@ import { Carousel } from '@mantine/carousel';
 import { splitArray } from '@/utils/array';
 import { Product } from '@/utils/response';
 import { ProductCards } from '@/components/Product/productCards';
-import { useRouter } from 'next/navigation';
 import queryClient from '@/helpers/client';
 import dynamic from 'next/dynamic';
 import { useContext } from 'react';
@@ -46,9 +45,6 @@ for (let index = 0; index < 14; index++) {
 }
 
 function Home() {
-  const router = useRouter();
-  router.prefetch('/account/orders');
-  router.prefetch('/products');
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,

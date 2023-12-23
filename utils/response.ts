@@ -56,7 +56,7 @@ export interface Product {
   product_brand: string
   product_unit: string
   product_ratingAverage: number
-  product_categories: string[]
+  product_categories: any[]
   createdAt: string
   updatedAt: string
   product_slug: string

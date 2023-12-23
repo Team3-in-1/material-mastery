@@ -27,6 +27,7 @@ import { productService } from '@/services/productService';
 import StepperOrder from './stepper';
 import CommentService from '@/services/commentService';
 import toast from 'react-hot-toast';
+import RatingProduct from './rating';
 
 interface Product {
   _id: string;
@@ -93,32 +94,28 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
     }
   }, [detail.isPending]);
 
-  // const commentMutation = useMutation({
-  //   mutationKey: ['createComment'],
-  //   mutationFn: async ({
-  //     productId,
-  //     content,
-  //     rating,
-  //   }: {
-  //     productId: string;
-  //     content: string;
-  //     rating: number;
-  //   }) => {
-  //     const commentService = new CommentService(user);
-  //     return await commentService.createComment(productId, content, rating);
-  //   },
-  //   onSuccess: () => {
-  //     toast.success('Đánh giá sản phẩm thành công');
-  //   },
-  // });
+  const confirmOderMutation = useMutation({
+    mutationKey: ['cofirm order', params.id],
+    mutationFn: (orderId: string) => {
+      const orderService = new OrderService(user);
+      return orderService.confirmDeliveredByCustomer(orderId);
+    },
+    onSuccess: async () => {
+      toast.success('Nhận hàng thành công');
+      await queryClient.refetchQueries({
+        queryKey: ['orders'],
+      });
+    },
+    onError: () => {},
+    onSettled: () => {
+      router.push('/account/orders');
+    },
+  });
 
-  // const createComment = (
-  //   productId: string,
-  //   content: string,
-  //   rating: number
-  // ) => {
-  //   commentMutation.mutate({ productId, content, rating });
-  // };
+  const confirmOrder = (orderId: string) => {
+    confirmOderMutation.mutate(orderId);
+  };
+
   const convertStatusToNumberStep = (status: string): number => {
     switch (status) {
       // 'pending', 'confirmed', 'shipping', 'shipped', 'cancelled', 'failed', 'delivered'
@@ -244,70 +241,77 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
               </Grid>
               {detail.data.order_products.map((product: any, index: number) => {
                 return (
-                  <Grid key={index} className='h-[50px]'>
-                    <Grid.Col
-                      className='flex justify-center items-center'
-                      span={2}
-                    >
-                      <Image
-                        src={products[index]?.product_thumb}
-                        // className='h-[30px] w-auto'
-                        alt='product'
-                        height={35}
-                        width={35}
-                        component={NextImage}
+                  <>
+                    <Grid key={index} className='h-[50px]'>
+                      <Grid.Col
+                        className='flex justify-center items-center'
+                        span={2}
+                      >
+                        <Image
+                          src={products[index]?.product_thumb}
+                          // className='h-[30px] w-auto'
+                          alt='product'
+                          height={35}
+                          width={35}
+                          component={NextImage}
+                        />
+                      </Grid.Col>
+                      <Grid.Col
+                        className='flex justify-center items-center  w-full h-full'
+                        span={3}
+                      >
+                        <Text className='text-[15px] text-ellipsis h-full'>
+                          {products[index]?.product_name}
+                        </Text>
+                      </Grid.Col>
+                      <Grid.Col
+                        className='flex justify-center items-center'
+                        span={2}
+                      >
+                        <Group className='items-start gap-0'>
+                          <Text className='text-[15px]'>{`${formatMoney(
+                            product.item_products[0].product_price
+                          )}`}</Text>
+                          <Text className='text-[10px]'>đ</Text>
+                        </Group>
+                      </Grid.Col>
+                      <Grid.Col
+                        className='flex justify-center items-center'
+                        span={1}
+                      >
+                        <Text className='text-[15px]'>{`${formatMoney(
+                          product.item_products[0].product_quantity
+                        )}`}</Text>
+                      </Grid.Col>
+                      <Grid.Col
+                        className='flex justify-center items-center'
+                        span={2}
+                      >
+                        <Group className='items-start gap-0'>
+                          <Text className='text-[15px]'>{`${formatMoney(
+                            product.priceRaw
+                          )}`}</Text>
+                          <Text className='text-[10px]'>đ</Text>
+                        </Group>
+                      </Grid.Col>
+                      <Grid.Col
+                        className='flex justify-center items-center'
+                        span={2}
+                      >
+                        <Group className='items-start gap-0'>
+                          <Text className='text-[15px]'>{`${formatMoney(
+                            product.priceApplyDiscount
+                          )}`}</Text>
+                          <Text className='text-[10px]'>đ</Text>
+                        </Group>
+                      </Grid.Col>
+                    </Grid>
+                    {detail.data?.order_status == 'delivered' && (
+                      <RatingProduct
+                        productId={product.item_products[0].productId}
                       />
-                    </Grid.Col>
-                    <Grid.Col
-                      className='flex justify-center items-center  w-full h-full'
-                      span={3}
-                    >
-                      <Text className='text-[15px] text-ellipsis h-full'>
-                        {products[index]?.product_name}
-                      </Text>
-                    </Grid.Col>
-                    <Grid.Col
-                      className='flex justify-center items-center'
-                      span={2}
-                    >
-                      <Group className='items-start gap-0'>
-                        <Text className='text-[15px]'>{`${formatMoney(
-                          product.item_products[0].product_price
-                        )}`}</Text>
-                        <Text className='text-[10px]'>đ</Text>
-                      </Group>
-                    </Grid.Col>
-                    <Grid.Col
-                      className='flex justify-center items-center'
-                      span={1}
-                    >
-                      <Text className='text-[15px]'>{`${formatMoney(
-                        product.item_products[0].product_quantity
-                      )}`}</Text>
-                    </Grid.Col>
-                    <Grid.Col
-                      className='flex justify-center items-center'
-                      span={2}
-                    >
-                      <Group className='items-start gap-0'>
-                        <Text className='text-[15px]'>{`${formatMoney(
-                          product.priceRaw
-                        )}`}</Text>
-                        <Text className='text-[10px]'>đ</Text>
-                      </Group>
-                    </Grid.Col>
-                    <Grid.Col
-                      className='flex justify-center items-center'
-                      span={2}
-                    >
-                      <Group className='items-start gap-0'>
-                        <Text className='text-[15px]'>{`${formatMoney(
-                          product.priceApplyDiscount
-                        )}`}</Text>
-                        <Text className='text-[10px]'>đ</Text>
-                      </Group>
-                    </Grid.Col>
-                  </Grid>
+                    )}
+                  </>
                 );
               })}
             </Stack>
@@ -359,31 +363,16 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
                 </Group>
 
                 {convertStatusToNumberStep(detail.data?.order_status) == 2 && (
-                  <Button className=' border-[#02B1AB] bg-0-primary-color-6 text-white'>
+                  <Button
+                    bg={'#02B1AB'}
+                    className=' border-[#02B1AB] bg-0-primary-color-6 text-white'
+                    onClick={() => {
+                      confirmOrder(params.id);
+                    }}
+                  >
                     Xác nhận đã nhận hàng
                   </Button>
                 )}
-                {/* {convertStatusToNumberStep(detail.data?.order_status) == 3 && (
-                  <Stack className='w-full gap-2'>
-                    <Textarea
-                      className='w-full'
-                      placeholder='Nhận xét về sản phẩm'
-                      value={content}
-                      onChange={(event) => {
-                        setContent(event.currentTarget.value);
-                      }}
-                    />
-                    <Rating value={rating} onChange={setRating} />
-                    <Button
-                      className=' border-[#02B1AB] w-full bg-0-primary-color-6 text-white'
-                      onClick={() => {
-                        // createComment();
-                      }}
-                    >
-                      Đánh giá
-                    </Button>
-                  </Stack>
-                )} */}
               </Stack>
               <Stack className='bg-white rounded-md p-[20px]'>
                 <Text className='text-[15px]'>Ghi chú</Text>
