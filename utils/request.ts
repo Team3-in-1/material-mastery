@@ -32,7 +32,7 @@ export interface Bill_Import_Request {
   supplier: Supplier
   products: Products[]
   bill_payment: {
-    infomation: "đã thanh toán trước"
+    information: string
   }
   bill_address: Bill_Address
   bill_image: string
@@ -44,4 +44,13 @@ export interface Bill_Export_Request {
   products: Products[]
   bill_payment: Bill_Payment
   bill_address: Bill_Address
+}
+
+export interface Create_Product {
+  name: string
+  thumb: string
+  categories: string[]
+  price: number
+  quantity: number
+  unit: string
 }

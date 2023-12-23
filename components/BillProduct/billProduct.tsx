@@ -37,21 +37,23 @@ export default function BillProduct({
     max = 10,
     refBills,
     refSetBills,
-    deleteFn
+    deleteFn,
+    calBillFn
 }: {
     data?: Bill_Product,
     order: number,
     max?: number,
     refBills: Bill_Product[],
     refSetBills: any,
-    deleteFn: any
+    deleteFn: any,
+    calBillFn: any
 }) {
     const [quantity, setQuantity] = useState<number | string>(1)
 
     return (
         <Stack key={data._id} w='fit-content' className="rounded-[8px] border-[1px]" p='16'>
             <Group justify="space-between">
-                <Title order={5} c='orange.8' bg='orange.0' px='8' py='4'>Mặt hàng {order}</Title>
+                <Title order={5} c='orange.8' bg='orange.0' px='8' py='4'>Mặt hàng {order + 1}</Title>
                 <Group>
                     <Text fw={700} size='sm' c='dimmed'>Mã mặt hàng</Text>
                     <Text c='turquoise'>{formatProductId(data._id, data.product_price.toString())}</Text>
@@ -74,19 +76,22 @@ export default function BillProduct({
                             setQuantity(value)
                             const tmp = refBills
                             tmp[order].quantity = value as number
+                            tmp[order].totalPrice = tmp[order].quantity * tmp[order].product_price
                             refSetBills(tmp)
+                            calBillFn()
                         }}
                         allowNegative={false}
                         clampBehavior="strict"
                         min={1}
-                        max={max} />
-                    <Text fs='italic' c='gray.6' size='sm'>Tồn kho: {max}</Text>
+                        max={max > -1 ? max : Infinity} />
+                    {max === -1 ? <></> :
+                        <Text fs='italic' c='gray.6' size='sm'>Tồn kho: {max}</Text>}
                 </Stack>
             </Group>
             <Group align="flex-center">
                 <ProductInfo label='Đơn vị tính' content={data.product_unit} />
                 <ProductInfo label='Đơn giá' content={`${formatMoney(data.product_price)} đ`} />
-                <ProductInfo label='Thành tiền' content={`${formatMoney(data.totalPrice * (quantity as number))} đ`} />
+                <ProductInfo label='Thành tiền' content={`${formatMoney(data.totalPrice)} đ`} />
             </Group>
         </Stack>
     )

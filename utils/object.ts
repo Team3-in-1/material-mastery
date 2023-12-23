@@ -31,7 +31,9 @@ export interface Bill_Info_Import {
     tax: number
     supplier: Supplier
     bill_checkout: Bill_Checkout
-    bill_payment: Bill_Payment
+    bill_payment: {
+        information: string
+    }
     bill_address: Bill_Address
     bill_image: string
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Product, UserInterface } from "@/utils/response";
 import { constant } from "@/utils/constant";
+import { Create_Product } from "@/utils/request";
 
 const getAllProducts = async (limit: number = 8, page: number = 1, sortType: string = 'product_price', isAscending: boolean = false): Promise<Product[]> => {
     return await axios.get(`${constant.BASE_URL}/product?limit=${limit}&page=${page}&sorted[]=${sortType}&isAscending=${isAscending}`, {
@@ -33,6 +34,18 @@ const updateProduct = async (user: UserInterface, id: string, change: Object): P
         }
     })
         .then(res => res.data.statusCode)
+        .catch(error => { throw new Error(error.response.data.message) })
+}
+
+const createProduct = async (user: UserInterface, body: Create_Product): Promise<any> => {
+    return await axios.post(`${constant.BASE_URL}/product`, body, {
+        headers: {
+            'x-api-key': constant.API_KEY,
+            'x-client-id': user.userId,
+            'authorization': user.accessToken,
+        }
+    })
+        .then(res => res.data.metadata)
         .catch(error => { throw new Error(error.response.data.message) })
 }
 
@@ -96,6 +109,7 @@ export const productService = {
     getAllProductsByCategory,
     search,
     updateProduct,
+    createProduct,
     unpublish,
     publish
 }

@@ -36,7 +36,7 @@ export default function ManagerLayout({
   };
   useEffect(() => {
     if (notify) {
-      toast.error('Hết hàng rồi');
+      //toast.error('Hết hàng rồi');
       setNotify(null);
     }
   }, [notify]);
