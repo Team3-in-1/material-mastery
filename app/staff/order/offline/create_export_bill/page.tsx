@@ -51,6 +51,15 @@ export default function CreateExportBillPage() {
     const [quantity, setQuantity] = useState<number[]>([])
     const [maximum, setMaximum] = useState<number[]>([])
 
+    const [totalBill, setTotalBill] = useState(0)
+    const calTotalBill = () => {
+        let total = 0
+        for (let i = 0; i < addedProduct.length; i++)
+            total += addedProduct[i].product_price * addedProduct[i].quantity
+
+        setTotalBill(total)
+    }
+
     const handleDeleteProduct = (id: string) => {
         const indexToRemove = addedProduct.findIndex(i => i._id === id)
         if (indexToRemove !== -1) {
@@ -60,9 +69,7 @@ export default function CreateExportBillPage() {
         }
         else toast.error('Không xóa được do không tìm thấy id')
     }
-    const AddedProduct = addedProduct.map((item, index) => (
-        <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} deleteFn={handleDeleteProduct} />
-    ))
+
 
     const handleChooseProduct = (data: Product) => {
         let billProduct: Bill_Product = {
@@ -82,6 +89,7 @@ export default function CreateExportBillPage() {
             setQuantity([...quantity, 1])
             setAddedProduct((prev) => [...prev, billProduct])
             setMaximum([...maximum, data.product_quantity])
+            calTotalBill()
         }
     }
 
@@ -185,7 +193,7 @@ export default function CreateExportBillPage() {
                                 <ScrollArea className='h-[450px] w-full'>
                                     <Stack className="basis-2/3" p='16' align="center">
                                         {addedProduct.map((item, index) => (
-                                            <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} deleteFn={handleDeleteProduct} />
+                                            <BillProduct key={item._id} data={addedProduct[index]} order={index} max={maximum[index]} refBills={addedProduct} refSetBills={setAddedProduct} calBillFn={calTotalBill} deleteFn={handleDeleteProduct} />
                                         ))}
                                         <ProductPicker categories={categories.data} label="Thêm sản phẩm" onChoose={handleChooseProduct} />
                                     </Stack>
