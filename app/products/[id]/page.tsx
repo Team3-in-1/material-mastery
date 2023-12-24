@@ -35,7 +35,8 @@ import { useRouter } from 'next/navigation';
 import CartService from '@/services/cartService';
 import UserContext from '@/contexts/UserContext';
 
-const ImageLink = 'https://drive.google.com/uc?id=16VD2AxgmTUVt9uIzz_SQo_JSw1gltxjK';
+const ImageLink =
+  'https://drive.google.com/uc?id=16VD2AxgmTUVt9uIzz_SQo_JSw1gltxjK';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   if (typeof window == 'undefined') {
@@ -53,19 +54,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   });
 
   const productId = params.id;
-  const category: any = queryClient.getQueryData(['categories']);
-  let categoryId = '65427434680cb0bd8f9d776c';
 
-  // get category name by category id
-  if (category) {
-    category.every((item: any) => {
-      if (item.category_name == product.data?.product_categories[0]) {
-        categoryId = item._id;
-        return false;
-      }
-      return true;
-    });
-  }
   const comments = useQuery({
     queryKey: ['comments', params.id],
     queryFn: () => {
@@ -119,7 +108,10 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         <Link href='/' key={0}>
           Trang chủ
         </Link>
-        <Link href={`/products?category=${categoryId}`} key={1}>
+        <Link
+          href={`/products?category=${product.data?.product_categories[0]._id}`}
+          key={1}
+        >
           {product.data?.product_categories[0].category_name}
         </Link>
         <Link href={`/products/${product.data?._id}`} key={2}>
