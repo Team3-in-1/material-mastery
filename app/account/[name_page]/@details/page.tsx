@@ -71,7 +71,7 @@ const DetailsPage = () => {
     initialAddress.current = userInfor.data.user_attributes.address;
     initialImage.current = userInfor.data.user_attributes.avatar
       ? userInfor.data.user_attributes.avatar
-      : 'https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-6/289149087_532680565185439_2587124243099315687_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9c7eae&_nc_eui2=AeHlj-MAcPCkW6Sd1ZZINLX3dnM5XV8os_B2czldXyiz8DYpOp_w7W8fpY4T3y3bu4Av1LeBPAcSUXou-hH6qBbe&_nc_ohc=NLO3EECZx1QAX_XqSm2&_nc_ht=scontent.fsgn2-8.fna&oh=00_AfBz6S6rudC72TW0LONnocrZQ4cIsc4UNFHt9IKBOmWiuw&oe=657B1067';
+      : 'https://drive.google.com/uc?id=16VD2AxgmTUVt9uIzz_SQo_JSw1gltxjK';
     setName(initialName.current);
     setPhone(initialPhone.current);
     setAddress(initialAddress.current);
