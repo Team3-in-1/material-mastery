@@ -37,7 +37,8 @@ const Providers = ({ children }: { children: ReactNode }) => {
     if (
       user?.userId &&
       user?.roles[0] == 'staff' &&
-      pathname.split('/')[1] != 'staff'
+      pathname.split('/')[1] != 'staff' &&
+      pathname != '/account/details'
     ) {
       queryClient.clear();
 
@@ -53,7 +54,8 @@ const Providers = ({ children }: { children: ReactNode }) => {
     if (
       user?.userId &&
       user?.roles[0] == 'manager' &&
-      pathname.split('/')[1] != 'manager'
+      pathname.split('/')[1] != 'manager' &&
+      pathname !== '/account/details'
     ) {
       queryClient.clear();
 
