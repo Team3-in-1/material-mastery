@@ -125,10 +125,10 @@ export const PCard = ({ data }: PCardProps) => {
               justify='flex-start'
               className=' items-start'
             >
-              <Text className='text-[1rem]'>
+              <Text size='16px' className='text-[1rem]'>
                 {formatMoney(data.product_price)}
               </Text>
-              <Text className=' text-[12px]'>đ</Text>
+              <Text size='12px' className=' text-[12px]'>đ</Text>
             </Group>
             <Group
               gap={0}
@@ -139,10 +139,12 @@ export const PCard = ({ data }: PCardProps) => {
             >
               {discount !== 0 ? (
                 <>
-                  <Text td='line-through' className='text-[14px] text-red-400'>
+                  <Text td='line-through' color='rgb(248 113 113)'
+                    size='10px' className='text-[14px] text-red-400'>
                     {formatMoney(calPriceBefore(discount, data.product_price))}
                   </Text>
-                  <Text td='line-through' className=' text-[10px] text-red-400'>
+                  <Text td='line-through' color='rgb(248 113 113)'
+                    size='10px' className=' text-[10px] text-red-400'>
                     đ
                   </Text>
                 </>
