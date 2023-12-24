@@ -6,10 +6,12 @@ import UserContext from '@/contexts/UserContext';
 import { useMutation, useQuery } from '@tanstack/react-query'
 import OrderService from '@/services/orderService'
 import Loading from './loading';
-import { useRouter } from 'next/navigation';
-import { Toaster } from 'react-hot-toast';
+import { usePathname, useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
 import OrderStepper from './stepper';
 import queryClient from '@/helpers/client';
+import { Bill_Export_Request } from '@/utils/request';
+import BillService from '@/services/billService';
 
 
 
@@ -17,6 +19,7 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
 
     const router = useRouter()
     const { user } = useContext(UserContext);
+    const currentPath = usePathname()
 
     const target_order = useQuery({
         queryKey: ['target_order', params.order_id],
@@ -41,6 +44,19 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
             });
         }
     })
+    const createExportBillMutation = useMutation({
+        mutationKey: ['create_ex_bill'],
+        mutationFn: (body: Bill_Export_Request) => {
+            const billService = new BillService(user)
+            return billService.createExportBill(body)
+        },
+        onSuccess: (res) => {
+            toast.success('Tạo thành công')
+        },
+        onError: () => {
+            toast.error('Thất bại. Hãy thử lại')
+        }
+    })
 
 
 
@@ -53,7 +69,7 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
                     <div className='flex flex-col gap-[24px] py-[16px] px-[16px]'>
                         <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
                             onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
-                        <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate} />
+                        <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate} createMutate={createExportBillMutation.mutate} />
                     </div>
 
                 )

@@ -54,6 +54,7 @@ function CreateNewProductModal({
     });
 
     const handleCreateProduct = () => {
+
         const newProduct: Create_Product = {
             name: form.values.name,
             thumb: form.values.thumbnail,
@@ -74,7 +75,7 @@ function CreateNewProductModal({
                     <Modal.Title w='100%' ta='center'><Text fw={700}>Thêm sản phẩm mới</Text></Modal.Title>
                 </Modal.Header>
                 <Modal.Body mt='16' mx='16'>
-                    <form onSubmit={form.onSubmit(handleCreateProduct)}>
+                    <form onSubmit={form.onSubmit(handleCreateProduct)} id='newProductForm'>
                         <Group>
                             <Stack w='250'>
                                 <TextInput
@@ -126,7 +127,7 @@ function CreateNewProductModal({
                         </Group>
                         <Group justify="center" mt='md'>
                             <Button variant="outline" w='150' onClick={close}>Hủy</Button>
-                            <Button w='150' type='submit'>Tạo</Button>
+                            <Button w='150' type='submit' form='newProductForm'>Tạo</Button>
                         </Group>
                     </form>
                 </Modal.Body>
@@ -252,6 +253,7 @@ export default function CreateImportBillPage() {
     });
 
     const handleCreateBill = (formData: any) => {
+
         if (addedProduct.length === 0)
             toast.error('Chưa chọn sản phẩm nào!')
         else {
@@ -296,7 +298,7 @@ export default function CreateImportBillPage() {
     return (
         <ScrollArea className='h-full w-full z-[0]' >
             <div className='flex flex-col gap-[24px] py-[16px] px-[16px] h-full w-full '>
-                <form onSubmit={form.onSubmit(handleCreateBill)}>
+                <form onSubmit={form.onSubmit(handleCreateBill)} id='newBillForm'>
                     <Flex direction='column-reverse' gap='16'>
                         {createExportBillMutation.isPending || createProductMutation.isPending ? <Loading /> :
 
@@ -333,8 +335,8 @@ export default function CreateImportBillPage() {
                                         <Stack>
                                             <Text>{formatMoney(totalBill)} đ</Text>
                                             <Text>{formatMoney(totalBill * 0.1)} đ</Text>
-                                            <Text>{formatMoney(totalBill * 0.11)} đ</Text>
-                                            <Text fw={700}>{formatMoney(totalBill + totalBill * 0.1 - totalBill * 0.11)} đ</Text>
+                                            <Text>{formatMoney(totalBill * 0.09)} đ</Text>
+                                            <Text fw={700}>{formatMoney(totalBill + totalBill * 0.1 - totalBill * 0.09)} đ</Text>
                                         </Stack>
                                     </Group>
                                 </Stack>
@@ -369,13 +371,7 @@ export default function CreateImportBillPage() {
                                             </Modal.Content>
                                         </Modal.Root >
                                         <Button onClick={open}>Thêm</Button>
-                                        <CreateNewProductModal
-                                            opened={create_opened}
-                                            open={create_controller.open}
-                                            close={create_controller.close}
-                                            categories={categories.data as Category[]}
-                                            createMutation={createProductMutation}
-                                        />
+
                                     </Stack>
 
                                 </ScrollArea>
@@ -402,11 +398,18 @@ export default function CreateImportBillPage() {
                                     form.reset()
                                     setAddedProduct([])
                                 }}>Xóa phiếu</Button>
-                                <Button type='submit'>Tạo phiếu</Button>
+                                <Button type='submit' form='newBillForm'>Tạo phiếu</Button>
                             </Button.Group>
                         </Group>
                     </Flex>
                 </form>
+                <CreateNewProductModal
+                    opened={create_opened}
+                    open={create_controller.open}
+                    close={create_controller.close}
+                    categories={categories.data as Category[]}
+                    createMutation={createProductMutation}
+                />
             </div >
 
         </ScrollArea >

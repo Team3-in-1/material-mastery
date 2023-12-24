@@ -81,6 +81,20 @@ export default function WarehouseProductPage({
         }
     })
 
+    const unpublishMutation = useMutation({
+        mutationKey: ['unpublish'],
+        mutationFn: () => {
+            return productService.unpublish(user, params.product_id)
+        },
+        onSuccess: () => {
+            toast.success('Sản phẩm đã được gỡ xuống')
+            router.replace(`${currentPath.substring(0, currentPath.lastIndexOf('/'))}?tab=${searchParamsHook.get('state')}`)
+        },
+        onError: (err) => {
+            toast.error(err.message)
+        }
+    })
+
     const [generalEdit, setGeneralEdit] = useState(false)
     const [descEdit, setDescEdit] = useState(false)
     const [isRateChoosing, setIsRatechoosing] = useState(0);
@@ -93,7 +107,7 @@ export default function WarehouseProductPage({
 
     return (
         <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem' >
-            {target_product.isPending || comments.isPending || publishMutation.isPending ?
+            {target_product.isPending || comments.isPending || publishMutation.isPending || unpublishMutation.isPending ?
                 <div className='w-full h-[500px] flex justify-center items-center'>
                     <Loader type="dots" />
                 </div>
@@ -115,7 +129,7 @@ export default function WarehouseProductPage({
                             :
                             <Group gap='16'>
                                 <Text>*Sản phẩm này đã được trưng bày</Text>
-                                <Button variant='filled' size='md' color='red' onClick={() => { }}>
+                                <Button variant='filled' size='md' color='red' onClick={() => unpublishMutation.mutate()}>
                                     <IconArrowDown />
                                     Không trưng bày
                                 </Button>

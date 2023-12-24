@@ -5,15 +5,18 @@ import { useState } from "react";
 import OrderInformation from "./orderInformation";
 import DeliveryTimeline from "@/components/DeliveryTimeline/deliveryTimeline";
 import { IconTruckDelivery } from "@tabler/icons-react";
+import { Bill_Address } from "@/utils/object";
 
 
 enum statusOrder { 'pending' = 0, 'cancelled' = 1, 'confirmed' = 1, 'shipping' = 2, 'shipped' = 3, 'failed' = 3 }
 export default function OrderStepper({
     data,
     mutate,
+    createMutate
 }: {
     data: Order,
-    mutate: any
+    mutate: any,
+    createMutate: any
 }) {
     const [opened, handlers] = useDisclosure(false);
     const [failOpened, failedHandlers] = useDisclosure(false);
@@ -34,6 +37,38 @@ export default function OrderStepper({
             status: 'shipping'
         }
         mutate(tmp)
+
+        // const BillAddress: Bill_Address = {
+        //     from: data.order_address,
+        //     to: formData.address_to
+        // }
+        // const BillPayment: Bill_Payment = {
+        //     method: 'in store'
+        // }
+        // const Customer: Customer_In_Bill = {
+        //     id: '',
+        //     phone: formData.phone,
+        //     name: formData.customer_name
+        // }
+        // const bill: Bill_Export_Request = {
+        //     products: addedProduct.map(item => {
+        //         const iProduct: Item_Products = {
+        //             price: item.product_price,
+        //             quantity: item.quantity,
+        //             productId: item._id
+        //         }
+        //         const products: Products = {
+        //             products: [iProduct]
+        //         }
+        //         return products
+        //     }),
+        //     bill_note: '',
+        //     bill_address: BillAddress,
+        //     bill_payment: BillPayment,
+        //     customer: Customer
+        // }
+
+        // createMutate()
         handlers.close()
     }
     const handleSuccessfulDelivery = (id: string | undefined) => {
