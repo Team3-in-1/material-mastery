@@ -17,7 +17,7 @@ type tableType = {
 }[]
 
 type Props = {
-    orders: any
+    orders: Order[]
 }
 
 const tableHeadList = [

@@ -55,7 +55,7 @@ export default function OnlineOrderSegment() {
     const [shipmentFilter, setShipmentFilter] = useState<string | null>(shipmentState[0])
     const { user } = useContext(UserContext);
     const orders = useQuery({
-        queryKey: ['orders', activePage, shipmentFilter],
+        queryKey: ['orders', activePage, shipmentStatusMapping[shipmentFilter as keyof typeof shipmentStatusMapping]],
         queryFn: () => {
             const orderService = new OrderService(user);
             return orderService.getAllOrder(
@@ -86,9 +86,26 @@ export default function OnlineOrderSegment() {
     //     })
     // }
     const calPages = (num: any) => {
-        let total: number = num.pending + num.confirmed + num.cancelled + num.shipping + num.shipped + num.failed
-        // total = total % 10 !== 0 ? Math.ceil(total / 10) : Math.floor(total / 10);
-        return Math.ceil(total / 10)
+        let total: number
+        switch (shipmentFilter) {
+            case shipmentState[0]:
+                return Math.ceil(num.pending + num.confirmed + num.cancelled + num.shipping + num.shipped + num.failed / 10)
+            case shipmentState[1]:
+                return Math.ceil(num.pending / 10)
+            case shipmentState[2]:
+                return Math.ceil(num.confirmed / 10)
+            case shipmentState[3]:
+                return Math.ceil(num.cancelled / 10)
+            case shipmentState[4]:
+                return Math.ceil(num.shipping / 10)
+            case shipmentState[5]:
+                return Math.ceil(num.shipped / 10)
+            case shipmentState[6]:
+                return Math.ceil(num.failed / 10)
+            default:
+                break
+        }
+
     }
 
     return (
@@ -130,7 +147,12 @@ export default function OnlineOrderSegment() {
                 ) :
                     <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                         <OrderTable orders={orders.data} />
-                        <Pagination className='self-center' total={calPages(numberOfOrder.data)} value={activePage} onChange={setPage} mt="sm" />
+                        <Pagination
+                            className='self-center'
+                            total={calPages(numberOfOrder.data) as number}
+                            value={activePage}
+                            onChange={setPage}
+                            mt="sm" />
                     </div>}
             </Stack>
         </ScrollArea>
