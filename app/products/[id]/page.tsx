@@ -35,7 +35,7 @@ import { useRouter } from 'next/navigation';
 import CartService from '@/services/cartService';
 import UserContext from '@/contexts/UserContext';
 
-const ImageLink = 'https://blog.alliedmarketresearch.com/images/user_icon.png';
+const ImageLink = 'https://drive.google.com/uc?id=16VD2AxgmTUVt9uIzz_SQo_JSw1gltxjK';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   if (typeof window == 'undefined') {
