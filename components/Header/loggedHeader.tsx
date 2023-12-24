@@ -70,7 +70,7 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
   }
 
   return (
-    <Flex gap='1rem' align='center' className='hidden-mobile'>
+    <Flex gap='1rem' align='center'>
       {/* <LanguagePicker /> */}
       {user?.roles[0] != 'manager' && user?.roles[0] != 'staff' && (
         <div className=' relative w-[25px] h-[25px] cursor-pointer'>

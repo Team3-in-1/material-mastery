@@ -32,7 +32,7 @@ export default function page() {
       className='overlay'
     >
       <Group
-        className='hidden-desktop'
+        // className='hidden-desktop'
         align='center'
         gap='1rem'
         px='0.5rem'
@@ -48,7 +48,6 @@ export default function page() {
         <Title order={4}>Đăng ký tài khoản</Title>
       </Group>
       <Image
-        className='hidden-tablet'
         component={NextImage}
         src={displayImg}
         alt=''
@@ -57,7 +56,7 @@ export default function page() {
         h='33.3125rem'
       />
       <Stack className='form'>
-        <Title className='hidden-mobile' order={2}>
+        <Title order={2}>
           Đăng ký tài khoản
         </Title>
         <SignUpForm />

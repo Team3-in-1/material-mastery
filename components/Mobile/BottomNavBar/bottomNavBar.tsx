@@ -90,7 +90,7 @@ export default function BottomNavBar() {
 
   return (
     <Flex
-      className='hidden-desktop z-1000'
+      // className='hidden-desktop z-1000'
       py='0.75rem'
       px='1.5rem'
       justify='space-between'

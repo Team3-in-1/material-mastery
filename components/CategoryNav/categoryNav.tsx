@@ -25,7 +25,7 @@ export const CategoryNav = ({ data }: { data: Category[] }) => {
 
   return (
     <Stack
-      className={`hidden-mobile ${classes.container} rounded-lg`}
+      className={`${classes.container} rounded-lg`}
       px={15}
       py={20}
     >

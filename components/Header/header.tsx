@@ -48,7 +48,7 @@ export default function Header() {
     }
   };
   useEffect(() => {
-    setLinkBaseRole(user?.roles[0], setLink);
+    setLinkBaseRole(user && user.roles > 0 && user?.roles[0], setLink);
   }, [user]);
 
   if (!user) return <></>;
@@ -77,7 +77,6 @@ export default function Header() {
             fit='fill'
           ></Image>
           <Text
-            className='hidden-mobile'
             size='1rem'
             fw='900'
             c='turquoise.6'
@@ -95,7 +94,7 @@ export default function Header() {
       {user?.userId ? (
         <LoggedHeader user={user} setUser={setUser} />
       ) : (
-        <Flex gap='1rem' align='center' className='hidden-mobile'>
+        <Flex gap='1rem' align='center'>
           {/* <LanguagePicker /> */}
           <Link
             href='/sign-in'
