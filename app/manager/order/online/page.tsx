@@ -55,7 +55,7 @@ export default function OnlineOrderSegment() {
     const [shipmentFilter, setShipmentFilter] = useState<string | null>(shipmentState[0])
     const { user } = useContext(UserContext);
     const orders = useQuery({
-        queryKey: ['orders', activePage, shipmentFilter],
+        queryKey: ['orders', activePage, shipmentStatusMapping[shipmentFilter as keyof typeof shipmentStatusMapping]],
         queryFn: () => {
             const orderService = new OrderService(user);
             return orderService.getAllOrder(
