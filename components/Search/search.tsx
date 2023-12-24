@@ -61,6 +61,7 @@ export default function Search({ content }: SearchText) {
           h={'fit-content'}
           w={'fit-content'}
           p={2}
+          className=' bg-transparent'
           style={
             hovered
               ? {

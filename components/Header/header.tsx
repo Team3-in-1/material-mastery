@@ -91,7 +91,7 @@ export default function Header() {
               queryClient.clear();
             }}
           >
-            Sign-up
+            Đăng ký
           </Link>
           <Link
             href='/sign-in'
@@ -99,7 +99,7 @@ export default function Header() {
               queryClient.clear();
             }}
           >
-            Sign-in
+            Đăng nhập
           </Link>
         </Flex>
       )}
