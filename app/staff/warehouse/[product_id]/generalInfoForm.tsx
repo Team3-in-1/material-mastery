@@ -1,4 +1,5 @@
 import UserContext from '@/contexts/UserContext';
+import queryClient from '@/helpers/client';
 import { productService } from '@/services/productService';
 import { Group, Stack, Title, Text, Button, Divider, TextInput, Textarea, Modal } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -13,30 +14,20 @@ export default function GeneralInfoForm({
     price,
     unit,
     quantity,
-    closeFn
+    closeFn,
+    mutate
 }: {
     id: string,
     name: string,
     price: number,
     unit: string,
     quantity: number,
-    closeFn: any
+    closeFn: any,
+    mutate: any
 }) {
 
     const { user } = useContext(UserContext)
-    const updateProductMutation = useMutation({
-        mutationKey: ['update_product'],
-        mutationFn: (change: Object) => {
-            return productService.updateProduct(user, id, change)
-        },
-        onSuccess: () => {
-            toast.success('Thay đổi thành công')
-            closeFn(false)
-        },
-        onError: (status) => {
-            toast.error(status.message)
-        }
-    })
+
     const [opened, { open, close }] = useDisclosure(false);
     const form = useForm({
         initialValues: {
@@ -70,8 +61,9 @@ export default function GeneralInfoForm({
             change = { ...change, product_price: form.values.price as number }
         if (form.values.unit != unit)
             change = { ...change, product_unit: form.values.unit }
-        console.log(user)
-        updateProductMutation.mutate(change)
+        close()
+        closeFn(false)
+        mutate(change)
     }
     return (
         <Stack className='basis-7/12 rounded-[8px] border-[1px]' p='1rem'>

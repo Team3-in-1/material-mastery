@@ -10,26 +10,16 @@ import toast from 'react-hot-toast'
 export default function DescInfoForm({
     id,
     desc,
-    closeFn
+    closeFn,
+    mutate
 }: {
     id: string,
     desc: string,
-    closeFn: any
+    closeFn: any,
+    mutate: any
 }) {
     const { user } = useContext(UserContext)
-    const updateProductMutation = useMutation({
-        mutationKey: ['update_product'],
-        mutationFn: (change: Object) => {
-            return productService.updateProduct(user, id, change)
-        },
-        onSuccess: () => {
-            toast.success('Thay đổi thành công')
-            closeFn(false)
-        },
-        onError: (status) => {
-            toast.error(status.message)
-        }
-    })
+
     const [opened, { open, close }] = useDisclosure(false);
     const form = useForm({
         initialValues: {
@@ -48,7 +38,9 @@ export default function DescInfoForm({
     }
     const handleUpdateProduct = () => {
         let change = { product_description: form.values.desc }
-        updateProductMutation.mutate(change)
+        close()
+        closeFn(false)
+        mutate(change)
     }
     return (
         <Stack className='rounded-[8px] border-[1px]' p='1rem' mt='16'>

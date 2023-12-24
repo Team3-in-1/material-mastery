@@ -47,11 +47,7 @@ function ProductCard({ data, onChoose }: { data: Product | undefined, onChoose?:
                     <Text lineClamp={2} w='200' size='sm' >{data?.product_name}</Text>
                     <Text size='sm' c='gray.6'>SL: {data?.product_quantity}</Text>
                 </Stack>
-                {data?.product_quantity == 0 ?
-                    <Button variant='light' c='gray' bg='gray.0'>Hết hàng</Button>
-                    :
-                    <Button variant='light' onClick={onChoose}>Xem</Button>
-                }
+                <Button variant='light' onClick={onChoose}>Xem</Button>
             </Stack>
 
         </Card>
@@ -130,7 +126,6 @@ export default function InstockPage({ searchParams }: { searchParams: { [key: st
     const search = async () => {
         setPubSearching('pending')
         searchMutation.mutate()
-
     };
     const handleChooseCategory = (id: string) => {
         setCategoryId(id)

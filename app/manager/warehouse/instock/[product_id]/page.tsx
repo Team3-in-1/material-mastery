@@ -15,6 +15,7 @@ import GeneralInfoForm from './generalInfoForm'
 import DescInfoForm from './descInfoForm'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
+import queryClient from '@/helpers/client'
 
 const ImageLink = 'https://blog.alliedmarketresearch.com/images/user_icon.png';
 function GeneralInfoField({
@@ -54,12 +55,31 @@ export default function WarehouseProductPage({
     const searchParamsHook = useSearchParams()
     const { user } = useContext(UserContext)
 
+    const [generalEdit, setGeneralEdit] = useState(false)
+    const [descEdit, setDescEdit] = useState(false)
+    const [isRateChoosing, setIsRatechoosing] = useState(0);
+    const [scroll, scrollTo] = useWindowScroll();
+
     const target_product = useQuery({
         queryKey: ['target_product', params.product_id],
         queryFn: () => {
             return productService.getProductById(params.product_id)
         },
         enabled: !!user
+    })
+
+    const updateProductMutation = useMutation({
+        mutationKey: ['update_product'],
+        mutationFn: (change: Object) => {
+            return productService.updateProduct(user, params.product_id, change)
+        },
+        onSuccess: () => {
+            toast.success('Thay đổi thành công')
+            return queryClient.invalidateQueries({ queryKey: ['target_product', params.product_id] })
+        },
+        onError: (status) => {
+            toast.error(status.message)
+        }
     })
     const comments = useQuery({
         queryKey: ['comments', params.product_id],
@@ -95,10 +115,7 @@ export default function WarehouseProductPage({
         }
     })
 
-    const [generalEdit, setGeneralEdit] = useState(false)
-    const [descEdit, setDescEdit] = useState(false)
-    const [isRateChoosing, setIsRatechoosing] = useState(0);
-    const [scroll, scrollTo] = useWindowScroll();
+
     const handleRateClick = (id: number) => {
         setIsRatechoosing(id);
     };
@@ -169,6 +186,7 @@ export default function WarehouseProductPage({
                                 unit={target_product.data?.product_unit as string}
                                 quantity={target_product.data?.product_quantity as number}
                                 closeFn={setGeneralEdit}
+                                mutate={updateProductMutation.mutate}
                             />
                         }
                         <Stack gap='16' p='1rem' align='center' className='w-[400px] rounded-[8px] border-[1px]'>
@@ -213,6 +231,7 @@ export default function WarehouseProductPage({
                             id={target_product.data?._id as string}
                             desc={target_product.data?.product_description as string}
                             closeFn={setDescEdit}
+                            mutate={updateProductMutation.mutate}
                         />
                     }
                     <Flex className=' flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] mt-[10px] mb-[20px]'>
