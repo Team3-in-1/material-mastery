@@ -78,7 +78,11 @@ export default function Search({ content }: SearchText) {
             onClick={() => {
               search(keyWord);
             }}
-            style={{ height: '1.5rem', width: '1.5rem' }}
+            style={{
+              height: '1.5rem',
+              width: '1.5rem',
+              background: 'transparent',
+            }}
           />
         </ActionIcon>
       }
