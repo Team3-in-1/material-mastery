@@ -59,8 +59,7 @@ function Home() {
     queryFn: () => {
       return productService.getAllProducts();
     },
-    staleTime: 500000,
-    gcTime: 0,
+    initialData: data,
   });
 
   return (
@@ -131,17 +130,17 @@ function Home() {
           <Container className='bg-white rounded-md' fluid mt={20} py={10}>
             <p className='text-[1rem] py-1 font-bold'>Sản phẩm mới</p>
             <Carousel withIndicators withControls={false}>
-              <Carousel.Slide key={0}>
-                <ProductCards
-                  data={
-                    promotionalProducts.data
-                      ? promotionalProducts.data.slice(0)
-                      : data
-                  }
-                  selectedRating={'Tất cả'}
-                  selectedSort={'Sản phẩm mới'}
-                />
-              </Carousel.Slide>
+              {splitArray(promotionalProducts.data, 5).map((slide) => {
+                return (
+                  <Carousel.Slide key={Math.floor(Math.random() * Date.now())}>
+                    <ProductCards
+                      data={slide}
+                      selectedRating={'Tất cả'}
+                      selectedSort={'Sản phẩm mới'}
+                    />
+                  </Carousel.Slide>
+                );
+              })}
             </Carousel>
           </Container>
           <Container
@@ -155,15 +154,17 @@ function Home() {
           >
             <p className='text-[1rem] py-1 font-bold'>Bán chạy</p>
             <Carousel withIndicators withControls={false}>
-              <Carousel.Slide key={1}>
-                <ProductCards
-                  data={
-                    promotionalProducts.data ? promotionalProducts.data : data
-                  }
-                  selectedRating={'Tất cả'}
-                  selectedSort={null}
-                />
-              </Carousel.Slide>
+              {splitArray(promotionalProducts.data, 5).map((slide) => {
+                return (
+                  <Carousel.Slide key={Math.floor(Math.random() * Date.now())}>
+                    <ProductCards
+                      data={slide}
+                      selectedRating={'Tất cả'}
+                      selectedSort={null}
+                    />
+                  </Carousel.Slide>
+                );
+              })}
             </Carousel>
           </Container>
         </Grid.Col>
@@ -181,4 +182,4 @@ function Home() {
   );
 }
 
-export default dynamic(() => Promise.resolve(Home), { ssr: false });
+export default Home;
