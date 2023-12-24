@@ -120,11 +120,19 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       </Breadcrumbs>
 
       <Flex w={'100%'} h={'100%'}>
-        <Flex className=' ml-[100px] mr-[100px] h-fit h-min-[279px] w-full md:flex-row'>
+        <Flex
+          h={'fit-content'}
+          ml={100}
+          mr={100}
+          w={'100%'}
+          className=' ml-[100px] mr-[100px] h-fit h-min-[279px] w-full md:flex-row'
+        >
           <Flex
             justify={'center'}
             align={'center'}
             p={30}
+            bg={'rgb(255,255,255)'}
+            mr={10}
             className='bg-white mr-[10px] rounded-[10px] flex-[4]'
           >
             <Image
@@ -132,10 +140,19 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
               src={product.data?.product_thumb}
               height={150}
               width={150}
-              className=' h-[80px] md:h-[150px] '
+              className=' h-[150px] md:h-[150px] '
             />
           </Flex>
-          <Flex className=' p-5 flex-[6] ml-[5px] px-[32px] py-[16px] bg-white rounded-[10px] flex-col h-fit md:h-full'>
+          <Flex
+            p={'1.25rem'}
+            ml={5}
+            px={32}
+            py={16}
+            bg={'rgb(255,255,255)'}
+            direction={'column'}
+            h={'100%'}
+            className=' p-5 flex-[6] ml-[5px] px-[32px] py-[16px] bg-white rounded-[10px] flex-col h-fit md:h-full'
+          >
             <Flex direction={'column'} className='gap-1'>
               {product.data?.product_brand != 'empty' ? (
                 <Link href={'/'}>Brand: {product.data?.product_brand}</Link>
@@ -155,10 +172,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
               />
             </Flex>
             <Flex>
-              <Text className=' font-bold md:text-[30px] text-[20px]'>
+              <Text size='30px' className=' font-bold text-[30px]'>
                 {formatMoney(product.data?.product_price)}
               </Text>
-              <Text className=' font-bold md:text-[16px] text-[10px]'>đ</Text>
+              <Text size='16px' className=' font-bold text-[16px]'>
+                đ
+              </Text>
             </Flex>
             <Flex>
               <Stack gap={2}>
@@ -204,9 +223,17 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                 </Group>
               </Stack>
             </Flex>
-            <Flex className=' flex-col lg:flex-row w-full gap-3 mt-7'>
+            <Flex
+              direction={'row'}
+              gap={'0.75rem'}
+              w={'100%'}
+              mt={'1.75rem'}
+              className=' flex-row w-full gap-3 mt-7'
+            >
               <Button
-                className='w-[110px] lg:w-[300px] bg-[#02B1AB]'
+                w={'100%'}
+                bg={'#02B1AB'}
+                className=' bg-[#02B1AB]'
                 disabled={productChosen == null}
                 onClick={() => {
                   if (user?.userId) {
@@ -235,8 +262,11 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                 Mua ngay
               </Button>
               <Button
+                w={'100%'}
+                bg={'rgb(255,255,255)'}
+                className='bg-white text-[#02B1AB] border-[#02B1AB]'
                 onClick={() => {
-                  if (user?.user) {
+                  if (user?.userId) {
                     if (cart) {
                       const newCart = structuredClone(cart);
                       if (newCart.cart_products == 0) {
@@ -301,7 +331,6 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                     );
                   }
                 }}
-                className='w-[180px] lg:w-[300px] bg-white text-[#02B1AB] border-[#02B1AB]'
               >
                 Thêm vào giỏ hàng
               </Button>
@@ -310,8 +339,24 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         </Flex>
       </Flex>
 
-      <Flex className=' mt-[10px] w-full h-full items-center justify-center'>
-        <Flex className=' w-full h-full flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] box-content'>
+      <Flex
+        mt={10}
+        w={'100%'}
+        h={'100%'}
+        justify={'center'}
+        align={'center'}
+        className=' mt-[10px] w-full h-full items-center justify-center'
+      >
+        <Flex
+          w={'100%'}
+          h={'100%'}
+          direction={'column'}
+          ml={100}
+          mr={100}
+          bg={'rgb(255,255,255)'}
+          p={20}
+          className=' w-full h-full flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] box-content'
+        >
           <Text className=' font-bold'>Thông tin sản phẩm</Text>
           {/* <Text className=' text-[20vm]'>
             Gạch lát nền Porcelain kim cương siêu bóng CMC KC89005 Hưng Gia Bình
@@ -337,11 +382,31 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         </Flex>
       </Flex>
 
-      <Flex className=' flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] mt-[10px] mb-[20px]'>
+      <Flex
+        direction={'column'}
+        ml={100}
+        mr={100}
+        bg={'rgb(255,255,255)'}
+        p={20}
+        mt={10}
+        mb={20}
+        className=' flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] mt-[10px] mb-[20px]'
+      >
         <Text className=' font-bold'>Đánh giá sản phẩm</Text>
-        <Group className='ml-[100px] mr-[100px] justify-center align-middle'>
-          <Stack className=' gap-1 justify-center items-center'>
-            <Text className=' font-bold text-[50px]'>
+        <Group
+          ml={100}
+          mr={100}
+          justify='center'
+          align='center'
+          className='ml-[100px] mr-[100px] justify-center align-middle'
+        >
+          <Stack
+            gap={'0.25rem'}
+            justify='center'
+            align='center'
+            className=' gap-1 justify-center items-center'
+          >
+            <Text size='50px' className=' font-bold text-[50px]'>
               {product.data?.product_ratingAverage}/5
             </Text>
             <Rating
@@ -355,6 +420,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
             {data.map((item) => (
               <Button
                 key={item.id}
+                w={67}
                 className={
                   item.id == isChoosing
                     ? 'text-[10px] w-[67px] h-[36px] rounded-[20px] border-[#02B1AB] text-white bg-[#02B1AB]'
@@ -377,7 +443,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
               (isChoosing == 0 ||
                 isChoosing == (person.comment_rating || 3)) && (
                 <Stack key={person._id}>
-                  <Stack className=' gap-1'>
+                  <Stack gap={'0.25rem'} className=' gap-1'>
                     <Group>
                       <Image
                         alt='avt'
@@ -386,16 +452,23 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                             ? ImageLink
                             : people.user_avatar
                         }
+                        w={35}
+                        h={35}
                         className=' rounded-full w-[35px]'
                       />
-                      <Stack className=' gap-0'>
-                        <Text className='ml-[5px]'>
+                      <Stack gap={0} className=' gap-0'>
+                        <Text ml={5} className='ml-[5px]'>
                           {person.comment_userName}
                         </Text>
                         <Rating value={person.comment_rating || 3} readOnly />
                       </Stack>
                     </Group>
-                    <Text className=' ml-[55px] text-[#BBB] text-[12px]'>
+                    <Text
+                      ml={55}
+                      color='rgb(187,187,187)'
+                      size='12px'
+                      className=' ml-[55px] text-[#BBB] text-[12px]'
+                    >
                       {person.createdAt.split('T')[0].split('-')[2] +
                         '/' +
                         person.createdAt.split('T')[0].split('-')[1] +
@@ -403,7 +476,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                         person.createdAt.split('T')[0].split('-')[0]}
                     </Text>
                   </Stack>
-                  <Text className=' ml-[60px] text-overflow: ellipsis;'>
+                  <Text ml={60} className=' ml-[60px] text-overflow: ellipsis;'>
                     {person.comment_content}
                   </Text>
                   <Divider my='sm' />

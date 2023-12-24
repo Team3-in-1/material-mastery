@@ -52,7 +52,7 @@ class OrderService {
     }
 
     // get order by customer
-    getOrders = async (page: number = 1, limit: number = 2, status: string = 'order_status', isAscending: boolean = false): Promise<any> => {
+    getOrders = async (page: number = 1, limit: number = 2, status: string = 'createdAt', isAscending: boolean = false): Promise<any> => {
         return await axios.get(`${constant.BASE_URL}/order?limit=${limit}&page=${page}&sorted[]=${status}&isAscending=${isAscending}`, { headers: this.hearders }).then((res) => { return res.data.metadata; }).catch((err) => {
             console.log(err);
         })
