@@ -52,7 +52,7 @@ class OrderService {
     }
 
     // get order by customer
-    getOrders = async (page: number = 1, limit: number = 2, status: string = 'order_status', isAscending: boolean = false): Promise<any> => {
+    getOrders = async (page: number = 1, limit: number = 2, status: string = 'createdAt', isAscending: boolean = false): Promise<any> => {
         return await axios.get(`${constant.BASE_URL}/order?limit=${limit}&page=${page}&sorted[]=${status}&isAscending=${isAscending}`, { headers: this.hearders }).then((res) => { return res.data.metadata; }).catch((err) => {
             console.log(err);
         })
@@ -63,7 +63,7 @@ class OrderService {
     }
 
     getAllOrder = async (limit: number = 4, page: number = 1, status: string = '', sortBy: string = 'order_date', isAscending: boolean = false): Promise<any> => {
-        const statusParam = status === '' ? '' : `&status=${status}`
+        const statusParam = status === '' ? '' : `& status=${status}`
         console.log(`${constant.BASE_URL}/order/staff?limit=${limit}&page=${page}&sorted[]=${sortBy}&isAscending=${isAscending}${statusParam}`)
         return await axios.get(`${constant.BASE_URL}/order/staff?limit=${limit}&page=${page}&sorted[]=${sortBy}&isAscending=${isAscending}${statusParam}`, { headers: this.hearders }).then((res) => { return res.data.metadata; }).catch((err) => {
             console.log(err);
@@ -85,7 +85,7 @@ class OrderService {
             })
     }
 
-
+    
     getNumberOfOrderByCustomer = async () => {
         return await axios.get(`${constant.BASE_URL}/order/customer/number`, { headers: this.hearders })
             .then((res) => {
@@ -104,15 +104,15 @@ class OrderService {
     }
 
     notification = async () => {
-        return axios.get(`${constant.BASE_URL}/notification/STAFF`, { headers: this.hearders })
+        return axios.get(`${constant.BASE_URL}/notification/STAFF`, {headers: this.hearders})
     }
 
     confirmDeliveredByCustomer = async (orderId: string = '') => {
-        return await axios.patch(`${constant.BASE_URL}/order/confirm/${orderId}`, {}, { headers: this.hearders })
-            .then((res) => {
+        return await axios.patch(`${constant.BASE_URL}/order/confirm/${orderId}`, {}, {headers: this.hearders})
+            .then((res)=> {
                 return res.data.metadata;
             })
-            .catch((err) => {
+            .catch((err)=>{
                 console.log('Err::confirmOrderByCustomer:: ', err);
             })
     }
