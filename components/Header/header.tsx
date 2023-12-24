@@ -32,8 +32,25 @@ import UserContext from '@/contexts/UserContext';
 
 export default function Header() {
   const appName = 'Material Mastery';
-
   const { user, setUser } = useContext(UserContext);
+  const [link, setLink] = useState('/');
+  const setLinkBaseRole = (role: string = 'customer', setLink: any) => {
+    switch (role) {
+      case 'manager':
+        setLink('/manager/dashboard/revenue');
+        break;
+      case 'staff':
+        setLink('/staff/dashboard/revenue');
+        break;
+      default:
+        setLink('/');
+        break;
+    }
+  };
+  useEffect(() => {
+    setLinkBaseRole(user?.roles[0], setLink);
+  }, [user]);
+
   if (!user) return <></>;
 
   return (
@@ -48,13 +65,7 @@ export default function Header() {
       className={`z-1000 ${classes.header}`}
       maw='100%'
     >
-      <Link
-        href={
-          user?.userId && user?.roles[0] == 'manager'
-            ? '/staff/dashboard/revenue'
-            : '/'
-        }
-      >
+      <Link href={link}>
         {/* //underline='never' */}
         <Group wrap='nowrap'>
           <Image
@@ -76,9 +87,10 @@ export default function Header() {
           </Text>
         </Group>
       </Link>
-      {((user.userId && user?.roles[0] != 'manager') || !user.userId) && (
-        <Search content='' />
-      )}
+      {((user.userId &&
+        user?.roles[0] != 'manager' &&
+        user?.roles[0] != 'staff') ||
+        !user.userId) && <Search content='' />}
 
       {user?.userId ? (
         <LoggedHeader user={user} setUser={setUser} />
@@ -86,20 +98,20 @@ export default function Header() {
         <Flex gap='1rem' align='center' className='hidden-mobile'>
           {/* <LanguagePicker /> */}
           <Link
-            href='/sign-up'
-            onClick={() => {
-              queryClient.clear();
-            }}
-          >
-            Đăng ký
-          </Link>
-          <Link
             href='/sign-in'
             onClick={() => {
               queryClient.clear();
             }}
           >
             Đăng nhập
+          </Link>
+          <Link
+            href='/sign-up'
+            onClick={() => {
+              queryClient.clear();
+            }}
+          >
+            Đăng ký
           </Link>
         </Flex>
       )}
