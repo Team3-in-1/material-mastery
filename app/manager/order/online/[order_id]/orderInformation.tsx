@@ -22,7 +22,7 @@ export default function OrderInformation({ data }: { data: Order | undefined }) 
                         <IconMapPinFilled />
                         <Text fw={700} >Thông tin giao hàng</Text>
                     </Group>
-                    <p>đéo biết nữa</p>
+                    <p>{data?.order_address.city}</p>
                 </Stack>
                 <Stack className='rounded-[0.5rem] border-[0.5px] px-[32px] py-[24px] self-stretch' gap='1rem'>
                     <Group c='turquoise' >

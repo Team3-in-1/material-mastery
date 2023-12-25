@@ -117,7 +117,9 @@ export interface Order {
   _id: string
   order_userId: string
   order_username: string
-  order_address: Object
+  order_address: {
+    city: string
+  }
   order_checkout: Order_Checkout
   order_products: Object[]
   order_status: string
