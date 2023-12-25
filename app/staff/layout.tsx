@@ -15,35 +15,35 @@ export default function StaffLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [notify, setNotify] = useState<any>(null);
-  const socketInitializer = () => {
-    socket = io(constant.SOCKET_URL);
+  // const [notify, setNotify] = useState<any>(null);
+  // const socketInitializer = () => {
+  //   socket = io(constant.SOCKET_URL);
 
-    socket.on('connect', () => {
-      console.log('connected');
-    });
+  //   socket.on('connect', () => {
+  //     console.log('connected');
+  //   });
 
-    socket.on('notificationChange', (notification) => {
-      console.log('Received notification change:', notification);
-      if (!notification) {
-        setNotify(1);
-      }
-    });
+  //   socket.on('notificationChange', (notification) => {
+  //     console.log('Received notification change:', notification);
+  //     if (!notification) {
+  //       setNotify(1);
+  //     }
+  //   });
 
-    socket.on('disconnect', () => {
-      console.log('disconnected');
-    });
-  };
-  useEffect(() => {
-    if (notify) {
-      toast.error('Hết hàng rồi');
-      setNotify(null);
-    }
-  }, [notify]);
+  //   socket.on('disconnect', () => {
+  //     console.log('disconnected');
+  //   });
+  // };
+  // useEffect(() => {
+  //   if (notify) {
+  //     toast.error('Hết hàng rồi');
+  //     setNotify(null);
+  //   }
+  // }, [notify]);
 
-  useEffect(() => {
-    socketInitializer();
-  }, []);
+  // useEffect(() => {
+  //   socketInitializer();
+  // }, []);
 
   return (
     <Group
