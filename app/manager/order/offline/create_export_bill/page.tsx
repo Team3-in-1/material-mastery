@@ -210,7 +210,7 @@ export default function CreateExportBillPage() {
                                         form.reset()
                                         setAddedProduct([])
                                     }}>Xóa phiếu</Button>
-                                    <Button type='submit'>Tạo phiếu</Button>
+                                    <Button className="bg-0-primary-color-6 text-white" type='submit'>Tạo phiếu</Button>
                                 </Button.Group>
                             </Group>
                         </Flex>

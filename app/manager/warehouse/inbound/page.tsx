@@ -46,7 +46,7 @@ export default function InboundPage() {
         <Stack w='100%' h='100%' py='1rem' px='2rem' justify='flex-start'>
             <Group justify="space-between">
                 <Title order={4}>Danh sách phiếu nhập kho</Title>
-                <Button onClick={() => { router.push(`${currentPath}/create_import_bill`) }}>Tạo phiếu</Button>
+                <Button className="bg-0-primary-color-6 text-white" onClick={() => { router.push(`${currentPath}/create_import_bill`) }}>Tạo phiếu</Button>
             </Group>
             {bills.isPending ? <div className='w-full h-[500px] flex justify-center items-center'>
                 <Loader type="dots" />

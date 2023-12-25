@@ -135,7 +135,7 @@ export default function ManageStaffPage() {
                 <Button variant='outline' onClick={() => {
                     form.reset()
                 }}>Xóa</Button>
-                <Button type='submit'>Tạo</Button>
+                <Button className='bg-0-primary-color-6 text-white' type='submit'>Tạo</Button>
             </Group>
         </div>
     </form>
@@ -144,7 +144,7 @@ export default function ManageStaffPage() {
         <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
             <Group justify='space-between'>
                 <Title order={4}>Quản lí tài khoản nhân viên</Title>
-                <Button onClick={open}>Tạo tài khoản mới</Button>
+                <Button className='bg-0-primary-color-6 text-white' onClick={open}>Tạo tài khoản mới</Button>
             </Group>
             {staffs.isPending || numberOfStaff.isPending || createAccountMutation.isPending ?
                 <div className='w-full h-[500px] flex justify-center items-center'>

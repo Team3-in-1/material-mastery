@@ -25,13 +25,13 @@ export default function DeliveryTimeline(
         <Group justify="center" align='flex-end' gap='64px'>
             <Timeline active={2} bulletSize={24} lineWidth={2} mb='1.6rem'>
                 <Timeline.Item bullet={<IconChecklist size={16} />} title="Tạo đơn">
-                    <Text c="gray.6" size='sm'>Tạo vào lúc {create_time}. <Text size='sm' component="span">Khách hàng: {customerName}</Text></Text>
+                    {/* <Text c="gray.6" size='sm'>Tạo vào lúc {create_time}. <Text size='sm' component="span">Khách hàng: {customerName}</Text></Text> */}
                 </Timeline.Item >
                 <Timeline.Item bullet={<IconCircleCheck size={16} />} title="Xác nhận">
-                    <Text c="gray.6" size='sm'>Xác nhận vào lúc {confirm_time}. <Text size='sm' component="span">Nhân viên: {staffName}</Text></Text>
+                    {/* <Text c="gray.6" size='sm'>Xác nhận vào lúc {confirm_time}. <Text size='sm' component="span">Nhân viên: {staffName}</Text></Text> */}
                 </Timeline.Item>
                 <Timeline.Item bullet={<IconTruckDelivery size={16} />} title="Đang giao">
-                    <Text c="gray.6" size='sm'>Xuất kho vào lúc {delivery_time}.</Text>
+                    {/* <Text c="gray.6" size='sm'>Xuất kho vào lúc {delivery_time}.</Text> */}
                 </Timeline.Item>
                 <Timeline.Item bullet={<IconChecks size={16} />} title="">
                 </Timeline.Item>

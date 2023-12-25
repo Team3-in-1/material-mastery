@@ -108,7 +108,7 @@ export default function CreateNewAccountPage() {
                                 <Button variant='outline' onClick={() => {
                                     form.reset()
                                 }}>Xóa</Button>
-                                <Button type='submit'>Tạo</Button>
+                                <Button className="bg-0-primary-color-6 text-white" type='submit'>Tạo</Button>
                             </Group>
                         </Flex>
                     </form>}

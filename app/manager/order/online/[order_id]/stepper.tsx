@@ -111,13 +111,13 @@ export default function OrderStepper({
                     <Divider my='sm' />
                     <Group gap='1rem' justify='center' pb='lg'>
                         <Button variant='outline' size='md' color='red'>Hủy đơn</Button>
-                        <Button size='md' onClick={() => handlers.open()}>Xác nhận</Button>
+                        <Button className="bg-0-primary-color-6 text-white" size='md' onClick={() => handlers.open()}>Xác nhận</Button>
                     </Group>
                     <Modal className='absolute z-[10000]' size='sm' opened={opened} onClose={() => handlers.close()} centered withCloseButton={false}>
                         <Text w='100%' size='lg' fw='700' ta='center' my='lg'>Xác nhận đơn hàng</Text>
                         <Group justify='center' mb='sm'>
                             <Button size='md' variant='outline' onClick={() => handlers.close()}>Hủy</Button>
-                            <Button size='md' onClick={() => handleConfirmOrder(data?._id)}>Xác nhận</Button>
+                            <Button className="bg-0-primary-color-6 text-white" size='md' onClick={() => handleConfirmOrder(data?._id)}>Xác nhận</Button>
                         </Group>
                     </Modal>
                 </Stack>
@@ -128,13 +128,13 @@ export default function OrderStepper({
                     <Divider my='sm' />
                     <Group gap='1rem' justify='center' pb='lg'>
                         {/* <Button variant='outline' size='md' color='red'>Hủy đơn</Button> */}
-                        <Button size='md' onClick={() => handlers.open()}>Giao hàng</Button>
+                        <Button className="bg-0-primary-color-6 text-white" size='md' onClick={() => handlers.open()}>Giao hàng</Button>
                     </Group>
                     <Modal className='absolute z-[10000]' size='sm' opened={opened} onClose={() => handlers.close()} centered withCloseButton={false}>
                         <Text w='100%' size='lg' fw='700' ta='center' my='lg'>Xác nhận giao hàng</Text>
                         <Group justify='center' mb='sm'>
                             <Button size='md' variant='outline' onClick={() => handlers.close()}>Hủy</Button>
-                            <Button size='md' onClick={() => handleConfirmDelivery(data?._id)}>Xác nhận</Button>
+                            <Button className="bg-0-primary-color-6 text-white" size='md' onClick={() => handleConfirmDelivery(data?._id)}>Xác nhận</Button>
                         </Group>
                     </Modal>
                 </Stack>
@@ -148,14 +148,14 @@ export default function OrderStepper({
                         <Text w='100%' size='lg' fw='700' ta='center' my='lg'>Xác nhận giao hàng thành công</Text>
                         <Group justify='center' mb='sm'>
                             <Button size='md' variant='outline' onClick={() => handlers.close()}>Hủy</Button>
-                            <Button size='md' onClick={() => handleSuccessfulDelivery(data?._id)}>Xác nhận </Button>
+                            <Button className="bg-0-primary-color-6 text-white" size='md' onClick={() => handleSuccessfulDelivery(data?._id)}>Xác nhận </Button>
                         </Group>
                     </Modal>
                     <Modal className='absolute z-[10000]' size='sm' opened={failOpened} onClose={() => failedHandlers.close()} centered withCloseButton={false}>
                         <Text w='100%' size='lg' fw='700' ta='center' my='lg'>Xác nhận giao hàng thất bại</Text>
                         <Group justify='center' mb='sm'>
                             <Button size='md' variant='outline' onClick={() => failedHandlers.close()}>Hủy</Button>
-                            <Button size='md' onClick={() => handleFailedDelivery(data?._id)}>Xác nhận</Button>
+                            <Button className="bg-0-primary-color-6 text-white" size='md' onClick={() => handleFailedDelivery(data?._id)}>Xác nhận</Button>
                         </Group>
                     </Modal>
                 </Stack>
