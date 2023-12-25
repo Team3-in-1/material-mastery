@@ -427,11 +427,7 @@ const Payment = () => {
                   </Group>
                 </Grid.Col>
                 <Grid.Col span={3}>
-                  <Group
-                    justify='flex-start'
-                    align='center'
-                    className='mt-[10px]'
-                  >
+                  <Group justify='center' align='center' className='mt-[10px]'>
                     <Text
                       color='#252525'
                       lineClamp={1}
