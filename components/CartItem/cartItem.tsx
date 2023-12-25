@@ -121,6 +121,7 @@ const CartItem = ({
               component={NextImage}
               width={30}
               height={30}
+              className=' w-auto h-[30px]'
               src={data.product_thumb || GachImg}
             />
           </Group>
