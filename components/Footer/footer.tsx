@@ -72,7 +72,7 @@ function LinkGroupWrapper({ title, child }: LinkGroupProps) {
 export default function Footer() {
 
   return (
-    <Container className={`${classes.container} hidden-mobile`}>
+    <Container className={`${classes.container}`}>
       <Group justify='center' align='center' gap='8rem' py='4rem' bg='white' maw='100%' pos='fixed' bottom='0' right='0' left='0'>
         <Stack gap='3rem' align='center'>
           <Image component={NextImage} src={logo} alt='Logo' w='4rem' h='4rem' fit='fill'></Image>
