@@ -242,27 +242,30 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
               {detail.data.order_products.map((product: any, index: number) => {
                 return (
                   <>
-                    <Grid key={index} className='h-[50px]'>
-                      <Grid.Col
-                        className='flex justify-center items-center'
-                        span={2}
-                      >
-                        <Image
-                          src={products[index]?.product_thumb}
-                          // className='h-[30px] w-auto'
-                          alt='product'
-                          height={35}
-                          width={35}
-                          component={NextImage}
-                        />
+                    <Grid key={index}>
+                      <Grid.Col span={2}>
+                        <Group justify='center' align='center'>
+                          <Image
+                            src={products[index]?.product_thumb}
+                            // className='h-[30px] w-auto'
+                            className=' w-auto h-[35px]'
+                            alt='product'
+                            height={35}
+                            width={35}
+                            component={NextImage}
+                          />
+                        </Group>
                       </Grid.Col>
-                      <Grid.Col
-                        className='flex justify-center items-center  w-full h-full'
-                        span={3}
-                      >
-                        <Text className='text-[15px] text-ellipsis h-full'>
-                          {products[index]?.product_name}
-                        </Text>
+                      <Grid.Col span={3}>
+                        <Group
+                          justify='center'
+                          align='center'
+                          className='mt-[10px]'
+                        >
+                          <Text className='text-[15px] text-ellipsis h-full'>
+                            {products[index]?.product_name}
+                          </Text>
+                        </Group>
                       </Grid.Col>
                       <Grid.Col
                         className='flex justify-center items-center'

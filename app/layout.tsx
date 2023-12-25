@@ -43,7 +43,6 @@ export default function RootLayout({
               <Header />
               <Suspense fallback={<Loading />}>{children}</Suspense>
               <Footer />
-              <BottomNavBar />
             </TanStackProvider>
           </MantineProvider>
         </Providers>

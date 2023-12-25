@@ -118,17 +118,17 @@ export const PCard = ({ data }: PCardProps) => {
         </div>
 
         <Group justify='space-between'>
-          <Stack gap={0}>
+          <Stack gap={3}>
             <Group
               gap={0}
               align='start'
               justify='flex-start'
               className=' items-start'
             >
-              <Text size='16px' className='text-[1rem]'>
+              <Text className='text-[1rem]'>
                 {formatMoney(data.product_price)}
               </Text>
-              <Text size='12px' className=' text-[12px]'>đ</Text>
+              <Text className=' text-[12px]'>đ</Text>
             </Group>
             <Group
               gap={0}
@@ -139,12 +139,20 @@ export const PCard = ({ data }: PCardProps) => {
             >
               {discount !== 0 ? (
                 <>
-                  <Text td='line-through' color='rgb(248 113 113)'
-                    size='10px' className='text-[14px] text-red-400'>
+                  <Text
+                    td='line-through'
+                    color='rgb(248 113 113)'
+                    size='14px'
+                    className='text-[14px] text-red-400'
+                  >
                     {formatMoney(calPriceBefore(discount, data.product_price))}
                   </Text>
-                  <Text td='line-through' color='rgb(248 113 113)'
-                    size='10px' className=' text-[10px] text-red-400'>
+                  <Text
+                    td='line-through'
+                    color='rgb(248 113 113)'
+                    size='10px'
+                    className=' text-[10px] text-red-400'
+                  >
                     đ
                   </Text>
                 </>

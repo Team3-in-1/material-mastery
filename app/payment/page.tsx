@@ -422,16 +422,13 @@ const Payment = () => {
                       component={NImage}
                       width={50}
                       height={50}
+                      className=' w-auto h-[50px]'
                       // className=' h-[106px] md:h-[106px]'
                     />
                   </Group>
                 </Grid.Col>
                 <Grid.Col span={3}>
-                  <Group
-                    justify='flex-start'
-                    align='center'
-                    className='mt-[10px]'
-                  >
+                  <Group justify='center' align='center' className='mt-[10px]'>
                     <Text
                       color='#252525'
                       lineClamp={1}
