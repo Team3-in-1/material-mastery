@@ -422,6 +422,7 @@ const Payment = () => {
                       component={NImage}
                       width={50}
                       height={50}
+                      className=' w-auto h-[50px]'
                       // className=' h-[106px] md:h-[106px]'
                     />
                   </Group>
