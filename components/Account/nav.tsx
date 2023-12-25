@@ -22,7 +22,6 @@ const AccountNav = ({ namePage }: { namePage: string }) => {
       h={'100%'}
       pt={90}
       justify='flex-start'
-      //
       bg={'white'}
       className=' min-h-screen rounded-md'
     >

@@ -9,8 +9,12 @@ import {
   Stack,
   Divider,
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { chartData as DayChart, statsData as DayStats } from './day-data';
+import { useContext, useEffect, useState } from 'react';
+import {
+  chartData as DayChart,
+  statsData as DayStats,
+  getStatisDayData,
+} from './day-data';
 import {
   chartData as WeekChart,
   statsData as WeekStats,
@@ -20,6 +24,7 @@ import {
   chartData as MonthChart,
   statsData as MonthStats,
   segmentData as MonthSegment,
+  getStatisMonthData,
 } from './month-data';
 import {
   chartData as QuarterChart,
@@ -30,6 +35,7 @@ import {
   chartData as YearChart,
   statsData as YearStats,
   segmentData as YearSegment,
+  getStatisYearData,
 } from './year-data';
 import ReportTable from '@/components/ReportTable/reportTable';
 import StatisticChart from '@/components/StatisticChart/statisticChart';
@@ -43,6 +49,8 @@ import {
 import dynamic from 'next/dynamic';
 import StatsticCard from '@/components/StatisticChart/StatisticCard/statsticCard';
 import { useRouter } from 'next/navigation';
+import UserContext from '@/contexts/UserContext';
+import { calPer } from '@/utils/chart';
 
 const tabData = [
   {
@@ -81,8 +89,78 @@ const tabData = [
   },
 ];
 
+interface ResponseInterface {
+  revenue: number;
+  profit: number;
+}
+interface ChartInterface {}
+interface StatsInterface {
+  selectTime: ResponseInterface;
+  preTime: ResponseInterface;
+}
+interface SegmentInterface {}
+
+const TEMPLATE_STATS: StatsInterface[] = [
+  {
+    selectTime: {
+      revenue: 0,
+      profit: 0,
+    },
+    preTime: {
+      revenue: 0,
+      profit: 0,
+    },
+  },
+  {
+    selectTime: {
+      revenue: 0,
+      profit: 0,
+    },
+    preTime: {
+      revenue: 0,
+      profit: 0,
+    },
+  },
+  {
+    selectTime: {
+      revenue: 0,
+      profit: 0,
+    },
+    preTime: {
+      revenue: 0,
+      profit: 0,
+    },
+  },
+  {
+    selectTime: {
+      revenue: 0,
+      profit: 0,
+    },
+    preTime: {
+      revenue: 0,
+      profit: 0,
+    },
+  },
+  {
+    selectTime: {
+      revenue: 0,
+      profit: 0,
+    },
+    preTime: {
+      revenue: 0,
+      profit: 0,
+    },
+  },
+];
+
 export default function RevenuePage() {
   const router = useRouter();
+  const { user } = useContext(UserContext);
+  const [selectedDay, setSelectedDay] = useState<Date>(new Date());
+  const [chart, setChart] = useState<ChartInterface[]>();
+  const [stats, setStats] = useState<StatsInterface[]>(TEMPLATE_STATS);
+  const [segment, setSegment] = useState<SegmentInterface[]>();
+
   // const [day, setDay] = useState<Date | null>(new Date());
   // const [week, setWeek] = useState<[Date | null, Date | null]>([
   //   startOfWeek(new Date()),
@@ -94,12 +172,38 @@ export default function RevenuePage() {
   //   endOfQuarter(new Date()),
   // ]);
   // const [year, setYear] = useState<Date | null>(new Date());
+
+  useEffect(() => {
+    if (user) {
+      getStatisDayData(user, selectedDay).then((res: any) => {
+        setStats((prevData: StatsInterface[]) => {
+          prevData[0].selectTime = res.selectedDayData;
+          prevData[0].preTime = res.preDayData;
+          return [...prevData];
+        });
+      });
+      getStatisMonthData(user, selectedDay).then((res: any) => {
+        setStats((prevData: StatsInterface[]) => {
+          prevData[2].selectTime = res.selectedDayData;
+          prevData[2].preTime = res.preDayData;
+          return [...prevData];
+        });
+      });
+      getStatisYearData(user, selectedDay).then((res: any) => {
+        setStats((prevData: StatsInterface[]) => {
+          prevData[4].selectTime = res.selectedDayData;
+          prevData[4].preTime = res.preDayData;
+          return [...prevData];
+        });
+      });
+    }
+  }, [user, selectedDay]);
   useEffect(() => {
     router.prefetch('/staff/dashboard/in-outbound');
     router.prefetch('/staff/warehouse');
     router.prefetch('/staff/order/online');
     router.prefetch('/staff/order/offline');
-  }, [])
+  }, []);
 
   const tabList = tabData.map((item) => (
     <Tabs.Tab key={item.value} value={item.value}>
@@ -107,21 +211,39 @@ export default function RevenuePage() {
     </Tabs.Tab>
   ));
 
-  const tabPanels = tabData.map((i) => (
+  const tabPanels = tabData.map((i, index) => (
     <Tabs.Panel
       key={i.value}
       value={i.value}
       className=' p-[12px] flex flex-col justify-between gap-[10px]'
     >
-      <CalendarInput type={i.value} />
+      <CalendarInput
+        type={i.value}
+        time={selectedDay}
+        setTime={setSelectedDay}
+      />
       <div className='rounded-[8px] border-[0.5px] p-[16px] flex gap-[10px] justify-around items-center'>
         <Stack gap='1rem'>
-          {i.stats?.map((i) => (
+          {i.stats?.map((i, zIndex) => (
             <StatsticCard
               key={i.label}
               label={i.label}
-              number={i.number}
-              per={i.per}
+              number={
+                zIndex === 0
+                  ? stats[index].selectTime.revenue
+                  : stats[index].selectTime.profit
+              }
+              per={
+                zIndex === 0
+                  ? calPer(
+                      stats[index].selectTime.revenue,
+                      stats[index].preTime.revenue
+                    )
+                  : calPer(
+                      stats[index].selectTime.profit,
+                      stats[index].preTime.profit
+                    )
+              }
               desc={i.desc}
             />
           ))}
@@ -158,7 +280,6 @@ export default function RevenuePage() {
       </Tabs>
     </ScrollArea>
   );
-
 }
 
 // export default dynamic(() => Promise.resolve(RevenuePage), { ssr: false });
