@@ -7,6 +7,7 @@ import {
   ActionIcon,
   Image,
   NumberInput,
+  Group,
 } from '@mantine/core';
 
 import { IconTrash } from '@tabler/icons-react';
@@ -113,16 +114,29 @@ const CartItem = ({
             onChange={(event) => {}}
           />
         </Grid.Col>
-        <Grid.Col span={4} className='flex items-center gap-[1rem] '>
-          <Image
-            alt='product'
-            component={NextImage}
-            width={30}
-            height={30}
-            src={data.product_thumb || GachImg}
-          />
-          <Text className='text-[0.9rem]'>{data.product_name}</Text>
+        <Grid.Col span={1} className='flex items-center gap-[1rem] '>
+          <Group justify='center' align='center'>
+            <Image
+              alt='product'
+              component={NextImage}
+              width={30}
+              height={30}
+              src={data.product_thumb || GachImg}
+            />
+          </Group>
         </Grid.Col>
+        <Grid.Col span={3} className='flex items-center gap-[1rem] '>
+          <Group justify='center' align='center' className='mt-[10px]'>
+            <Text
+              color='#252525'
+              lineClamp={1}
+              className=' text-ellipsis text-[0.9rem]'
+            >
+              {data.product_name}
+            </Text>
+          </Group>
+        </Grid.Col>
+
         <Grid.Col span={1} className='flex items-center'>
           <Text className='text-[0.8rem]'>
             {formatMoney(data.product_price)}
