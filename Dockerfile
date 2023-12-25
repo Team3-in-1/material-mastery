@@ -1,4 +1,4 @@
-FROM node:current-alpine3.19 as builder
+FROM node:21.5.0-alpine3.19 as builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -6,7 +6,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:current-alpine3.19 as runner
+FROM node:21.5.0-alpine3.19 as runner
 
 WORKDIR /app
 
