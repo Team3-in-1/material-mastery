@@ -1,14 +1,3 @@
-# FROM node:current-alpine3.19
-
-# WORKDIR /app
-
-# COPY . .
-
-# RUN npm i --production
-
-# RUN npm run build
-
-# ENTRYPOINT npm run start
 FROM node:current-alpine3.19 as builder
 WORKDIR /app
 
