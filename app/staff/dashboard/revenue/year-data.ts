@@ -1,5 +1,6 @@
 import queryClient from "@/helpers/client";
 import StatisticsService from "@/services/statisticsService";
+import { DEFAULT_RES_STATISTICS } from "@/utils/chart";
 
 const labels = [
   'Thứ 2',
@@ -14,9 +15,9 @@ const labels = [
 export const getStatisYearData = async(user: any, day: Date = new Date()) => {
     const selectedDay = `1/1/${day.getFullYear()}`;
     const preDay = `1/1/${day.getFullYear()-1}`;
-    const selectedDayData = await getData(user, selectedDay);
-    const preDayData = await getData(user, preDay);
-    return {selectedDayData, preDayData};    
+    const selectedData = await getData(user, selectedDay);
+    const preData = await getData(user, preDay);
+        return selectedData && preData ? {selectedData, preData} : DEFAULT_RES_STATISTICS;    
 }
 
 const getData = async(user: any, selectedDay: Date | string) => {

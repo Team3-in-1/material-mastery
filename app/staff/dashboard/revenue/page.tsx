@@ -50,7 +50,12 @@ import dynamic from 'next/dynamic';
 import StatsticCard from '@/components/StatisticChart/StatisticCard/statsticCard';
 import { useRouter } from 'next/navigation';
 import UserContext from '@/contexts/UserContext';
-import { calPer } from '@/utils/chart';
+import { DEFAULT_STATS, calPer } from '@/utils/chart';
+import {
+  ChartInterface,
+  SegmentInterface,
+  StatsInterface,
+} from '@/utils/response';
 
 const tabData = [
   {
@@ -89,76 +94,20 @@ const tabData = [
   },
 ];
 
-interface ResponseInterface {
-  revenue: number;
-  profit: number;
-}
-interface ChartInterface {}
-interface StatsInterface {
-  selectTime: ResponseInterface;
-  preTime: ResponseInterface;
-}
-interface SegmentInterface {}
-
-const TEMPLATE_STATS: StatsInterface[] = [
-  {
-    selectTime: {
-      revenue: 0,
-      profit: 0,
-    },
-    preTime: {
-      revenue: 0,
-      profit: 0,
-    },
-  },
-  {
-    selectTime: {
-      revenue: 0,
-      profit: 0,
-    },
-    preTime: {
-      revenue: 0,
-      profit: 0,
-    },
-  },
-  {
-    selectTime: {
-      revenue: 0,
-      profit: 0,
-    },
-    preTime: {
-      revenue: 0,
-      profit: 0,
-    },
-  },
-  {
-    selectTime: {
-      revenue: 0,
-      profit: 0,
-    },
-    preTime: {
-      revenue: 0,
-      profit: 0,
-    },
-  },
-  {
-    selectTime: {
-      revenue: 0,
-      profit: 0,
-    },
-    preTime: {
-      revenue: 0,
-      profit: 0,
-    },
-  },
-];
+const STATS_INDEX = {
+  day: 0,
+  week: 1,
+  month: 2,
+  quarter: 3,
+  year: 4,
+};
 
 export default function RevenuePage() {
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
   const [chart, setChart] = useState<ChartInterface[]>();
-  const [stats, setStats] = useState<StatsInterface[]>(TEMPLATE_STATS);
+  const [stats, setStats] = useState<StatsInterface[]>(DEFAULT_STATS);
   const [segment, setSegment] = useState<SegmentInterface[]>();
 
   // const [day, setDay] = useState<Date | null>(new Date());
@@ -173,29 +122,35 @@ export default function RevenuePage() {
   // ]);
   // const [year, setYear] = useState<Date | null>(new Date());
 
+  const getData = (
+    fn: Function,
+    user: UserContext,
+    selectedDay: Date,
+    index: number,
+    setStats: Function
+  ) => {
+    fn(user, selectedDay).then((res: any) => {
+      if (res && res.preData && res.selectedData) {
+        setStats((prevData: StatsInterface[]) => {
+          prevData[index].selectTime = res.selectedData;
+          prevData[index].preTime = res.preData;
+          return [...prevData];
+        });
+      }
+    });
+  };
+
   useEffect(() => {
     if (user) {
-      getStatisDayData(user, selectedDay).then((res: any) => {
-        setStats((prevData: StatsInterface[]) => {
-          prevData[0].selectTime = res.selectedDayData;
-          prevData[0].preTime = res.preDayData;
-          return [...prevData];
-        });
-      });
-      getStatisMonthData(user, selectedDay).then((res: any) => {
-        setStats((prevData: StatsInterface[]) => {
-          prevData[2].selectTime = res.selectedDayData;
-          prevData[2].preTime = res.preDayData;
-          return [...prevData];
-        });
-      });
-      getStatisYearData(user, selectedDay).then((res: any) => {
-        setStats((prevData: StatsInterface[]) => {
-          prevData[4].selectTime = res.selectedDayData;
-          prevData[4].preTime = res.preDayData;
-          return [...prevData];
-        });
-      });
+      getData(getStatisDayData, user, selectedDay, STATS_INDEX.day, setStats);
+      getData(
+        getStatisMonthData,
+        user,
+        selectedDay,
+        STATS_INDEX.month,
+        setStats
+      );
+      getData(getStatisYearData, user, selectedDay, STATS_INDEX.year, setStats);
     }
   }, [user, selectedDay]);
   useEffect(() => {

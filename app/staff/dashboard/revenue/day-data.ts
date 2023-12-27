@@ -1,12 +1,12 @@
 import queryClient from "@/helpers/client"
 import StatisticsService from "@/services/statisticsService";
-import { calPreDay } from "@/utils/chart";
+import { DEFAULT_RES_STATISTICS, calPreDay } from "@/utils/chart";
 
 export const getStatisDayData = async(user: any, selectedDay: Date = new Date()) => {
     const preDay = calPreDay(selectedDay);
-    const selectedDayData = await getData(user, selectedDay);
-    const preDayData = await getData(user, preDay);
-    return {selectedDayData, preDayData};    
+    const selectedData = await getData(user, selectedDay);
+    const preData = await getData(user, preDay);
+    return selectedData && preData ? {selectedData, preData} : DEFAULT_RES_STATISTICS;    
 }
 
 const getChartData = () => {

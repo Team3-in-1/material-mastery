@@ -72,7 +72,10 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
   );
 
   const people: any = comments.data;
-  const number = '(' + (people?.length || 0) + ' đánh giá)';
+  const number =
+    '(' +
+    (people?.length && people?.length > 0 ? people?.length : 1) +
+    ' đánh giá)';
 
   const data = [
     { id: 0, label: 'Tất cả' },
