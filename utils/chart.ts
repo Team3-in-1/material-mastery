@@ -1,3 +1,5 @@
+import { StatsInterface } from "./response";
+
 export const calPreDay = (selectedDay: Date = new Date() ): string => {
     const currentDate = selectedDay.getDate();
     const currentMonth = selectedDay.getMonth() + 1;
@@ -33,3 +35,15 @@ export const getDaysInMonth = (m: number = 1, y: number = 2023) => {
     return m===2 ? y & 3 || !(y%25) && y & 15 ? 28 : 29 : 30 + (m+(m>>3)&1);
 }
 
+export const DEFAULT_RES_STATISTICS: StatsInterface = {
+    selectTime: {
+      revenue: 0,
+      profit: 0,
+    },
+    preTime: {
+      revenue: 0,
+      profit: 0,
+    },
+}
+
+export const DEFAULT_STATS: StatsInterface[] = [ DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS];

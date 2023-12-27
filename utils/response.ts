@@ -174,3 +174,14 @@ export interface NumOfBill {
   import: number
   export: number
 }
+
+export interface RevenueResInterface {
+  revenue: number;
+  profit: number;
+}
+export interface ChartInterface {}
+export interface StatsInterface {
+  selectTime: RevenueResInterface;
+  preTime: RevenueResInterface;
+}
+export interface SegmentInterface {}
