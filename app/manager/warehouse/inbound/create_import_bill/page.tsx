@@ -20,6 +20,7 @@ import Loading from "./loading";
 import dayjs from "dayjs";
 import { productService } from "@/services/productService";
 import { formatMoney } from "@/utils/string";
+import { from } from "rxjs";
 
 
 function CreateNewProductModal({
@@ -244,11 +245,15 @@ export default function CreateImportBillPage() {
             name: '',
             id: '',
             tax_id: '',
+            from: '',
+            to: '',
         },
         validate: {
             name: (value) => (value.length === 0 ? 'Vui lòng nhập tên nhà cung cấp!' : null),
             id: (value) => (value.length === 0 ? 'Vui lòng nhập mã nhà cung cấp!' : null),
             tax_id: (value) => (value.length === 0 ? 'Vui lòng nhập địa chỉ!' : null),
+            from: (value) => (value.length === 0 ? 'Vui lòng nhập địa chỉ kho đi!' : null),
+            to: (value) => (value.length === 0 ? 'Vui lòng nhập địa chỉ kho nhận!' : null),
         },
     });
 
@@ -258,8 +263,8 @@ export default function CreateImportBillPage() {
             toast.error('Chưa chọn sản phẩm nào!')
         else {
             const BillAddress: Bill_Address = {
-                from: 'ncc',
-                to: 'mm'
+                from: formData.from,
+                to: formData.to,
             }
             const BillPayment = {
                 information: 'Đã thanh toán'
@@ -293,8 +298,6 @@ export default function CreateImportBillPage() {
     }
 
 
-
-
     return (
         <ScrollArea className='h-full w-full z-[0]' >
             <div className='flex flex-col gap-[24px] py-[16px] px-[16px] h-full w-full '>
@@ -323,6 +326,18 @@ export default function CreateImportBillPage() {
                                             withAsterisk
                                             type='number'
                                             {...form.getInputProps('tax_id')}
+                                        />
+                                        <TextInput
+                                            label="Địa chỉ kho đi"
+                                            placeholder="VD: Quận 7"
+                                            withAsterisk
+                                            {...form.getInputProps('from')}
+                                        />
+                                        <TextInput
+                                            label="Địa chỉ kho nhận"
+                                            placeholder="VD: Thủ Đức"
+                                            withAsterisk
+                                            {...form.getInputProps('to')}
                                         />
                                     </Stack>
                                     <Group>

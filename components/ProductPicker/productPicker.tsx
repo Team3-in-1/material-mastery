@@ -224,7 +224,9 @@ export default function ProductPicker({
                             </ScrollArea>
                             :
                             <ScrollArea h='450'>
-                                {productByCategory.isPending ? <Loader /> :
+                                {productByCategory.isPending ? <div className="flex justify-center">
+                                    <Loader />
+                                </div> :
                                     <>
                                         <BackButton fn={() => setCategoryId('')} />
                                         {productByCategory.data?.length !== 0 ?

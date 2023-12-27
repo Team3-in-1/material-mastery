@@ -34,6 +34,7 @@ export default function ManagerLayout({
       console.log('disconnected');
     });
   };
+
   useEffect(() => {
     if (notify) {
       //toast.error('Hết hàng rồi');
@@ -42,7 +43,7 @@ export default function ManagerLayout({
   }, [notify]);
 
   useEffect(() => {
-    socketInitializer();
+    socketInitializer()
   }, []);
 
   return (

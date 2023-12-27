@@ -14,21 +14,15 @@ type tableType = {
     finalPrice: number;
 }[]
 
-
-
 const tableHeadList = [
     'Mã phiếu', 'Ngày tạo', 'Khách hàng', 'Thanh toán', 'Tổng tiền'
 ]
-
-
 
 
 export default function ExportBillTable({ bills }: { bills: Bill_Export[] | undefined }) {
 
     const currentPath = usePathname()
     const router = useRouter()
-
-
 
     const tableHead = tableHeadList.map(i => (
         <Table.Th key={i}>{i}</Table.Th>
@@ -49,6 +43,7 @@ export default function ExportBillTable({ bills }: { bills: Bill_Export[] | unde
         </Table.Tr>
 
     ))
+    
     return (
         <Table stickyHeader stickyHeaderOffset={60} highlightOnHover highlightOnHoverColor='turquoise.0' verticalSpacing="sm">
             <Table.Thead>

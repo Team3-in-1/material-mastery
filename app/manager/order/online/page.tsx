@@ -27,7 +27,7 @@ const shipmentState = [
     'Đã giao',
     'Giao thất bại'
 ]
-const shipmentStatusMapping = {
+const filterMapping = {
     'Tất cả': '',
     'Chờ xác nhận': 'pending',
     'Chuẩn bị hàng': 'confirmed',
@@ -35,33 +35,26 @@ const shipmentStatusMapping = {
     'Đã giao': 'shipped',
     'Đã hủy': 'cancelled',
     'Giao thất bại': 'failed',
-}
-
-const paymentStatusMapping = {
-    'Tất cả': '',
     'Chưa thanh toán': 'pending',
     'Đã thanh toán': 'paid'
 }
-
-
-
 
 const comboboxStyles: ComboboxProps = { transitionProps: { transition: 'pop', duration: 200 }, shadow: 'md' }
 export default function OnlineOrderSegment() {
     const [activePage, setPage] = useState(1);
     // filter 
     const [date, setDate] = useState<string | null>(dates[0])
-    const [paymentFilter, setPaymentFilter] = useState<string | null>(paymentState[0])
-    const [shipmentFilter, setShipmentFilter] = useState<string | null>(shipmentState[0])
+    const [filter, setFilter] = useState<string | null>('')
     const { user } = useContext(UserContext);
     const orders = useQuery({
-        queryKey: ['orders', activePage, shipmentStatusMapping[shipmentFilter as keyof typeof shipmentStatusMapping]],
+        queryKey: ['orders', activePage, filterMapping[filter as keyof typeof filterMapping]],
         queryFn: () => {
             const orderService = new OrderService(user);
             return orderService.getAllOrder(
                 10,
                 activePage,
-                shipmentStatusMapping[shipmentFilter as keyof typeof shipmentStatusMapping]);
+                filterMapping[filter as keyof typeof filterMapping]
+            )
         },
         enabled: !!user,
     });
@@ -75,19 +68,8 @@ export default function OnlineOrderSegment() {
         enabled: !!user,
     });
 
-
-
-    // const handleFilter = (data: any) => {
-    //     return data.filter((item: any) => {
-    //         if (paymentFilter === paymentState[0])
-    //             return true
-    //         else
-    //             return item.order_payment.status === paymentStatusMapping[paymentFilter as keyof typeof paymentStatusMapping]
-    //     })
-    // }
     const calPages = (num: any) => {
-        let total: number
-        switch (shipmentFilter) {
+        switch (filter) {
             case shipmentState[0]:
                 return Math.ceil(num.pending + num.confirmed + num.cancelled + num.shipping + num.shipped + num.failed / 10)
             case shipmentState[1]:
@@ -102,6 +84,10 @@ export default function OnlineOrderSegment() {
                 return Math.ceil(num.shipped / 10)
             case shipmentState[6]:
                 return Math.ceil(num.failed / 10)
+            case shipmentState[7]:
+                return Math.ceil(num.pending / 10)
+            case shipmentState[8]:
+                return Math.ceil(num.paid / 10)
             default:
                 break
         }
@@ -127,16 +113,16 @@ export default function OnlineOrderSegment() {
                         w='fit-content'
                         label='Trạng thái thanh toán'
                         data={paymentState}
-                        value={paymentFilter}
-                        onChange={setPaymentFilter}
+                        value={filter}
+                        onChange={setFilter}
                         comboboxProps={comboboxStyles}
                     />
                     <Select
                         w='fit-content'
                         label='Trạng thái giao hàng'
                         data={shipmentState}
-                        value={shipmentFilter}
-                        onChange={setShipmentFilter}
+                        value={filter}
+                        onChange={setFilter}
                         comboboxProps={comboboxStyles}
                     />
                 </Fieldset>
