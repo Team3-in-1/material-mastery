@@ -29,8 +29,8 @@ export function SignInForm() {
       password: '',
     },
     validate: {
-      // userInfo: (value) => checkNameFormat(value),
-      // password: (value) => checkPasswordFormat(value),
+      userInfo: (value) => checkNameFormat(value),
+      password: (value) => checkPasswordFormat(value),
     },
   });
 
