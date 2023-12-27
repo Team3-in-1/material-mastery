@@ -113,7 +113,7 @@ export default function RevenuePage() {
       value={i.value}
       className=' p-[12px] flex flex-col justify-between gap-[10px]'
     >
-      <CalendarInput type={i.value} />
+      {/* <CalendarInput type={i.value} /> */}
       <div className='rounded-[8px] border-[0.5px] p-[16px] flex gap-[10px] justify-around items-center'>
         <Stack gap='1rem'>
           {i.stats?.map((i) => (
