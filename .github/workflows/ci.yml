@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Stop container and delete image
+      run: docker stop material-mastery || true && docker rm -f material-mastery || true && docker rmi -f material-mastery || true
+    - name: Build image
+      run: docker build -t material-mastery .
+    - name: Run container
+      run: docker run -d -p 80:3000 --name material-mastery material-mastery
