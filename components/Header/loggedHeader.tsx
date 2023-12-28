@@ -35,14 +35,21 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
   const router = useRouter();
   const cartFromServer = useQuery({
     queryKey: ['cart'],
-    queryFn: () => {
+    queryFn: async () => {
       const cartService = new CartService(user);
-      return cartService.getCart();
+      const res = await cartService.getCart();
+      if (res === 400) {
+        onClickFunction.signOut();
+      }
+      return typeof res === 'number'
+        ? {
+            cart_products: [],
+          }
+        : res;
     },
-    enabled:
-      !!user.userId && user?.roles[0] != 'manager' && user?.roles[0] != 'staff',
+    enabled: !!user.userId,
     //staleTime: Infinity,
-    retry: 5,
+    // retry: 5,
     gcTime: 0,
   });
 
@@ -66,9 +73,9 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
   const handleOnClickOnMenu = (type: string) => {
     return onClickFunction[type]();
   };
-  if (cartFromServer.failureCount == 5 && user) {
-    onClickFunction.signOut();
-  }
+  // if (cartFromServer.failureCount == 5 && user) {
+  //   onClickFunction.signOut();
+  // }
 
   return (
     <Flex gap='1rem' align='center'>
@@ -135,4 +142,4 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
   );
 };
 
-export default dynamic(() => Promise.resolve(LoggedHeader), { ssr: false });
+export default LoggedHeader;

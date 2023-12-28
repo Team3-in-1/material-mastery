@@ -17,12 +17,12 @@ class CartService {
                 'authorization': this.currentUser.accessToken,
         }
     }
-    async getCart(): Promise<CartInterface> {
+    async getCart(): Promise<CartInterface | number> {
         console.log('getting cart')
         return await axios.get(`${constant.BASE_URL}/cart`, {
             headers: this.headers})
         .then(res=> res.data.metadata)
-        .catch(error => {throw new Error(error.response.data.message)})
+        .catch(error => error.response.status)
     }
 
     async addProduct(productId: string, quantity: number | string): Promise<any>{
