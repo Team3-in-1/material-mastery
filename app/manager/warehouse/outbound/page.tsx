@@ -1,16 +1,14 @@
 'use client'
 import UserContext from "@/contexts/UserContext";
-import queryClient from "@/helpers/client";
 import BillService from "@/services/billService";
-import { Button, Group, Loader, Pagination, Skeleton, Stack, Title } from "@mantine/core";
+import { Button, Group, Loader, Pagination, Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import ImportBillTable from "./importBillTable";
+import ExportBillTable from "./exportBillTable";
 
 
-export default function InboundPage() {
+export default function OfflineOrderSegment() {
 
     // some inner constant var
     // --start--
@@ -22,10 +20,10 @@ export default function InboundPage() {
     const { user } = useContext(UserContext)
     const [activePage, setPage] = useState(1)
     const bills = useQuery({
-        queryKey: ['inbound_bills', activePage],
+        queryKey: ['outbound_bills', activePage],
         queryFn: () => {
             const billService = new BillService(user)
-            return billService.getAllImportBill(numOfBillInDisplay, activePage)
+            return billService.getAllExportBill(numOfBillInDisplay, activePage)
         },
         enabled: !!user,
     })
@@ -45,14 +43,14 @@ export default function InboundPage() {
     return (
         <Stack w='100%' h='100%' py='1rem' px='2rem' justify='flex-start'>
             <Group justify="space-between">
-                <Title order={4}>Danh sách phiếu nhập kho</Title>
-                <Button className="bg-0-primary-color-6 text-white" onClick={() => { router.push(`${currentPath}/create_import_bill`) }}>Tạo phiếu</Button>
+                <Title order={4}>Danh sách phiếu xuất kho</Title>
+                <Button className='bg-0-primary-color-6 text-white' onClick={() => { router.push(`${currentPath}/create_export_bill`) }}>Tạo phiếu</Button>
             </Group>
             {bills.isPending ? <div className='w-full h-[500px] flex justify-center items-center'>
                 <Loader type="dots" />
             </div> :
                 <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
-                    <ImportBillTable bills={bills.data} />
+                    <ExportBillTable bills={bills.data} />
                     <Pagination className='self-center' total={calPages(numberOfBill.data?.export)} value={activePage} onChange={setPage} mt="sm" />
                 </div>}
         </Stack >

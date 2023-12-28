@@ -1,7 +1,6 @@
 import { Order } from "@/utils/response"
 import { Button, Divider, Group, Modal, Stack, Stepper, Text, ThemeIcon } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
 import OrderInformation from "./orderInformation";
 import DeliveryTimeline from "@/components/DeliveryTimeline/deliveryTimeline";
 import { IconTruckDelivery } from "@tabler/icons-react";

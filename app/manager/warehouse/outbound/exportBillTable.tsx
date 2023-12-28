@@ -1,9 +1,8 @@
-import { Bill_Export, Bill_Import } from '@/utils/response'
-import { Button, Checkbox, Pagination, Table, Text } from '@mantine/core';
-import { useState } from 'react';
+import { Bill_Export } from '@/utils/response'
+import { Table, Text } from '@mantine/core';
 import { usePathname, useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
-import { formatExportBillId, formatImportBillId, formatMoney } from '@/utils/string';
+import { formatExportBillId, formatMoney } from '@/utils/string';
 
 type tableType = {
     id: string;
@@ -15,10 +14,11 @@ type tableType = {
 }[]
 
 const tableHeadList = [
-    'Mã phiếu', 'Ngày tạo', 'Nhà cung cấp', 'Thanh toán', 'Tổng tiền'
+    'Mã phiếu', 'Ngày tạo', 'Khách hàng', 'Thanh toán', 'Tổng tiền'
 ]
 
-export default function ImportBillTable({ bills }: { bills: Bill_Import[] | undefined }) {
+
+export default function ExportBillTable({ bills }: { bills: Bill_Export[] | undefined }) {
 
     const currentPath = usePathname()
     const router = useRouter()
@@ -31,10 +31,10 @@ export default function ImportBillTable({ bills }: { bills: Bill_Import[] | unde
         <Table.Tr
             key={bill.bill_info._id}
         >
-            <Table.Td>{formatImportBillId(bill.bill_info._id, dayjs(bill.bill_info.bill_date).format('DD/MM/YYYY').toString())}</Table.Td>
+            <Table.Td>{formatExportBillId(bill.bill_info._id, dayjs(bill.bill_info.bill_date).format('DD/MM/YYYY').toString())}</Table.Td>
             <Table.Td>{dayjs(bill.bill_info.bill_date).format('DD/MM/YYYY').toString()}</Table.Td>
-            <Table.Td>{bill.bill_info.supplier.name}</Table.Td>
-            <Table.Td>{bill.bill_info.bill_payment.information}</Table.Td>
+            <Table.Td>{bill.bill_info.customer.name}</Table.Td>
+            <Table.Td>{bill.bill_info.bill_payment.method}</Table.Td>
             <Table.Td>{formatMoney(bill.bill_info.bill_checkout.finalPrice)}<span> đ</span></Table.Td>
             <Table.Td className='cursor-pointer' onClick={() => router.push(`${currentPath}/${bill.bill_info._id}`)}>
                 <Text c='turquoise' >Xem</Text>
@@ -42,6 +42,7 @@ export default function ImportBillTable({ bills }: { bills: Bill_Import[] | unde
         </Table.Tr>
 
     ))
+    
     return (
         <Table stickyHeader stickyHeaderOffset={60} highlightOnHover highlightOnHoverColor='turquoise.0' verticalSpacing="sm">
             <Table.Thead>

@@ -1,10 +1,8 @@
 'use client'
 import UserContext from "@/contexts/UserContext";
-import queryClient from "@/helpers/client";
 import BillService from "@/services/billService";
-import { Button, Group, Loader, Pagination, Skeleton, Stack, Title } from "@mantine/core";
+import { Button, Group, Loader, Pagination, Stack, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import ExportBillTable from "./exportBillTable";
@@ -22,7 +20,7 @@ export default function OfflineOrderSegment() {
     const { user } = useContext(UserContext)
     const [activePage, setPage] = useState(1)
     const bills = useQuery({
-        queryKey: ['bills', activePage],
+        queryKey: ['offline_bills', activePage],
         queryFn: () => {
             const billService = new BillService(user)
             return billService.getAllExportBill(numOfBillInDisplay, activePage)
@@ -52,7 +50,7 @@ export default function OfflineOrderSegment() {
                 <Loader type="dots" />
             </div> :
                 <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
-                    <ExportBillTable bills={bills.data} />
+                    <ExportBillTable bills={bills.data?.filter(bill => bill.bill_info.bill_payment.method == 'in store')} />
                     <Pagination className='self-center' total={calPages(numberOfBill.data?.export)} value={activePage} onChange={setPage} mt="sm" />
                 </div>}
         </Stack >
