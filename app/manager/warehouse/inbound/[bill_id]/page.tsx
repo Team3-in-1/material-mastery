@@ -56,7 +56,7 @@ export default function ExportBillView({ params }: { params: { bill_id: string }
                 <div className='flex flex-col gap-[24px] py-[16px] px-[16px] '>
                     <Group>
                         <BackButton />
-                        <Title order={4}>Phiếu xuất kho</Title>
+                        <Title order={4}>Phiếu nhập kho</Title>
                     </Group>
                     <Group justify="space-between" wrap='nowrap' gap='0'>
                         <BillInfoField label='Ngày tạo'>
@@ -80,6 +80,9 @@ export default function ExportBillView({ params }: { params: { bill_id: string }
                             {bill.data?.bill_info.bill_address.to}
                         </BillInfoField>
                     </Group>
+                    <BillInfoField label='Tổng tiền'>
+                        {bill.data?.bill_info.bill_checkout.totalPrice}
+                    </BillInfoField>
                     <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                         <Table highlightOnHover highlightOnHoverColor='turquoise.0' verticalSpacing="sm">
                             <Table.Thead>

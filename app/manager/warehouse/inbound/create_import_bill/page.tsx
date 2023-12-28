@@ -4,14 +4,13 @@ import ProductPicker from "@/components/ProductPicker/productPicker";
 import UserContext from "@/contexts/UserContext";
 import BillService from "@/services/billService";
 import { categoryService } from "@/services/categoryService";
-import { Bill_Address, Bill_Payment, Bill_Product, Customer_In_Bill, Supplier } from "@/utils/object";
-import { checkNameFormat, checkPhoneFormat } from "@/utils/regex";
-import { Bill_Export_Request, Bill_Import_Request, Create_Product, Item_Products, Products } from "@/utils/request";
+import { Bill_Address, Bill_Product, Supplier } from "@/utils/object";
+import { Bill_Import_Request, Create_Product, Item_Products, Products } from "@/utils/request";
 import { Category, Product } from "@/utils/response";
-import { ActionIcon, Button, Divider, Flex, Group, Modal, NativeSelect, NumberInput, ScrollArea, Select, Stack, Text, TextInput, Textarea, Title, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Button, Divider, Flex, Group, Modal, NumberInput, ScrollArea, Select, Stack, Text, TextInput, Title, UnstyledButton } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { IconArrowLeft, IconMapPin, IconMapPinFilled, IconPlus } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -20,7 +19,6 @@ import Loading from "./loading";
 import dayjs from "dayjs";
 import { productService } from "@/services/productService";
 import { formatMoney } from "@/utils/string";
-import { from } from "rxjs";
 
 
 function CreateNewProductModal({

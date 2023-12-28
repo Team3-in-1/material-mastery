@@ -1,12 +1,12 @@
 
 import { Product } from "@/utils/response";
-import { Button, Divider, Group, NumberInput, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core";
+import { Button, Divider, Group, Input, NumberInput, Stack, Text, TextInput, Title, Tooltip, rem } from "@mantine/core";
 import { formatMoney, formatProductId } from "@/utils/string";
 import dayjs from "dayjs";
 import { Bill_Product } from "@/utils/object";
 import { useState } from "react";
 import { number } from "zod";
-import { IconX } from "@tabler/icons-react";
+import { IconCurrencyDram, IconX } from "@tabler/icons-react";
 
 const mockData: Bill_Product = {
     _id: "655f10ef4bf37f313fb9552e",
@@ -50,6 +50,8 @@ export default function BillProduct({
 }) {
     const [quantity, setQuantity] = useState<number | string>(1)
 
+    console.log(data)
+
     return (
         <Stack key={data._id} w='fit-content' className="rounded-[8px] border-[1px]" p='16'>
             <Group justify="space-between">
@@ -90,7 +92,21 @@ export default function BillProduct({
             </Group>
             <Group align="flex-center">
                 <ProductInfo label='Đơn vị tính' content={data.product_unit} />
-                <ProductInfo label='Đơn giá' content={`${formatMoney(data.product_price)} đ`} />
+                {/* <ProductInfo label='Đơn giá' content={`${formatMoney(data.product_price)} đ`} /> */}
+                <Input.Wrapper>
+                    <Text fw={700} size='sm' c='dimmed'>Đơn giá</Text>
+                    <NumberInput
+                        rightSection={<IconCurrencyDram style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
+                        placeholder="100000"
+                        onChange={(value) => {
+                            const tmp = refBills
+                            tmp[order].product_price = value as number
+                            tmp[order].totalPrice = tmp[order].quantity * tmp[order].product_price
+                            refSetBills(tmp)
+                            calBillFn()
+                        }}
+                    />
+                </Input.Wrapper>
                 <ProductInfo label='Thành tiền' content={`${formatMoney(data.totalPrice)} đ`} />
             </Group>
         </Stack>
