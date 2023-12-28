@@ -129,6 +129,7 @@ export interface Order {
   order_date: Date
   createdAt: Date
   updatedAt: Date
+  order_exportId: String
 }
 export interface VoucherInterface {
   _id: string

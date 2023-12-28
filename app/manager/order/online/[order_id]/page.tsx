@@ -31,7 +31,6 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
         refetchOnMount: 'always'
     })
 
-
     const updateOrderStatusMutation = useMutation({
         mutationKey: ['update_order_status'],
         mutationFn: ({ orderId, status }: { orderId: string | undefined, status: string }) => {
@@ -44,21 +43,18 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
             });
         }
     })
-    const createExportBillMutation = useMutation({
-        mutationKey: ['create_ex_bill'],
-        mutationFn: (body: Bill_Export_Request) => {
-            const billService = new BillService(user)
-            return billService.createExportBill(body)
+
+    const updateOrderStatusToShippingMutation = useMutation({
+        mutationFn: ({ orderId, body }: { orderId: string | undefined, body: Bill_Export_Request }) => {
+            const orderService = new OrderService(user);
+            return orderService.updateOrderStatusToShipping(orderId, body)
         },
-        onSuccess: (res) => {
-            toast.success('Tạo thành công')
-        },
-        onError: () => {
-            toast.error('Thất bại. Hãy thử lại')
+        onSuccess: () => {
+            return queryClient.invalidateQueries({
+                queryKey: ['target_order', params.order_id],
+            });
         }
     })
-
-
 
     return (
         <ScrollArea className='h-full w-full z-[0]' >
@@ -69,7 +65,8 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
                     <div className='flex flex-col gap-[24px] py-[16px] px-[16px]'>
                         <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
                             onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
-                        <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate} createMutate={createExportBillMutation.mutate} />
+                        <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate}
+                            updateToShippingMutate={updateOrderStatusToShippingMutation.mutate} />
                     </div>
 
                 )
@@ -77,7 +74,6 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
             < Toaster position='bottom-center' reverseOrder={false} />
         </ScrollArea >
     )
-
 
 }
 

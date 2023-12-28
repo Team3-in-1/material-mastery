@@ -49,7 +49,8 @@ export default function OnlineOrderSegment() {
     const orders = useQuery({
         queryKey: ['orders', activePage, filterMapping[filter as keyof typeof filterMapping]],
         queryFn: () => {
-            const orderService = new OrderService(user);
+            const orderService = new OrderService(user)
+            setPage(1)
             return orderService.getAllOrder(
                 10,
                 activePage,

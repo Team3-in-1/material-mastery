@@ -1,4 +1,5 @@
 import { constant } from "@/utils/constant";
+import { Bill_Export_Request } from "@/utils/request";
 import { UserInterface } from "@/utils/response";
 import axios from "axios";
 
@@ -60,6 +61,19 @@ class OrderService {
 
     modifyOrderStatus = async (orderId: string | undefined, status: string = 'cancelled'): Promise<any> => {
         return await axios.patch(`${constant.BASE_URL}/order/status/${orderId}?status=${status}`, {}, { headers: this.hearders }).then((res) => { return res.data }).catch((err) => { err.response.status })
+    }
+
+    updateOrderStatusToShipping = async (orderId: string | undefined, body: Bill_Export_Request): Promise<any> => {
+        const exportBill = await axios.post(`${constant.BASE_URL}/bill/export`, {
+            products: body.products,
+            bill_note: body.bill_note,
+            bill_address: body.bill_address,
+            bill_payment: body.bill_payment,
+            customer: body.customer
+        }, { headers: this.hearders })
+        return await axios.patch(`${constant.BASE_URL}/order/status/${orderId}?status=${'shipping'}&exportId=${exportBill.data.metadata._id}`, {}, { headers: this.hearders })
+            .then((res) => { return res.data })
+            .catch((err) => { err.response.status })
     }
 
     getAllOrder = async (limit: number = 4, page: number = 1, status: string = '', sortBy: string = 'order_date', isAscending: boolean = false): Promise<any> => {
