@@ -23,8 +23,6 @@ class StatisticsService {
     }
 
     getRevenueAndProfit = async(start: string = this.startTime, end: string = this.currentTime):Promise<any> => {
-        console.log('start', start);
-        console.log('end', end);
         return await axios.get(`${constant.BASE_URL}/statistic?start=${start}&end=${end}`, {headers: this.hearders})
         .then((res)=>{
             return res.data.metadata

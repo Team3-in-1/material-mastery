@@ -48,8 +48,6 @@ const LoggedHeader = ({ user, setUser }: { user: any; setUser: any }) => {
         : res;
     },
     enabled: !!user.userId,
-    //staleTime: Infinity,
-    // retry: 5,
     gcTime: 0,
   });
 

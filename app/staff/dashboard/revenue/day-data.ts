@@ -4,8 +4,8 @@ import { DEFAULT_RES_STATISTICS, calPreDay } from "@/utils/chart";
 
 export const getStatisDayData = async(user: any, selectedDay: Date = new Date()) => {
     const preDay = calPreDay(selectedDay);
-    const selectedData = await getData(user, selectedDay);
     const preData = await getData(user, preDay);
+    const selectedData = await getData(user, selectedDay);
     return selectedData && preData ? {selectedData, preData} : DEFAULT_RES_STATISTICS;    
 }
 
@@ -32,9 +32,8 @@ const getData = async(user: any, selectedDay: Date | string) => {
 }
 
 export const chartData = {
-    labels: ['Label', 'Label'],
+    labels: ['Doanh thu', 'Lợi nhuận'],
     datasets: [{
-        label: '# of Votes',
         data: [3, 5],
         backgroundColor: ['#165BAA', '#F765A3']
     }]

@@ -14,36 +14,20 @@ import {
   endOfWeek,
   endOfQuarter,
 } from '@/utils/date';
+import useRangeTime from '@/hooks/useRangeTime';
 
 type Props = {
   type: string;
   time: any;
   setTime: any;
 };
+
+const calendarStratery = {
+  day: DatePickerInput,
+  month: MonthPickerInput,
+};
+
 export default function CalendarInput({ type, time, setTime }: Props) {
-  const [day, setDay] = useState<Date | null>(new Date());
-  const [week, setWeek] = useState<[Date | null, Date | null]>([
-    startOfWeek(new Date()),
-    endOfWeek(new Date()),
-  ]);
-  const [month, setMonth] = useState<Date | null>(new Date());
-  const [quarter, setQuarter] = useState<[Date | null, Date | null]>([
-    startOfQuarter(new Date()),
-    endOfQuarter(new Date()),
-  ]);
-  const [year, setYear] = useState<Date | null>(new Date());
-  const _setWeek = (selectedDate: DatesRangeValue) => {
-    if (selectedDate[0] !== null && selectedDate[1] === null)
-      setWeek([startOfWeek(selectedDate[0]), endOfWeek(selectedDate[0])]);
-  };
-  const _setQuarter = (selectedDate: DatesRangeValue) => {
-    if (selectedDate[0] !== null && selectedDate[1] === null) {
-      setQuarter([
-        startOfQuarter(selectedDate[0]),
-        endOfQuarter(selectedDate[0]),
-      ]);
-    }
-  };
   switch (type) {
     case 'day':
       return (
@@ -64,8 +48,8 @@ export default function CalendarInput({ type, time, setTime }: Props) {
           leftSectionPointerEvents='none'
           valueFormat='DD/MM/YYYY'
           type='range'
-          value={week}
-          onChange={setWeek}
+          value={time}
+          onChange={setTime}
         />
       );
     case 'month':
@@ -87,8 +71,8 @@ export default function CalendarInput({ type, time, setTime }: Props) {
           leftSectionPointerEvents='none'
           valueFormat='MM/YYYY'
           type='range'
-          value={quarter}
-          onChange={setQuarter}
+          value={time}
+          onChange={setTime}
         />
       );
     case 'year':

@@ -1,4 +1,4 @@
-import { StatsInterface } from "./response";
+import { SegmentInterface, StatsInterface } from "./response";
 
 export const calPreDay = (selectedDay: Date = new Date() ): string => {
     const currentDate = selectedDay.getDate();
@@ -35,6 +35,41 @@ export const getDaysInMonth = (m: number = 1, y: number = 2023) => {
     return m===2 ? y & 3 || !(y%25) && y & 15 ? 28 : 29 : 30 + (m+(m>>3)&1);
 }
 
+
+export const getLabels = (selectedDay: Date = new Date()) => {
+
+    const month = selectedDay.getMonth() + 1;
+    const year = selectedDay.getFullYear();
+    const dayInMonth = getDaysInMonth(month, year);
+    let monthLabel = [];
+
+    for(let i = 1; i <= dayInMonth; i++){
+        monthLabel.push(i);
+    }
+
+    return [['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'], monthLabel, ['Xuân', 'Hạ', 'Thu', 'Đông'], ['Tháng 1', 'Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12']]
+    
+}
+
+export const DEFAULT_BARCHART: SegmentInterface[] = [
+    {
+        revenue: [],
+        profit: [],
+    }, 
+    {
+        revenue: [],
+        profit: [],
+    }, 
+    {
+        revenue: [],
+        profit: [],
+    },
+    {
+        revenue: [],
+        profit: [],
+    }
+] 
+
 export const DEFAULT_RES_STATISTICS: StatsInterface = {
     selectTime: {
       revenue: 0,
@@ -46,4 +81,4 @@ export const DEFAULT_RES_STATISTICS: StatsInterface = {
     },
 }
 
-export const DEFAULT_STATS: StatsInterface[] = [ DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS,  DEFAULT_RES_STATISTICS];
+export const DEFAULT_STATS: StatsInterface[] = [ structuredClone(DEFAULT_RES_STATISTICS),  structuredClone(DEFAULT_RES_STATISTICS),  structuredClone(DEFAULT_RES_STATISTICS),  structuredClone(DEFAULT_RES_STATISTICS),  structuredClone(DEFAULT_RES_STATISTICS)];

@@ -15,9 +15,9 @@ const labels = [
 export const getStatisYearData = async(user: any, day: Date = new Date()) => {
     const selectedDay = `1/1/${day.getFullYear()}`;
     const preDay = `1/1/${day.getFullYear()-1}`;
-    const selectedData = await getData(user, selectedDay);
     const preData = await getData(user, preDay);
-        return selectedData && preData ? {selectedData, preData} : DEFAULT_RES_STATISTICS;    
+    const selectedData = await getData(user, selectedDay);
+    return selectedData && preData ? {selectedData, preData} : DEFAULT_RES_STATISTICS;    
 }
 
 const getData = async(user: any, selectedDay: Date | string) => {
@@ -50,10 +50,9 @@ const getData = async(user: any, selectedDay: Date | string) => {
 
 export const chartData = {
   pie: {
-    labels: ['Label', 'Label'],
+    labels: ['Doanh thu', 'Lợi nhuận'],
     datasets: [
       {
-        label: '# of Votes',
         data: [3, 5],
         backgroundColor: ['#165BAA', '#F765A3'],
       },

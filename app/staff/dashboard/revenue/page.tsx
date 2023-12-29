@@ -9,7 +9,13 @@ import {
   Stack,
   Divider,
 } from '@mantine/core';
-import { useContext, useEffect, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   chartData as DayChart,
   statsData as DayStats,
@@ -19,6 +25,7 @@ import {
   chartData as WeekChart,
   statsData as WeekStats,
   segmentData as WeekSegment,
+  getStatisWeekData,
 } from './week-data';
 import {
   chartData as MonthChart,
@@ -30,6 +37,7 @@ import {
   chartData as QuarterChart,
   statsData as QuarterStats,
   segmentData as QuarterSegment,
+  getStatisQuarterData,
 } from './quarter-data';
 import {
   chartData as YearChart,
@@ -50,12 +58,21 @@ import dynamic from 'next/dynamic';
 import StatsticCard from '@/components/StatisticChart/StatisticCard/statsticCard';
 import { useRouter } from 'next/navigation';
 import UserContext from '@/contexts/UserContext';
-import { DEFAULT_STATS, calPer } from '@/utils/chart';
+import {
+  DEFAULT_BARCHART,
+  DEFAULT_STATS,
+  calPer,
+  getLabels,
+} from '@/utils/chart';
 import {
   ChartInterface,
   SegmentInterface,
   StatsInterface,
 } from '@/utils/response';
+import useRangeTime from '@/hooks/useRangeTime';
+import { useQueries } from '@tanstack/react-query';
+import queryClient from '@/helpers/client';
+import StatisticsService from '@/services/statisticsService';
 
 const tabData = [
   {
@@ -105,33 +122,36 @@ const STATS_INDEX = {
 export default function RevenuePage() {
   const router = useRouter();
   const { user, setUser } = useContext(UserContext);
-  const [selectedDay, setSelectedDay] = useState<Date>(new Date());
-  const [chart, setChart] = useState<ChartInterface[]>();
   const [stats, setStats] = useState<StatsInterface[]>(DEFAULT_STATS);
-  const [segment, setSegment] = useState<SegmentInterface[]>();
+  const [segment, setSegment] = useState<SegmentInterface[]>(DEFAULT_BARCHART);
 
-  // const [day, setDay] = useState<Date | null>(new Date());
-  // const [week, setWeek] = useState<[Date | null, Date | null]>([
-  //   startOfWeek(new Date()),
-  //   endOfWeek(new Date()),
-  // ]);
-  // const [month, setMonth] = useState<Date | null>(new Date());
-  // const [quarter, setQuarter] = useState<[Date | null, Date | null]>([
-  //   startOfQuarter(new Date()),
-  //   endOfQuarter(new Date()),
-  // ]);
-  // const [year, setYear] = useState<Date | null>(new Date());
+  const [selectedDay, setSelectedDay] = useState<Date>(new Date());
+  const [week, setWeek]: any = useRangeTime('week', selectedDay);
+  const [quarter, setQuarter]: any = useRangeTime('quarter', selectedDay);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [labels, setLabels] = useState(getLabels(selectedDay));
+
+  // useQueries({
+  //   queries: labels[0].map((label) => ({
+  //     queryKey: ['chartData', label],
+  //     queryFn: () => {
+  //       const statisticsService = new StatisticsService(user);
+  //       return statisticsService.getRevenueAndProfit(week[0], week[0]);
+  //     },
+  //   })),
+  // });
 
   const getData = (
     fn: Function,
     user: UserContext,
     selectedDay: Date,
     index: number,
-    setStats: Function
+    setStatss: Function
   ) => {
     fn(user, selectedDay).then((res: any) => {
       if (res && res.preData && res.selectedData) {
-        setStats((prevData: StatsInterface[]) => {
+        console.log('res', res);
+        setStatss((prevData: StatsInterface[]) => {
           prevData[index].selectTime = res.selectedData;
           prevData[index].preTime = res.preData;
           return [...prevData];
@@ -140,9 +160,10 @@ export default function RevenuePage() {
     });
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (user) {
       getData(getStatisDayData, user, selectedDay, STATS_INDEX.day, setStats);
+      getData(getStatisWeekData, user, week[0], STATS_INDEX.week, setStats);
       getData(
         getStatisMonthData,
         user,
@@ -150,18 +171,34 @@ export default function RevenuePage() {
         STATS_INDEX.month,
         setStats
       );
+      getData(
+        getStatisQuarterData,
+        user,
+        quarter[0],
+        STATS_INDEX.quarter,
+        setStats
+      );
       getData(getStatisYearData, user, selectedDay, STATS_INDEX.year, setStats);
     }
-  }, [user, selectedDay]);
-  useEffect(() => {
-    router.prefetch('/staff/dashboard/in-outbound');
-    router.prefetch('/staff/warehouse');
-    router.prefetch('/staff/order/online');
-    router.prefetch('/staff/order/offline');
-  }, []);
+  }, [user, selectedDay, week, quarter, tabIndex]);
 
-  const tabList = tabData.map((item) => (
-    <Tabs.Tab key={item.value} value={item.value}>
+  useEffect(() => {
+    setLabels(getLabels(selectedDay));
+  }, [selectedDay]);
+
+  useEffect(() => {
+    setWeek([selectedDay, selectedDay]);
+    setQuarter([selectedDay, selectedDay]);
+  }, [selectedDay]);
+
+  const tabList = tabData.map((item, index) => (
+    <Tabs.Tab
+      key={item.value}
+      value={item.value}
+      onClick={() => {
+        setTabIndex(index);
+      }}
+    >
       {item.display}
     </Tabs.Tab>
   ));
@@ -174,8 +211,10 @@ export default function RevenuePage() {
     >
       <CalendarInput
         type={i.value}
-        time={selectedDay}
-        setTime={setSelectedDay}
+        time={index === 1 ? week : index === 3 ? quarter : selectedDay}
+        setTime={
+          index === 1 ? setWeek : index === 3 ? setQuarter : setSelectedDay
+        }
       />
       <div className='rounded-[8px] border-[0.5px] p-[16px] flex gap-[10px] justify-around items-center'>
         <Stack gap='1rem'>
@@ -205,13 +244,55 @@ export default function RevenuePage() {
         </Stack>
         {i.segment !== undefined ? (
           <StatisticChart
-            chartData={i.chart}
+            chartData={{
+              pie: {
+                labels: ['Doanh thu', 'Lợi nhuận'],
+                datasets: [
+                  {
+                    data: [
+                      stats[index].selectTime.revenue,
+                      stats[index].selectTime.profit,
+                    ],
+                    backgroundColor: ['#165BAA', '#F765A3'],
+                  },
+                ],
+              },
+              bar: {
+                labels: labels[index - 1],
+                datasets: [
+                  {
+                    label: 'Doanh thu',
+                    data: segment[index - 1].revenue,
+                    backgroundColor: 'rgba(53, 162, 235, 0.5)',
+                  },
+                  {
+                    label: 'Lợi nhuận',
+                    data: segment[index - 1].profit,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                  },
+                ],
+              },
+            }}
             chartSize={350}
             segment
             segmentData={i.segment}
           />
         ) : (
-          <StatisticChart chartData={i.chart} chartSize={350} />
+          <StatisticChart
+            chartData={{
+              labels: ['Doanh thu', 'Lợi nhuận'],
+              datasets: [
+                {
+                  data: [
+                    stats[index].selectTime.revenue,
+                    stats[index].selectTime.profit,
+                  ],
+                  backgroundColor: ['#165BAA', '#F765A3'],
+                },
+              ],
+            }}
+            chartSize={350}
+          />
         )}
       </div>
       <Divider my='sm' />

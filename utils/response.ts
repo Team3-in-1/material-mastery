@@ -185,4 +185,7 @@ export interface StatsInterface {
   selectTime: RevenueResInterface;
   preTime: RevenueResInterface;
 }
-export interface SegmentInterface {}
+export interface SegmentInterface {
+  revenue: Array<number>;
+  profit: Array<number>;
+}
