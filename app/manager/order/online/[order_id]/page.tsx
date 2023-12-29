@@ -7,13 +7,10 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import OrderService from '@/services/orderService'
 import Loading from './loading';
 import { usePathname, useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import OrderStepper from './stepper';
 import queryClient from '@/helpers/client';
 import { Bill_Export_Request } from '@/utils/request';
-import BillService from '@/services/billService';
-
-
 
 export default function OrderDetailsForStaffPage({ params }: { params: { order_id: string } }) {
 
@@ -58,7 +55,7 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
 
     return (
         <ScrollArea className='h-full w-full z-[0]' >
-            {target_order.isPending || updateOrderStatusMutation.isPending ?
+            {target_order.isPending || updateOrderStatusMutation.isPending || updateOrderStatusToShippingMutation.isPending ?
                 (<Loading />) :
                 (
 

@@ -1,16 +1,13 @@
 'use client'
 import UserContext from "@/contexts/UserContext";
 import BillService from "@/services/billService";
-import { ActionIcon, Divider, Group, Pagination, ScrollArea, Table, Text, Title } from "@mantine/core";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { Divider, Group, Pagination, ScrollArea, Table, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Loading from "./loading";
 import dayjs from "dayjs";
 import BackButton from "@/components/BackButton/backButton";
-import queryClient from "@/helpers/client";
-import { formatMoney } from "@/utils/string";
 
 
 function BillInfoField({
@@ -37,10 +34,10 @@ export default function ExportBillView({ params }: { params: { bill_id: string }
     const router = useRouter()
 
     const bill = useQuery({
-        queryKey: ['inbound_bill', params.bill_id],
+        queryKey: ['outbound_bill', params.bill_id],
         queryFn: () => {
             const billService = new BillService(user)
-            return billService.getImportById(params.bill_id)
+            return billService.getExportById(params.bill_id)
         },
         enabled: !!user,
     });
@@ -56,22 +53,22 @@ export default function ExportBillView({ params }: { params: { bill_id: string }
                 <div className='flex flex-col gap-[24px] py-[16px] px-[16px] '>
                     <Group>
                         <BackButton />
-                        <Title order={4}>Phiếu nhập kho</Title>
+                        <Title order={4}>Phiếu xuất kho</Title>
                     </Group>
                     <Group justify="space-between" wrap='nowrap' gap='0'>
                         <BillInfoField label='Ngày tạo'>
                             {dayjs(bill.data?.bill_info.bill_date.toString()).format('DD/MM/YYYY').toString()}
                         </BillInfoField>
-                        <BillInfoField label='Tên nhà cung cấp'>
-                            {bill.data?.bill_info.supplier.name}
+                        <BillInfoField label='Tên khách hàng'>
+                            {bill.data?.bill_info.customer.name}
                         </BillInfoField>
-                        <BillInfoField label='Thuế'>
-                            {formatMoney(bill.data?.bill_info.tax)}
+                        <BillInfoField label='Số điện thoại'>
+                            {bill.data?.bill_info.customer.phone}
                         </BillInfoField>
                     </Group>
                     <Group justify="space-between" wrap='nowrap' gap='0'>
                         <BillInfoField label='Hình thức thanh toán'>
-                            {bill.data?.bill_info.bill_payment.information}
+                            {bill.data?.bill_info.bill_payment.method}
                         </BillInfoField>
                         <BillInfoField label='Địa chỉ kho đi'>
                             {bill.data?.bill_info.bill_address.from}
@@ -80,9 +77,6 @@ export default function ExportBillView({ params }: { params: { bill_id: string }
                             {bill.data?.bill_info.bill_address.to}
                         </BillInfoField>
                     </Group>
-                    <BillInfoField label='Tổng tiền'>
-                        {bill.data?.bill_info.bill_checkout.totalPrice}
-                    </BillInfoField>
                     <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                         <Table highlightOnHover highlightOnHoverColor='turquoise.0' verticalSpacing="sm">
                             <Table.Thead>
