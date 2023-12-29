@@ -7,6 +7,7 @@ import {
     IconBuildingWarehouse,
     IconChecklist,
     IconUsersGroup,
+    IconCategory
 } from '@tabler/icons-react';
 
 const staffData = [
@@ -101,6 +102,12 @@ const managerData = [
         slug: 'staff',
         icon: IconUsersGroup,
         label: 'Nhân viên',
+        child: [],
+    },
+    {
+        slug: 'category',
+        icon: IconCategory,
+        label: 'Danh mục',
         child: [],
     },
 ];
