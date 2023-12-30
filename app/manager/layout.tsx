@@ -3,48 +3,41 @@ import SideBar from '@/components/SideBar/SideBar';
 import UserContext from '@/contexts/UserContext';
 import { constant } from '@/utils/constant';
 import { Button, Group } from '@mantine/core';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import { io } from 'socket.io-client';
+import toast, { Toaster } from 'react-hot-toast';
+import { Socket, io } from 'socket.io-client';
 
-let socket;
+let socket: Socket<DefaultEventsMap, DefaultEventsMap>
+
+const socketInitializer = () => {
+  socket = io(constant.SOCKET_URL)
+
+  if (socket && socket.connected) {
+    socket.disconnect()
+  }
+  socket.on('connect', () => {
+    console.log('connected')
+  })
+  socket.on('notificationChange', (notification) => {
+    toast.success('Có sản phẩm sắp hết hàng')
+    // console.log('Received notification change:', notification)
+  })
+}
 
 export default function ManagerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [notify, setNotify] = useState<any>(null);
-  const socketInitializer = () => {
-    socket = io(constant.SOCKET_URL);
-
-    socket.on('connect', () => {
-      console.log('connected');
-    });
-
-    socket.on('notificationChange', (notification) => {
-      console.log('Received notification change:', notification);
-      if (!notification) {
-        setNotify(1);
-      }
-    });
-
-    socket.on('disconnect', () => {
-      console.log('disconnected');
-    });
-  };
 
   useEffect(() => {
-    if (notify) {
-      //toast.error('Hết hàng rồi');
-      setNotify(null);
+      socketInitializer()
+    return () => {
+      socket.disconnect()
     }
-  }, [notify]);
-
-  useEffect(() => {
-    socketInitializer()
-  }, []);
+  }, [])
 
   return (
     <Group
@@ -59,6 +52,10 @@ export default function ManagerLayout({
     >
       <SideBar from='manager' />
       {children}
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
     </Group>
   );
 }
