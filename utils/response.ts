@@ -180,7 +180,7 @@ export interface RevenueResInterface {
   revenue: number;
   profit: number;
 }
-export interface ChartInterface {}
+export interface ChartInterface { }
 export interface StatsInterface {
   selectTime: RevenueResInterface;
   preTime: RevenueResInterface;
@@ -188,4 +188,22 @@ export interface StatsInterface {
 export interface ChartInterface {
   revenue: Array<number>;
   profit: Array<number>;
+}
+
+export interface ManagerNotification {
+  product_name: string
+  product_thumb: string
+  product_description: string
+  product_price: number
+  product_quantity: number
+  product_brand: string
+  product_unit: string
+  product_ratingAverage: number
+  isDraft: boolean
+  product_categories: string[]
+  _id: string
+  createdAt: string
+  updatedAt: string
+  product_slug: string
+  __v: number
 }

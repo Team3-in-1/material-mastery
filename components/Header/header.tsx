@@ -5,22 +5,9 @@ import { Flex, Group, Image, Text, Anchor, Menu, rem } from '@mantine/core';
 import logo from '@/public/icon.svg';
 import Search from '../Search/search';
 // import '../../app/global.css';
-import LanguagePicker from '../LanguagePicker/languagePicker';
 import '@mantine/core/styles.css';
-import {
-  IconShoppingCart,
-  IconUserCircle,
-  IconLogout,
-  IconUser,
-  IconChecklist,
-  IconTicket,
-} from '@tabler/icons-react';
 import classes from './header.module.css';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import useLogin from '@/helpers/useLogin';
-import { useQuery } from '@tanstack/react-query';
-import CartService from '@/services/cartService';
 import { useContext, useEffect, useRef, useState } from 'react';
 import queryClient from '@/helpers/client';
 import LoggedHeader from './loggedHeader';
@@ -92,7 +79,7 @@ export default function Header() {
         !user.userId) && <Search content='' />}
 
       {user?.userId ? (
-        <LoggedHeader user={user} setUser={setUser} />
+          <LoggedHeader user={user} setUser={setUser} />
       ) : (
         <Flex gap='1rem' align='center'>
           {/* <LanguagePicker /> */}
