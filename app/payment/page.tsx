@@ -796,5 +796,4 @@ const Payment = () => {
   );
 };
 
-// export default dynamic(() => Promise.resolve(Payment), { ssr: false });
 export default Payment;

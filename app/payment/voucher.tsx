@@ -1,11 +1,12 @@
 'use client';
 import '@/styles/global.css';
 import Voucher from '@/components/Vouchers/voucher';
-import voucherService from '@/services/voucherService';
 import { Button, Divider, LoadingOverlay, Stack } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import toast from 'react-hot-toast';
+import VoucherService from '@/services/voucherService';
+import UserContext from '@/contexts/UserContext';
 
 const VoucherPayment = ({
   productId,
@@ -48,13 +49,43 @@ const VoucherPayment = ({
       status: true,
     },
   ];
+
+  const { user } = useContext(UserContext);
+
   const vouchers: any = useQuery({
     queryKey: ['vouchers', productId],
-    queryFn: () => voucherService.getVoucherOfProduct(productId),
+    queryFn: () => {
+      const voucherService = new VoucherService(user);
+      return voucherService.getVoucherOfProduct(productId);
+    },
+    enabled: !!user,
   });
 
   const [checked, setChecked] = useState(voucherChosen[0]);
 
+  const compareDate = (
+    time1: string,
+    time2: string = new Date().toLocaleDateString('en-GB')
+  ) => {
+    //2023-12-01T19:38:51.133Z
+    const date1 = parseFloat(time1.split('T')[0].split('-')[2]);
+    const month1 = parseFloat(time1.split('T')[0].split('-')[1]);
+    const year1 = parseFloat(time1.split('T')[0].split('-')[0]);
+
+    //1/1/2024
+    const date2 = parseFloat(time2.split('/')[0]);
+    const month2 = parseFloat(time2.split('/')[1]);
+    const year2 = parseFloat(time2.split('/')[2]);
+
+    if (year1 < year2) return false;
+    if (year1 > year2) return true;
+    if (month1 < month2) return false;
+    if (month1 > month2) return true;
+    if (date1 < date2) return false;
+    return true;
+  };
+
+  // console.log(compareDate('2023-12-31T02:00:00.000Z'));
   return (
     <Stack align='center' justify='center'>
       {vouchers.data &&
@@ -68,7 +99,10 @@ const VoucherPayment = ({
               description={voucher.discount_description}
               expiry={voucher.discount_end_date}
               detail={voucher.discount_value}
-              status={orderValue >= voucher.discount_min_order_value}
+              status={
+                orderValue >= voucher.discount_min_order_value &&
+                compareDate(voucher.discount_end_date)
+              }
               setChecked={setChecked}
               index={voucher._id}
               code={voucher.discount_code}

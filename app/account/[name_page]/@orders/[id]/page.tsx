@@ -64,18 +64,15 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
   const detail = useQuery({
     queryKey: ['orderDetail', params.id],
     queryFn: () => {
-      console.log('user', user);
       const orderService = new OrderService(user);
       return orderService.getOrderById(params.id);
     },
-    staleTime: Infinity,
     enabled: !!user,
   });
 
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
     if (!detail.isPending && detail.data) {
-      console.log(detail.data.order_products[0].item_products);
       detail.data.order_products.map(async (product: any) => {
         await (async () => {
           const data = await queryClient.ensureQueryData({
