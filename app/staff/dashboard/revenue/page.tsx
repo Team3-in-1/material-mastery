@@ -64,15 +64,12 @@ import {
   calPer,
   getLabels,
 } from '@/utils/chart';
-import {
-  ChartInterface,
-  SegmentInterface,
-  StatsInterface,
-} from '@/utils/response';
+import { ChartInterface, StatsInterface } from '@/utils/response';
 import useRangeTime from '@/hooks/useRangeTime';
 import { useQueries } from '@tanstack/react-query';
 import queryClient from '@/helpers/client';
 import StatisticsService from '@/services/statisticsService';
+import { getDaysInMonth } from '@/utils/chart';
 
 const tabData = [
   {
@@ -110,7 +107,6 @@ const tabData = [
     segment: YearSegment,
   },
 ];
-
 const STATS_INDEX = {
   day: 0,
   week: 1,
@@ -123,7 +119,7 @@ export default function RevenuePage() {
   const router = useRouter();
   const { user, setUser } = useContext(UserContext);
   const [stats, setStats] = useState<StatsInterface[]>(DEFAULT_STATS);
-  const [segment, setSegment] = useState<SegmentInterface[]>(DEFAULT_BARCHART);
+  const [chart, setChart] = useState<ChartInterface[]>(DEFAULT_BARCHART);
 
   const [selectedDay, setSelectedDay] = useState<Date>(new Date());
   const [week, setWeek]: any = useRangeTime('week', selectedDay);
@@ -150,7 +146,7 @@ export default function RevenuePage() {
   ) => {
     fn(user, selectedDay).then((res: any) => {
       if (res && res.preData && res.selectedData) {
-        console.log('res', res);
+        // console.log('res', res);
         setStatss((prevData: StatsInterface[]) => {
           prevData[index].selectTime = res.selectedData;
           prevData[index].preTime = res.preData;
@@ -187,9 +183,33 @@ export default function RevenuePage() {
   }, [selectedDay]);
 
   useEffect(() => {
+    setLabels(getLabels(quarter[0]));
+  }, [quarter]);
+
+  useEffect(() => {
     setWeek([selectedDay, selectedDay]);
     setQuarter([selectedDay, selectedDay]);
   }, [selectedDay]);
+
+  const choseStartDay = [
+    selectedDay,
+    week[0],
+    new Date(`${selectedDay.getMonth() + 1}/1/${selectedDay.getFullYear()}`),
+    quarter[0],
+    new Date(`1/1/${selectedDay.getFullYear()}`),
+  ];
+
+  const choseEndDay = [
+    selectedDay,
+    week[1],
+    new Date(
+      `${selectedDay.getMonth() + 1}/${getDaysInMonth(
+        selectedDay.getMonth() + 1
+      )}/${selectedDay.getFullYear()}`
+    ),
+    quarter[1],
+    new Date(`12/31/${selectedDay.getFullYear() + 1}`),
+  ];
 
   const tabList = tabData.map((item, index) => (
     <Tabs.Tab
@@ -203,7 +223,7 @@ export default function RevenuePage() {
     </Tabs.Tab>
   ));
 
-  const tabPanels = tabData.map((i, index) => (
+  const tabPanels = tabData.map((i, index: number) => (
     <Tabs.Panel
       key={i.value}
       value={i.value}
@@ -262,12 +282,12 @@ export default function RevenuePage() {
                 datasets: [
                   {
                     label: 'Doanh thu',
-                    data: segment[index - 1].revenue,
+                    data: chart[index - 1].revenue,
                     backgroundColor: 'rgba(53, 162, 235, 0.5)',
                   },
                   {
                     label: 'Lợi nhuận',
-                    data: segment[index - 1].profit,
+                    data: chart[index - 1].profit,
                     backgroundColor: 'rgba(255, 99, 132, 0.5)',
                   },
                 ],
@@ -276,6 +296,10 @@ export default function RevenuePage() {
             chartSize={350}
             segment
             segmentData={i.segment}
+            startDay={choseStartDay[index]}
+            endDay={choseEndDay[index]}
+            type={index}
+            user={user}
           />
         ) : (
           <StatisticChart
@@ -292,11 +316,15 @@ export default function RevenuePage() {
               ],
             }}
             chartSize={350}
+            startDay={choseStartDay[index]}
+            endDay={choseEndDay[index]}
+            type={0}
+            user={user}
           />
         )}
       </div>
       <Divider my='sm' />
-      <ReportTable />
+      {/* <ReportTable /> */}
     </Tabs.Panel>
   ));
 

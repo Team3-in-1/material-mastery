@@ -49,11 +49,12 @@ const register = async (formData: any): Promise<any> => {
         .then(res => {
             if (!res.data.metadata.user._id || !res.data.metadata.user.roles || !res.data.metadata.tokenPair.accessToken) {
                 throw new Error('Đăng ký thất bại.');
+                
             }
             const data = { userId: res.data.metadata.user._id, roles: res.data.metadata.user.roles, accessToken: res.data.metadata.tokenPair.accessToken }
             return data;
         })
-        .catch(error => { throw new Error(error.response.data.message) })
+        .catch(error => {throw new Error('Đăng ký thất bại.');})
 }
 
 const createStaffAccount = async (formData: any): Promise<any> => {
@@ -147,6 +148,18 @@ const getAllUserByRole = async (
         .catch(error => { throw new Error(error.response.data.message) })
 }
 
+const sendEmail = async(email: string = '') => {
+    return await axios.get(`${constant.BASE_URL}/auth/send/${email}`, {headers: {
+        'x-api-key': constant.API_KEY,
+    }}).then(res => res.data)
+}
+
+const verifyEmail = async(code: string = '') => {
+    return await axios.get(`${constant.BASE_URL}/auth/verify/${code}`, {headers: {
+        'x-api-key': constant.API_KEY,
+    }}).then(res => res.data).catch((error)=>{ throw new Error(error.response.data.message)})
+}
+
 export const userService = {
     login,
     register,
@@ -155,5 +168,7 @@ export const userService = {
     signOut,
     getAllUserByRole,
     getNumberOfStaff,
-    createStaffAccount
+    createStaffAccount,
+    sendEmail,
+    verifyEmail
 };

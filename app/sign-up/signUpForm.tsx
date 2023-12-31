@@ -25,9 +25,11 @@ import { useRouter } from 'next/navigation';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useContext } from 'react';
 import UserContext from '@/contexts/UserContext';
+import toast from 'react-hot-toast';
+import { send } from 'process';
+import queryClient from '@/helpers/client';
 
 export function SignUpForm() {
-  const { user, setUser } = useContext(UserContext);
   const router = useRouter();
   const form = useForm({
     // validateInputOnChange: true,
@@ -39,29 +41,35 @@ export function SignUpForm() {
       termsOfService: false,
     },
     validate: {
-      name: (value) => checkNameFormat(value),
-      phone: (value) => checkPhoneFormat(value),
-      email: (value) => checkEmailFormat(value),
-      password: (value) => checkPasswordFormat(value),
-      termsOfService: (value) => (value ? null : 'Not accept term of service'),
+      // name: (value) => checkNameFormat(value),
+      // phone: (value) => checkPhoneFormat(value),
+      // email: (value) => checkEmailFormat(value),
+      // password: (value) => checkPasswordFormat(value),
+      // termsOfService: (value) => (value ? null : 'Not accept term of service'),
     },
   });
 
-  const registerMutation = useMutation({
-    mutationFn: async (formdata: FormData) => {
-      return await userService.register(formdata);
+  const sendEmail = useMutation({
+    mutationFn: async (email: string) => {
+      return await userService.sendEmail(email);
     },
-    onSuccess: (res) => {
-      console.log('res', res);
-      setUser(res);
-      router.push('/');
+    onSuccess: async (res) => {
+      if (res.statusCode === 200) {
+        await queryClient.prefetchQuery({
+          queryKey: ['signUpData'],
+          queryFn: () => form.values,
+          gcTime: 5000,
+          staleTime: Infinity,
+        });
+        router.push('/sign-up/verify');
+      } else toast.error('Vui lòng sử dụng một email khác.');
     },
     onError(error) {
       console.log(error);
     },
   });
 
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = (formData: any) => {
     //await actionSignUp(formData);
     if (
       formData &&
@@ -70,7 +78,7 @@ export function SignUpForm() {
       formData.email &&
       formData.password
     ) {
-      await registerMutation.mutateAsync(formData);
+      sendEmail.mutateAsync(formData.email);
     }
   };
 
@@ -130,22 +138,22 @@ export function SignUpForm() {
       >
         Đăng ký
       </Button>
-      {registerMutation.isPending && (
+      {sendEmail.isPending && (
         <LoadingOverlay
           visible={true}
           zIndex={1000}
           overlayProps={{ radius: 'sm', blur: 2 }}
         />
       )}
-      {registerMutation.isError && (
+      {sendEmail.isError && (
         <Alert
           variant='light'
           color='red'
-          title='Error'
+          title='Lỗi'
           icon={<IconInfoCircle />}
           withCloseButton
         >
-          {registerMutation.failureReason?.message}
+          {'Email đã được sử dụng.'}
         </Alert>
       )}
     </form>

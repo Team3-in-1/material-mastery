@@ -147,7 +147,8 @@ const CartItem = ({
           <NumberInput
             min={1}
             defaultValue={1}
-            max={100}
+            // max={100}
+            maxLength={5}
             value={quantity}
             allowNegative={false}
             onChange={(value) => {
@@ -167,7 +168,7 @@ const CartItem = ({
           />
         </Grid.Col>
         <Grid.Col span={1} className='flex items-center'>
-          <Text className='text-[0.8rem]'>
+          <Text className='text-[0.8rem] text-ellipsis'>
             {formatMoney(mul(data.product_price, quantity))}
           </Text>
         </Grid.Col>
