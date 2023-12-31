@@ -20,10 +20,13 @@ const socketInitializer = () => {
   socket.on('connect', () => {
     console.log('connected')
   })
-  socket.on('notificationChange', (notification) => {
+  const listener = (notification: any) => {
     toast.success('Có sản phẩm sắp hết hàng')
     // console.log('Received notification change:', notification)
-  })
+  }
+  socket.on('notificationChange', listener)
+
+  return () => socket.off('notificationChange', listener)
 }
 
 export default function ManagerLayout({
@@ -33,7 +36,7 @@ export default function ManagerLayout({
 }) {
 
   useEffect(() => {
-      socketInitializer()
+    socketInitializer()
     return () => {
       socket.disconnect()
     }
