@@ -50,7 +50,6 @@ export default function OnlineOrderSegment() {
         queryKey: ['orders', activePage, filterMapping[filter as keyof typeof filterMapping]],
         queryFn: () => {
             const orderService = new OrderService(user)
-            setPage(1)
             return orderService.getAllOrder(
                 10,
                 activePage,
@@ -72,7 +71,7 @@ export default function OnlineOrderSegment() {
     const calPages = (num: any) => {
         switch (filter) {
             case shipmentState[0]:
-                return Math.ceil(num.pending + num.confirmed + num.cancelled + num.shipping + num.shipped + num.failed / 10)
+                return Math.ceil((num.pending + num.confirmed + num.cancelled + num.shipping + num.shipped + num.failed) / 10)
             case shipmentState[1]:
                 return Math.ceil(num.pending / 10)
             case shipmentState[2]:
@@ -136,6 +135,9 @@ export default function OnlineOrderSegment() {
                         <OrderTable orders={orders.data} />
                         <Pagination
                             className='self-center'
+                            classNames={{
+                                control: 'pagination-control'
+                            }}
                             total={calPages(numberOfOrder.data) as number}
                             value={activePage}
                             onChange={setPage}

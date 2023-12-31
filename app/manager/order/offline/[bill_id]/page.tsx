@@ -100,6 +100,9 @@ export default function ExportBillView({ params }: { params: { bill_id: string }
                             </Table.Tbody>
                         </Table>
                         <Pagination
+                            classNames={{
+                                control: 'pagination-control'
+                            }}
                             className='self-center'
                             total={Math.ceil(bill.data?.products_info.length as number / 5)}
                             value={activePage}
