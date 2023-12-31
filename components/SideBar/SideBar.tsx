@@ -7,7 +7,8 @@ import {
     IconBuildingWarehouse,
     IconChecklist,
     IconUsersGroup,
-    IconCategory
+    IconCategory,
+    IconTicket
 } from '@tabler/icons-react';
 
 const staffData = [
@@ -108,6 +109,12 @@ const managerData = [
         slug: 'category',
         icon: IconCategory,
         label: 'Danh mục',
+        child: [],
+    },
+    {
+        slug: 'voucher',
+        icon: IconTicket,
+        label: 'Voucher',
         child: [],
     },
 ];

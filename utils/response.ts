@@ -131,27 +131,6 @@ export interface Order {
   updatedAt: Date
   order_exportId: String
 }
-export interface VoucherInterface {
-  _id: string
-  discount_name: string
-  discount_description: string
-  discount_code: string
-  discount_value: number
-  discount_max_uses: number
-  discount_max_uses_per_user: number
-  discount_user_used: any[]
-  discount_type: string
-  discount_start_date: string
-  discount_end_date: string
-  discount_uses_count: number
-  discount_min_order_value: number
-  discount_is_active: boolean
-  discount_apply_to: string
-  discount_products: any[]
-  createdAt: string
-  updatedAt: string
-  __v: number
-}
 
 export interface UserInterface {
   userId: any;
@@ -205,5 +184,27 @@ export interface ManagerNotification {
   createdAt: string
   updatedAt: string
   product_slug: string
+  __v: number
+}
+
+export interface Voucher {
+  _id: string
+  discount_name: string
+  discount_description: string
+  discount_code: string
+  discount_value: number
+  discount_max_uses: number
+  discount_max_uses_per_user: number
+  discount_user_used: any[]
+  discount_type: string
+  discount_start_date: string
+  discount_end_date: string
+  discount_uses_count: number
+  discount_min_order_value: number
+  discount_is_active: boolean
+  discount_apply_to: string
+  discount_products: string[]
+  createdAt: string
+  updatedAt: string
   __v: number
 }
