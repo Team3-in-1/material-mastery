@@ -1,4 +1,5 @@
-import { SegmentInterface, StatsInterface } from "./response";
+import { endOfQuarter, startOfQuarter } from "./date";
+import { ChartInterface, StatsInterface } from "./response";
 
 export const calPreDay = (selectedDay: Date = new Date() ): string => {
     const currentDate = selectedDay.getDate();
@@ -36,22 +37,31 @@ export const getDaysInMonth = (m: number = 1, y: number = 2023) => {
 }
 
 
+
 export const getLabels = (selectedDay: Date = new Date()) => {
 
     const month = selectedDay.getMonth() + 1;
     const year = selectedDay.getFullYear();
     const dayInMonth = getDaysInMonth(month, year);
     let monthLabel = [];
+    let quarterLabel = []
 
     for(let i = 1; i <= dayInMonth; i++){
         monthLabel.push(i);
     }
 
-    return [['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'], monthLabel, ['Xuân', 'Hạ', 'Thu', 'Đông'], ['Tháng 1', 'Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12']]
+    const startQuarterMonth = startOfQuarter(selectedDay).getMonth() + 1;
+    const endQuarterMonth = endOfQuarter(selectedDay).getMonth() + 1;
+
+    for(let i = startQuarterMonth; i <= endQuarterMonth; i++){
+        quarterLabel.push(`Tháng ${i}`);
+    }
+
+    return [['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'], monthLabel, quarterLabel, ['Tháng 1', 'Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12']]
     
 }
 
-export const DEFAULT_BARCHART: SegmentInterface[] = [
+export const DEFAULT_BARCHART: ChartInterface[] = [
     {
         revenue: [],
         profit: [],
