@@ -51,7 +51,9 @@ export default function OfflineOrderSegment() {
             </div> :
                 <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                     <ExportBillTable bills={bills.data?.filter(bill => bill.bill_info.bill_payment.method == 'in store')} />
-                    <Pagination className='self-center' total={calPages(numberOfBill.data?.export)} value={activePage} onChange={setPage} mt="sm" />
+                    <Pagination classNames={{
+                        control: 'pagination-control'
+                    }} className='self-center' total={calPages(numberOfBill.data?.export)} value={activePage} onChange={setPage} mt="sm" />
                 </div>}
         </Stack >
     )

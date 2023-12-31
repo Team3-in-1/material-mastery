@@ -172,6 +172,9 @@ export default function ManageStaffPage() {
                             </Table.Tbody>
                         </Table>
                         <Pagination
+                            classNames={{
+                                control: 'pagination-control'
+                            }}
                             className='self-center'
                             total={Math.ceil(numberOfStaff.data / numInDisplay)}
                             value={activePage}

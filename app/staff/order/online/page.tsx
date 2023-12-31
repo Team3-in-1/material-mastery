@@ -148,6 +148,9 @@ export default function OnlineOrderSegment() {
                     <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]' >
                         <OrderTable orders={orders.data} />
                         <Pagination
+                            classNames={{
+                                control: 'pagination-control'
+                            }}
                             className='self-center'
                             total={calPages(numberOfOrder.data) as number}
                             value={activePage}

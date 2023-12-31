@@ -57,6 +57,9 @@ export default function ReportTable({
         </Table>
       </div>
       <Pagination
+        classNames={{
+          control: 'pagination-control'
+        }}
         className='self-center'
         total={mockData.length}
         value={activePage}

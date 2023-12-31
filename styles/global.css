@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.pagination-control {
+    &[data-active] {
+        background-color: var(--mantine-color-turquoise-6) !important;
+        --_control-border-color: var(--pagination-active-bg) !important;
+        --_control-color: var(--mantine-color-white);
+      }
+}
 a:link, a:visited {
     color: var(--mantine-color-turquoise-6);
     text-decoration: none;
