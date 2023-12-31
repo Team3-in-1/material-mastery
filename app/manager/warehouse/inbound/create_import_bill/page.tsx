@@ -383,7 +383,7 @@ export default function CreateImportBillPage() {
                                                 </Modal.Body>
                                             </Modal.Content>
                                         </Modal.Root >
-                                        <Button onClick={open}>Thêm</Button>
+                                        <Button className="bg-0-primary-color-6 text-white" onClick={open}>Thêm</Button>
 
                                     </Stack>
 

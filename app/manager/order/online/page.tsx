@@ -44,7 +44,7 @@ export default function OnlineOrderSegment() {
     const [activePage, setPage] = useState(1);
     // filter 
     const [date, setDate] = useState<string | null>(dates[0])
-    const [filter, setFilter] = useState<string | null>('')
+    const [filter, setFilter] = useState<string>('Tất cả')
     const { user } = useContext(UserContext);
     const orders = useQuery({
         queryKey: ['orders', activePage, filterMapping[filter as keyof typeof filterMapping]],
@@ -115,7 +115,7 @@ export default function OnlineOrderSegment() {
                         label='Trạng thái thanh toán'
                         data={paymentState}
                         value={filter}
-                        onChange={setFilter}
+                        onChange={(value) => setFilter(value as string)}
                         comboboxProps={comboboxStyles}
                     />
                     <Select
@@ -123,7 +123,7 @@ export default function OnlineOrderSegment() {
                         label='Trạng thái giao hàng'
                         data={shipmentState}
                         value={filter}
-                        onChange={setFilter}
+                        onChange={(value) => setFilter(value as string)}
                         comboboxProps={comboboxStyles}
                     />
                 </Fieldset>

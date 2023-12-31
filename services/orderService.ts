@@ -29,7 +29,7 @@ class OrderService {
         const time = new Date();
 
         this.currentTime = `${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}`;
-        this.startTime = `1/${time.getMonth() + 1}/${time.getFullYear()}`;
+        this.startTime = `1/1/1900`;
     }
     checkOut = async (orders: any = []): Promise<any> => {
         return await axios.post(`${constant.BASE_URL}/checkout/review`, {
