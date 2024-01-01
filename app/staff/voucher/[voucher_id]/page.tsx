@@ -103,8 +103,8 @@ const VoucherDetail = ({ params }: { params: { voucher_id: string } }) => {
                                         <Title order={4}>Voucher</Title>
                                     </Group>
                                     <Group>
-                                        <Button variant="filled" onClick={() => setEdit(true)}>Sửa</Button>
-                                        <Button variant="filled" color="red" onClick={() => {
+                                        <Button bg={'#02B1AB'} className=' text-white' variant="filled" onClick={() => setEdit(true)}>Sửa</Button>
+                                        <Button bg={'#D30000'} className=' text-white' variant="filled" onClick={() => {
                                             deleteVoucherMutation.mutate(voucher.data?.discount_code || '')
                                         }}>Xóa</Button>
                                     </Group>
