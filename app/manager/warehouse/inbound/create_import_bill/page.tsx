@@ -469,8 +469,8 @@ export default function CreateImportBillPage() {
                       </Modal.Content>
                     </Modal.Root>
                     <Button
-                      bg={'#02B1AB'}
-                      className=' text-white'
+                      bg={'transparent'}
+                      className=' text-[#02B1AB]'
                       onClick={open}
                     >
                       Thêm sản phẩm
