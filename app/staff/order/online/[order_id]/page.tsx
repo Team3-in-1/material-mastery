@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import OrderStepper from './stepper';
 import queryClient from '@/helpers/client';
+import { Bill_Export_Request } from '@/utils/request';
 
 
 
@@ -42,18 +43,29 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
         }
     })
 
-
+    const updateOrderStatusToShippingMutation = useMutation({
+        mutationFn: ({ orderId, body }: { orderId: string | undefined, body: Bill_Export_Request }) => {
+            const orderService = new OrderService(user);
+            return orderService.updateOrderStatusToShipping(orderId, body)
+        },
+        onSuccess: () => {
+            return queryClient.invalidateQueries({
+                queryKey: ['target_order', params.order_id],
+            });
+        }
+    })
 
     return (
         <ScrollArea className='h-full w-full z-[0]' >
-            {target_order.isPending || updateOrderStatusMutation.isPending ?
+            {target_order.isPending || updateOrderStatusMutation.isPending || updateOrderStatusToShippingMutation.isPending ?
                 (<Loading />) :
                 (
 
                     <div className='flex flex-col gap-[24px] py-[16px] px-[16px]'>
                         <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
                             onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
-                        <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate} />
+                        <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate}
+                            updateToShippingMutate={updateOrderStatusToShippingMutation.mutate} />
                     </div>
 
                 )
