@@ -128,10 +128,10 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
         return 2;
 
       case 'cancelled':
-        return 0;
+        return 4;
 
       case 'failed':
-        return 3;
+        return 5;
 
       case 'delivered':
         return 3;
@@ -170,7 +170,15 @@ const DetailProductPage = ({ params }: { params: { id: string } }) => {
             >{`Mã đơn hàng ${params.id}`}</Text>
           </Group>
           {/* status */}
-          <Group className=' w-full bg-white justify-center items-start rounded-md'>
+          <Group
+            gap={1}
+            justify='center'
+            align='center'
+            w={'100%'}
+            bg={'white'}
+            pb={20}
+            className='rounded-md'
+          >
             <StepperOrder
               numberStep={convertStatusToNumberStep(detail.data?.order_status)}
             />

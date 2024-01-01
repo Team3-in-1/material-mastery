@@ -144,6 +144,7 @@ const Payment = () => {
 
   //const [checkedVoucher, setCheckedVoucher] = useState('');
   const [checkedProduct, setCheckedProduct] = useState('');
+  const [note, setNote] = useState('');
 
   const voucherChosen: any = [];
   const id2Index: any = {};
@@ -159,9 +160,21 @@ const Payment = () => {
 
   const orderMutation = useMutation({
     mutationKey: ['order'],
-    mutationFn: (orders) => {
+    mutationFn: ({
+      address = '',
+      status = 'pending',
+      method = 'upon receipt',
+      note = '',
+      orders,
+    }: {
+      address: string;
+      status: string;
+      method: string;
+      note: string;
+      orders: any;
+    }) => {
       const orderService = new OrderService(user);
-      return orderService.order(address, 'pending', 'upon receipt', '', orders);
+      return orderService.order(address, status, method, note, orders);
     },
     onSuccess: async (res) => {
       if (res == 200) {
@@ -665,7 +678,15 @@ const Payment = () => {
                       });
                     }
                   });
-                  orderMutation.mutate(orders);
+                  //address: string = '', status: string = 'pending', method: string = 'upon receipt', note: string = '', orders: any
+
+                  orderMutation.mutate({
+                    address,
+                    status: 'pending',
+                    method: 'upon receipt',
+                    note,
+                    orders,
+                  });
                   setIsOrderProcessing(true);
                 } else {
                   toast.error('Bạn chưa chọn hình thức thanh toán.');
@@ -683,7 +704,13 @@ const Payment = () => {
 
         <Stack className='bg-white p-8 rounded-[10px]'>
           <Text className='font-medium'>Ghi chú</Text>
-          <Textarea placeholder='Ghi chú' />
+          <Textarea
+            placeholder='Ghi chú'
+            value={note}
+            onChange={(event) => {
+              setNote(event.currentTarget.value);
+            }}
+          />
         </Stack>
       </Stack>
 

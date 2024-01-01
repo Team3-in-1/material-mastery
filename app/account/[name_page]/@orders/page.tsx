@@ -53,12 +53,12 @@ const OrdersPage = () => {
       const res = await orderService.getNumberOfOrderByCustomer();
       setTotalOrders(
         res.pending +
-        res.confirmed +
-        res.cancelled +
-        res.shipping +
-        res.shipped +
-        res.delivered +
-        res.failed
+          res.confirmed +
+          res.cancelled +
+          res.shipping +
+          res.shipped +
+          res.delivered +
+          res.failed
       );
       return res;
     },
@@ -88,7 +88,7 @@ const OrdersPage = () => {
           setNumberPage(
             Math.ceil(
               (numberOfOrder.data.shipping + numberOfOrder.data.shipped) /
-              LIMIT_ORDERS
+                LIMIT_ORDERS
             )
           );
 
@@ -101,7 +101,7 @@ const OrdersPage = () => {
           setNumberPage(
             Math.ceil(
               (numberOfOrder.data.cancelled + numberOfOrder.data.failed) /
-              LIMIT_ORDERS
+                LIMIT_ORDERS
             )
           );
           break;
@@ -115,7 +115,7 @@ const OrdersPage = () => {
       const orderService = new OrderService(user);
       return orderService.getOrders(1, totalOrders);
     },
-    staleTime: 500000,
+    // staleTime: 500000,
     enabled: !!user && !!numberOfOrder,
     // placeholderData: keepPreviousData,
   });
@@ -279,7 +279,7 @@ const OrdersPage = () => {
       )}
       <Pagination
         classNames={{
-          control: 'pagination-control'
+          control: 'pagination-control',
         }}
         total={numberPage}
         value={page}

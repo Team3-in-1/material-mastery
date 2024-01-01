@@ -58,7 +58,7 @@ const Order = ({
 
   const { user } = useContext(UserContext);
   const cancelOrderMutation = useMutation({
-    mutationKey: ['cacelOrder'],
+    mutationKey: ['cancelOrder'],
     mutationFn: () => {
       const orderService = new OrderService(user);
       return orderService.cancelOrder(orderId);
