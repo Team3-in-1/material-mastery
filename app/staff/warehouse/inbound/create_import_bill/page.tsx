@@ -347,9 +347,14 @@ export default function CreateImportBillPage() {
                                         </Stack>
                                         <Stack>
                                             <Text>{formatMoney(totalBill)} đ</Text>
-                                            <Text>{formatMoney(totalBill * 0.1)} đ</Text>
+                                            {/* <Text>{formatMoney(totalBill * 0.1)} đ</Text>
                                             <Text>{formatMoney(totalBill * 0.09)} đ</Text>
-                                            <Text fw={700}>{formatMoney(totalBill + totalBill * 0.1 - totalBill * 0.09)} đ</Text>
+                                            <Text fw={700}>{formatMoney(totalBill + totalBill * 0.1 - totalBill * 0.09)} đ</Text> */}
+                                            <Text>0 đ</Text>
+                                            <Text>0 đ</Text>
+                                            <Text fw={700}>
+                                                {formatMoney(totalBill)}{' '} đ
+                                            </Text>
                                         </Stack>
                                     </Group>
                                 </Stack>
