@@ -130,7 +130,7 @@ export default function StatisticChart({
         );
         // return { revenue: 0, profit: 0 };
       },
-      staleTime: Infinity,
+      // staleTime: Infinity,
     })),
     combine: (results: any) => {
       return {

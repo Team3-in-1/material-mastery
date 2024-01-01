@@ -156,6 +156,10 @@ export default function RevenuePage() {
     });
   };
 
+  useEffect(() => {
+    queryClient.refetchQueries({ queryKey: ['Data'] });
+  }, []);
+
   useLayoutEffect(() => {
     if (user) {
       getData(getStatisDayData, user, selectedDay, STATS_INDEX.day, setStats);
