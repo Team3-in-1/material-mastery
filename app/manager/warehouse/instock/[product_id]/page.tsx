@@ -194,7 +194,6 @@ export default function WarehouseProductPage({
               <Group gap='16'>
                 <Text>*Sản phẩm này đã được trưng bày</Text>
                 <Button
-                  className='bg-0-primary-color-6 text-white'
                   variant='filled'
                   size='md'
                   color='red'
