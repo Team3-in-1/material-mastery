@@ -178,7 +178,7 @@ const Payment = () => {
     },
     onSuccess: async (res) => {
       if (res == 200) {
-        toast.success('Thanh toán thành công.');
+        toast.success('Đặt hàng thành công.');
 
         await queryClient.invalidateQueries({
           queryKey: ['cart'],
@@ -192,7 +192,7 @@ const Payment = () => {
     },
     onError: (error) => {
       console.log('error', error);
-      toast.error('Thanh toán thất bại.');
+      toast.error('Đặt hàng thất bại.');
       router.back();
     },
   });
@@ -693,7 +693,7 @@ const Payment = () => {
                 }
               } else {
                 toast.error(
-                  'Bạn không thể thanh toán khi không có đỉa chỉ giao hàng.'
+                  'Bạn không thể đặt hàng khi không có đỉa chỉ giao hàng.'
                 );
               }
             }}
