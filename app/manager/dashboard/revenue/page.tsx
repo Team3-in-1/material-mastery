@@ -157,7 +157,7 @@ export default function RevenuePage() {
   };
 
   useEffect(() => {
-    queryClient.refetchQueries({ queryKey: ['Data'] });
+    queryClient.refetchQueries({ queryKey: ['Data'], type: 'inactive' });
   }, []);
 
   useLayoutEffect(() => {
