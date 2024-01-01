@@ -211,10 +211,10 @@ export default function ManageStaffPage() {
                 </Modal.Content>
             </Modal.Root >
             <Modal className='absolute z-[10000]' size='sm' opened={deleteOpened} onClose={() => deleteHandlers.close()} centered withCloseButton={false}>
-                <Text w='100%' size='lg' fw='700' ta='center' my='lg' bg={'#02B1AB'} className=' text-white'>Xác nhận xóa danh mục</Text>
+                <Text w='100%' size='lg' fw='700' ta='center' my='lg'>Xác nhận xóa danh mục</Text>
                 <Group justify='center' mb='sm'>
                     <Button size='md' variant='outline' onClick={() => deleteHandlers.close()}>Hủy</Button>
-                    <Button size='md' onClick={() => deleteCategoryMutation.mutate(item?._id || '')}>Xác nhận</Button>
+                    <Button size='md' bg={'#02B1AB'} className=' text-white' onClick={() => deleteCategoryMutation.mutate(item?._id || '')}>Xác nhận</Button>
                 </Group>
             </Modal>
         </ScrollArea>
