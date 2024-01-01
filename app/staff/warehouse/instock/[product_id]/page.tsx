@@ -138,7 +138,7 @@ export default function WarehouseProductPage({
                         {searchParams.state === 'unpublish' ?
                             <Group gap='16'>
                                 <Text>*Sản phẩm này chưa được trưng bày</Text>
-                                <Button variant='filled' size='md' onClick={() => publishMutation.mutate()}>
+                                <Button className='bg-0-primary-color-6 text-white' variant='filled' size='md' onClick={() => publishMutation.mutate()}>
                                     <IconArrowUp />
                                     Trưng bày
                                 </Button>
@@ -146,7 +146,7 @@ export default function WarehouseProductPage({
                             :
                             <Group gap='16'>
                                 <Text>*Sản phẩm này đã được trưng bày</Text>
-                                <Button variant='filled' size='md' color='red' onClick={() => unpublishMutation.mutate()}>
+                                <Button className='bg-0-primary-color-6 text-white' variant='filled' size='md' color='red' onClick={() => unpublishMutation.mutate()}>
                                     <IconArrowDown />
                                     Không trưng bày
                                 </Button>
@@ -252,6 +252,7 @@ export default function WarehouseProductPage({
                                 {rateData.map((item) => {
                                     return (
                                         <Button
+                                            className={item.id !== isRateChoosing ? 'bg-0-primary-color-6 text-white' : ''}
                                             variant={item.id === isRateChoosing
                                                 ? 'filled'
                                                 : 'outline'

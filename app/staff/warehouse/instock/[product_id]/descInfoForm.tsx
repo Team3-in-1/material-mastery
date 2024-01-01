@@ -51,7 +51,7 @@ export default function DescInfoForm({
                         <Button variant='white' size='sm' onClick={() => form.reset()}>Cài lại</Button>
                         <Divider orientation='vertical' />
                         <Button variant='outline' size='sm' onClick={() => closeFn(false)}>Hủy</Button>
-                        <Button variant='filled' size='sm' type='submit'>Thay đổi</Button>
+                        <Button className='bg-0-primary-color-6 text-white' variant='filled' size='sm' type='submit'>Thay đổi</Button>
                     </Group>
                 </Group>
                 <Textarea
@@ -70,7 +70,7 @@ export default function DescInfoForm({
                     <Modal.Body mt='16' mx='16'>
                         <Group justify='center'>
                             <Button variant='light' onClick={close}>Hủy</Button>
-                            <Button onClick={handleUpdateProduct}>Xác nhận</Button>
+                            <Button className='bg-0-primary-color-6 text-white' onClick={handleUpdateProduct}>Xác nhận</Button>
                         </Group>
                     </Modal.Body>
                 </Modal.Content>
