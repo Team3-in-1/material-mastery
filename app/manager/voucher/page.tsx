@@ -4,15 +4,17 @@ import VoucherService from '@/services/voucherService'
 import { Button, Group, Loader, ScrollArea, Table, Title, Text } from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useContext } from 'react'
 
 const TheadLabels = ['Mã voucher', 'Tên voucher', 'Code', 'Ngày bắt đầu', 'Ngày kết thúc', 'Áp dụng', 'Trạng thái']
-export default function ManageStaffPage() {
+
+export default function ManageVoucherPage() {
 
     const { user } = useContext(UserContext)
 
     const router = useRouter()
+    const currentPath = usePathname()
 
     const tabelHead = TheadLabels.map(i => (
         <Table.Th key={i}>{i}</Table.Th>
@@ -31,7 +33,7 @@ export default function ManageStaffPage() {
         <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
             <Group justify='space-between'>
                 <Title order={4}>Quản lí voucher</Title>
-                <Button className='bg-0-primary-color-6 text-white' onClick={() => router.push('/manager/voucher/create_voucher')}>Tạo voucher mới</Button>
+                <Button className='bg-0-primary-color-6 text-white' onClick={() => router.push(`${currentPath}/create_voucher`)}>Tạo voucher mới</Button>
             </Group>
             {vouchers.isPending ?
                 <div className='w-full h-[500px] flex justify-center items-center'>
@@ -58,7 +60,7 @@ export default function ManageStaffPage() {
                                         <Table.Td>{voucher.discount_apply_to}</Table.Td>
                                         <Table.Td>{voucher.discount_is_active ? 'ACTIVE' : 'INACTIVE'}</Table.Td>
                                         <Table.Td className='cursor-pointer'>
-                                            <Text c='turquoise' >Xem</Text>
+                                            <Text onClick={() => router.push(`${currentPath}/${voucher._id}`)} c='turquoise' >Xem</Text>
                                         </Table.Td>
                                     </Table.Tr>
                                 ))}

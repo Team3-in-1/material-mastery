@@ -1,17 +1,14 @@
 'use client'
 
-import { Image, Text, ScrollArea, Select, ActionIcon, Flex, Stack, TextInput, Textarea, NativeSelect, Group, Button, Title, NumberInput, Card } from "@mantine/core"
+import { Image, Text, ScrollArea, Select, ActionIcon, Flex, Stack, TextInput, Textarea, Group, Button, Title, NumberInput } from "@mantine/core"
 import { IconArrowLeft } from "@tabler/icons-react"
-import router from "next/router"
 import { useForm } from "@mantine/form"
 import { useContext, useState } from "react"
-import { Bill_Product } from "@/utils/object"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { categoryService } from "@/services/categoryService"
 import ProductPicker from "@/components/ProductPicker/productPicker"
 import { Product } from "@/utils/response"
 import toast from "react-hot-toast"
-import BillProduct from "@/components/BillProduct/billProduct"
 import NImage from 'next/image'
 import { DateTimePicker } from "@mantine/dates"
 import VoucherService from "@/services/voucherService"
@@ -55,13 +52,13 @@ const CreateVoucher = () => {
             description: '',
             code: '',
             value: 0,
-            max_uses: 0,
-            max_uses_per_user: 0,
+            max_uses: null,
+            max_uses_per_user: null,
             user_used: [],
             type: '',
             end_date: '',
             uses_count: 0,
-            min_order_value: 0,
+            min_order_value: null,
             is_active: true,
             apply_to: '',
             products: []
@@ -70,9 +67,10 @@ const CreateVoucher = () => {
             name: (value) => (value.length === 0 ? 'Vui lòng nhập tên' : null),
             description: (value) => (value.length === 0 ? 'Vui lòng nhập miêu tả' : null),
             code: (value) => (value.length === 0 ? 'Vui lòng nhập code' : null),
-            // type: (value) => (value.length === 0 ? 'Vui lòng nhập kiểu': null),
-            end_date: (value) => (value.length === 0 ? 'Vui lòng nhập ngày kết thúc' : null),
-            // apply_to: (value) => (value.length === 0 ? 'Vui lòng nhập kiểu áp dụng': null)
+            max_uses: (value) => (value === null ? 'Vui lòng nhập số lần sử dụng tối đa' : null),
+            max_uses_per_user: (value) => (value === null ? 'Vui lòng nhập số lần sử dụng tối đa của mỗi user' : null),
+            min_order_value: (value) => (value === null ? 'Vui lòng nhập giá trị đơn hàng tối thiểu' : null),
+            end_date: (value) => (value.length === 0 ? 'Vui lòng nhập ngày kết thúc' : null)
         },
     })
 
@@ -108,22 +106,25 @@ const CreateVoucher = () => {
         //     apply_to: apply == 'Những sản phẩm nhất định' ?'specific' : 'all',
         //     products: addedProduct.map(i => i._id)
         // })
-        createVoucherMutation.mutate({
-            name: formData.name,
-            description: formData.description,
-            code: formData.code,
-            value: formData.value,
-            max_uses: formData.max_uses,
-            max_uses_per_user: formData.max_uses_per_user,
-            user_used: formData.user_used,
-            type: type == 'Giảm theo %' ? 'percent' : 'specific',
-            end_date: dayjs(formData.end_date).format('YYYY-MM-DD HH:mm:ss'),
-            uses_count: formData.uses_count,
-            min_order_value: formData.min_order_value,
-            is_active: formData.is_active,
-            apply_to: apply == 'Những sản phẩm nhất định' ? 'specific' : 'all',
-            products: addedProduct.map(i => i.id)
-        })
+        if (type == '' || apply == '')
+            toast.error('Vui lòng nhập đủ thông tin')
+        else
+            createVoucherMutation.mutate({
+                name: formData.name,
+                description: formData.description,
+                code: formData.code,
+                value: formData.value,
+                max_uses: formData.max_uses,
+                max_uses_per_user: formData.max_uses_per_user,
+                user_used: formData.user_used,
+                type: type == 'Giảm theo %' ? 'percent' : 'specific',
+                end_date: dayjs(formData.end_date).format('YYYY-MM-DD HH:mm:ss'),
+                uses_count: formData.uses_count,
+                min_order_value: formData.min_order_value,
+                is_active: formData.is_active,
+                apply_to: apply == 'Những sản phẩm nhất định' ? 'specific' : 'all',
+                products: addedProduct.map(i => i.id)
+            })
     }
 
     return (
@@ -240,8 +241,8 @@ const CreateVoucher = () => {
                                     <Button variant='outline' onClick={() => {
                                         form.reset()
                                         setAddedProduct([])
-                                    }}>Xóa phiếu</Button>
-                                    <Button className="bg-0-primary-color-6 text-white" form="newVoucherForm" type='submit'>Tạo phiếu</Button>
+                                    }}>Clear form</Button>
+                                    <Button className="bg-0-primary-color-6 text-white" form="newVoucherForm" type='submit'>Tạo voucher</Button>
                                 </Button.Group>
                             </Group>
                         </Flex>

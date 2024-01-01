@@ -21,10 +21,10 @@ const staffData = [
                 slug: 'revenue',
                 label: 'Doanh thu',
             },
-            {
-                slug: 'in-outbound',
-                label: 'Nhập/Xuất kho',
-            },
+            // {
+            //     slug: 'in-outbound',
+            //     label: 'Nhập/Xuất kho',
+            // },
         ],
     },
     {
@@ -59,10 +59,10 @@ const managerData = [
                 slug: 'revenue',
                 label: 'Doanh thu',
             },
-            {
-                slug: 'in-outbound',
-                label: 'Nhập/Xuất kho',
-            },
+            // {
+            //     slug: 'in-outbound',
+            //     label: 'Nhập/Xuất kho',
+            // },
         ],
     },
     {
