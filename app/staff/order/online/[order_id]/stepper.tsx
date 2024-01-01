@@ -38,6 +38,8 @@ export default function OrderStepper({
   const [opened, handlers] = useDisclosure(false);
   const [failOpened, failedHandlers] = useDisclosure(false);
 
+  // console.log('data', data);
+
   const handleConfirmOrder = (id: string | undefined) => {
     const tmp = {
       orderId: id,
@@ -132,10 +134,20 @@ export default function OrderStepper({
             <OrderInformation data={data} />
             <Divider my='sm' />
             <Group gap='1rem' justify='center' pb='lg'>
-              <Button variant='outline' size='md' color='red'>
+              <Button
+                variant='outline'
+                size='md'
+                color='red'
+                bg={'transparent'}
+              >
                 Hủy đơn
               </Button>
-              <Button size='md' onClick={() => handlers.open()}>
+              <Button
+                size='md'
+                onClick={() => handlers.open()}
+                bg={'#02B1AB'}
+                className=' text-white'
+              >
                 Xác nhận
               </Button>
             </Group>
@@ -158,7 +170,12 @@ export default function OrderStepper({
                 >
                   Hủy
                 </Button>
-                <Button size='md' onClick={() => handleConfirmOrder(data?._id)}>
+                <Button
+                  size='md'
+                  onClick={() => handleConfirmOrder(data?._id)}
+                  bg={'#02B1AB'}
+                  className=' text-white'
+                >
                   Xác nhận
                 </Button>
               </Group>
@@ -174,7 +191,12 @@ export default function OrderStepper({
             <Divider my='sm' />
             <Group gap='1rem' justify='center' pb='lg'>
               {/* <Button variant='outline' size='md' color='red'>Hủy đơn</Button> */}
-              <Button size='md' onClick={() => handlers.open()}>
+              <Button
+                size='md'
+                onClick={() => handlers.open()}
+                bg={'#02B1AB'}
+                className=' text-white'
+              >
                 Giao hàng
               </Button>
             </Group>
@@ -194,12 +216,15 @@ export default function OrderStepper({
                   size='md'
                   variant='outline'
                   onClick={() => handlers.close()}
+                  bg={'transparent'}
                 >
                   Hủy
                 </Button>
                 <Button
                   size='md'
                   onClick={() => handleConfirmDelivery(data?._id)}
+                  bg={'#02B1AB'}
+                  className=' text-white'
                 >
                   Xác nhận
                 </Button>
@@ -237,6 +262,8 @@ export default function OrderStepper({
                 <Button
                   size='md'
                   onClick={() => handleSuccessfulDelivery(data?._id)}
+                  bg={'#02B1AB'}
+                  className=' text-white'
                 >
                   Xác nhận{' '}
                 </Button>
@@ -264,6 +291,8 @@ export default function OrderStepper({
                 <Button
                   size='md'
                   onClick={() => handleFailedDelivery(data?._id)}
+                  bg={'#02B1AB'}
+                  className=' text-white'
                 >
                   Xác nhận
                 </Button>

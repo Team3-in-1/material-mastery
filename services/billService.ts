@@ -67,6 +67,8 @@ class BillService {
     }
 
     getNumberOfBill = async (): Promise<NumOfBill> => {
+        console.log('body');
+
         return await axios.get(`${constant.BASE_URL}/bill/number`, { headers: this.hearders })
             .then((res) => { return res.data.metadata; })
             .catch((err) => { console.log(err); })
