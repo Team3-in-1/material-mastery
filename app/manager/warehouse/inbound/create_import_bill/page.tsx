@@ -354,7 +354,7 @@ export default function CreateImportBillPage() {
         <form onSubmit={form.onSubmit(handleCreateBill)} id='newBillForm'>
           <Flex direction='column-reverse' gap='16'>
             {createExportBillMutation.isPending ||
-            createProductMutation.isPending ? (
+              createProductMutation.isPending ? (
               <Loading />
             ) : (
               <Flex className='rounded-[8px] border-[1px]' p='16'>
@@ -403,13 +403,15 @@ export default function CreateImportBillPage() {
                     </Stack>
                     <Stack>
                       <Text>{formatMoney(totalBill)} đ</Text>
-                      <Text>{formatMoney(totalBill * 0.1)} đ</Text>
-                      <Text>{formatMoney(totalBill * 0.09)} đ</Text>
+                      {/* <Text>{formatMoney(totalBill * 0.1)} đ</Text>
+                      <Text>{formatMoney(totalBill * 0.09)} đ</Text> */}
+                      <Text>0 đ</Text>
+                      <Text>0 đ</Text>
                       <Text fw={700}>
-                        {formatMoney(
+                        {/* {formatMoney(
                           totalBill + totalBill * 0.1 - totalBill * 0.09
-                        )}{' '}
-                        đ
+                        )}{' '} */}
+                        {formatMoney(totalBill)}{' '} đ
                       </Text>
                     </Stack>
                   </Group>

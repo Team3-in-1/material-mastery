@@ -31,7 +31,20 @@ const staffData = [
         slug: 'warehouse',
         icon: IconBuildingWarehouse,
         label: 'Kho',
-        child: [],
+        child: [
+            {
+                slug: 'instock',
+                label: 'Tồn kho',
+            },
+            {
+                slug: 'inbound',
+                label: 'Nhập kho',
+            },
+            {
+                slug: 'outbound',
+                label: 'Xuất kho',
+            },
+        ],
     },
     {
         slug: 'order',
@@ -47,6 +60,18 @@ const staffData = [
                 label: 'Tại cửa hàng',
             },
         ],
+    },
+    {
+        slug: 'category',
+        icon: IconCategory,
+        label: 'Danh mục',
+        child: [],
+    },
+    {
+        slug: 'voucher',
+        icon: IconTicket,
+        label: 'Voucher',
+        child: [],
     },
 ];
 const managerData = [

@@ -12,7 +12,6 @@ const nextConfig = {
       'iqvinc.com',
       'www.biiibo.com',
       'khogachre.vn',
-      'tamloppoly.vn',
     ],
   },
   //http://mm.khangdev.id.vn/';

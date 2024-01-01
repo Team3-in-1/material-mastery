@@ -10,7 +10,7 @@ export default function Loading() {
             mih='100vh'
             pos='relative'
             style={{
-                backgroundColor: '#f1f3f5',
+                backgroundColor: '#fff',
                 zIndex: 1,
             }}
         >
