@@ -1,9 +1,10 @@
 import StatusBadge from '@/components/StatusBadge/statusBadge';
 import { Order } from '@/utils/response';
-import { Divider, Grid, Group, Stack, Text } from '@mantine/core';
+import { Button, Divider, Grid, Group, Stack, Text } from '@mantine/core';
 import { IconCash, IconMapPinFilled } from '@tabler/icons-react';
 import Product from './product';
 import { formatMoney } from '@/utils/string';
+import { useRouter } from 'next/navigation';
 
 enum paymentStatusOrder { 'pending' = 0, 'paid' = 1 }
 const paymentStatusMapping = {
@@ -14,6 +15,9 @@ const paymentMethodMapping = {
     'upon receipt': 'Thanh toán khi nhận hàng'
 }
 export default function OrderInformation({ data }: { data: Order | undefined }) {
+
+    const router = useRouter()
+
     return (
         <Stack gap='1rem' px='1rem' pt='1rem'>
             <Group grow >
@@ -57,6 +61,14 @@ export default function OrderInformation({ data }: { data: Order | undefined }) 
                                 );
                             })}
                         </Stack>
+                        {
+                            (data?.order_status == 'shipping' || data?.order_status == 'shipped') &&
+                            <Button className='mt-3' onClick={() =>
+                                router.push(`/manager/order/offline/${data.order_exportId}`)}
+                            >
+                                Thông tin phiếu xuất kho
+                            </Button>
+                        }
                     </Stack>
                 </Grid.Col>
                 <Grid.Col span={4} className='flex flex-col gap-[12px]'>

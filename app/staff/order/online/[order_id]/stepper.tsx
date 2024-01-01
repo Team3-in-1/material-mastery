@@ -14,6 +14,8 @@ import { useState } from 'react';
 import OrderInformation from './orderInformation';
 import DeliveryTimeline from '@/components/DeliveryTimeline/deliveryTimeline';
 import { IconTruckDelivery } from '@tabler/icons-react';
+import { Bill_Address, Bill_Payment, Customer_In_Bill } from '@/utils/object';
+import { Bill_Export_Request, Item_Products, Products } from '@/utils/request';
 
 enum statusOrder {
   'pending' = 0,
@@ -27,9 +29,11 @@ enum statusOrder {
 export default function OrderStepper({
   data,
   mutate,
+  updateToShippingMutate
 }: {
   data: Order;
   mutate: any;
+  updateToShippingMutate: any;
 }) {
   const [opened, handlers] = useDisclosure(false);
   const [failOpened, failedHandlers] = useDisclosure(false);
@@ -45,11 +49,38 @@ export default function OrderStepper({
     handlers.close();
   };
   const handleConfirmDelivery = (id: string | undefined) => {
-    const tmp = {
-      orderId: id,
-      status: 'shipping',
+    const BillAddress: Bill_Address = {
+      from: 'Thủ Đức',
+      to: data.order_address.city,
     };
-    mutate(tmp);
+    const BillPayment: Bill_Payment = {
+      method: 'upon receipt',
+    };
+    const Customer: Customer_In_Bill = {
+      id: data.order_userId,
+      phone: data.order_phone,
+      name: data.order_username,
+    };
+    const body: Bill_Export_Request = {
+      products: data.order_products.map((item: any) => {
+        const iProduct: Item_Products = {
+          price: item.item_products[0].product_price,
+          quantity: item.item_products[0].product_quantity,
+          productId: item.item_products[0].productId,
+        };
+        const products: Products = {
+          products: [iProduct],
+        };
+        return products;
+      }),
+      bill_note: '',
+      bill_address: BillAddress,
+      bill_payment: BillPayment,
+      customer: Customer,
+    };
+
+    updateToShippingMutate({ orderId: id, body });
+
     handlers.close();
   };
   const handleSuccessfulDelivery = (id: string | undefined) => {
@@ -284,7 +315,7 @@ export default function OrderStepper({
               </ThemeIcon>
               <Text
                 size='1.6rem'
-                c={data?.order_status === 'shipped' ? 'yeallow' : 'green'}
+                c={data?.order_status === 'shipped' ? 'yellow' : 'green'}
               >
                 {data?.order_status === 'shipped'
                   ? 'Đơn hàng đã được giao đến người mua'

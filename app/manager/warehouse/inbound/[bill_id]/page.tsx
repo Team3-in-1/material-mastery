@@ -1,15 +1,13 @@
 'use client'
 import UserContext from "@/contexts/UserContext";
 import BillService from "@/services/billService";
-import { ActionIcon, Divider, Group, Pagination, ScrollArea, Table, Text, Title } from "@mantine/core";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { Divider, Group, Pagination, ScrollArea, Table, Text, Title } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Loading from "./loading";
 import dayjs from "dayjs";
 import BackButton from "@/components/BackButton/backButton";
-import queryClient from "@/helpers/client";
 import { formatMoney } from "@/utils/string";
 
 

@@ -35,6 +35,36 @@ class VoucherService {
             .then((res) => { return res.data.metadata })
             .catch((err) => { console.log(err); })
     }
+
+    getVoucherById = async (id: string): Promise<Voucher> => {
+        return await axios.get(`${constant.BASE_URL}/discount/id/${id}`, {
+            headers: {
+                'x-api-key': constant.API_KEY,
+            }
+        }).then((res) => { return res.data.metadata }).catch((err) => { console.log(err); })
+    }
+
+    updateVoucher = async ({ id, body }: { id: string, body: any }) => {
+        return await axios.patch(`${constant.BASE_URL}/discount/${id}`, body, { headers: this.hearders })
+            .then((res) => { return res.data.metadata })
+            .catch((err) => { console.log(err); })
+    }
+
+    getProductOfVoucher = async (id: string) => {
+        return await axios.get(`${constant.BASE_URL}/discount/products?discountId=${id}`, {
+            headers: {
+                'x-api-key': constant.API_KEY,
+            }
+        })
+            .then((res) => { return res.data.metadata })
+            .catch((err) => { console.log(err); })
+    }
+
+    deleteVoucher = async (code: string) => {
+        return await axios.delete(`${constant.BASE_URL}/discount/delete?code=${code}`, { headers: this.hearders })
+            .then((res) => { return res.data.metadata })
+            .catch((err) => { console.log(err); })
+    }
 }
 
 export default VoucherService;
