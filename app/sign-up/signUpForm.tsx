@@ -41,11 +41,11 @@ export function SignUpForm() {
       termsOfService: false,
     },
     validate: {
-      // name: (value) => checkNameFormat(value),
-      // phone: (value) => checkPhoneFormat(value),
-      // email: (value) => checkEmailFormat(value),
-      // password: (value) => checkPasswordFormat(value),
-      // termsOfService: (value) => (value ? null : 'Not accept term of service'),
+      name: (value) => checkNameFormat(value),
+      phone: (value) => checkPhoneFormat(value),
+      email: (value) => checkEmailFormat(value),
+      password: (value) => checkPasswordFormat(value),
+      termsOfService: (value) => (value ? null : 'Not accept term of service'),
     },
   });
 
