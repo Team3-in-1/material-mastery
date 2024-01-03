@@ -83,6 +83,7 @@ export default function ManageStaffPage() {
         },
         onError(error) {
             console.log(error)
+            toast.error(error.message)
         },
     })
 
@@ -94,13 +95,13 @@ export default function ManageStaffPage() {
             createCategoryMutation.mutate(formData.name);
         }
     }
-    
+
     const handleUpdateSubmit = (formData: any) => {
         if (
             formData &&
             formData.name
         ) {
-            updateCategoryMutation.mutate({id: item?._id || '', name: formData.name});
+            updateCategoryMutation.mutate({ id: item?._id || '', name: formData.name });
         }
     }
 
@@ -177,7 +178,10 @@ export default function ManageStaffPage() {
                                             <Text c='turquoise' >Sửa</Text>
                                         </Table.Td>
                                         <Table.Td className='cursor-pointer'>
-                                            <Text c='red' onClick={deleteHandlers.open}>Xóa</Text>
+                                            <Text c='red' onClick={() => {
+                                                setItem(item)
+                                                deleteHandlers.open()
+                                            }}>Xóa</Text>
                                         </Table.Td>
                                     </Table.Tr>
                                 ))}
@@ -211,7 +215,7 @@ export default function ManageStaffPage() {
                 </Modal.Content>
             </Modal.Root >
             <Modal className='absolute z-[10000]' size='sm' opened={deleteOpened} onClose={() => deleteHandlers.close()} centered withCloseButton={false}>
-                <Text w='100%' size='lg' fw='700' ta='center' my='lg'>Xác nhận xóa danh mục</Text>
+                <Text w='100%' size='lg' fw='700' ta='center' my='lg' >Xác nhận xóa danh mục</Text>
                 <Group justify='center' mb='sm'>
                     <Button size='md' variant='outline' onClick={() => deleteHandlers.close()}>Hủy</Button>
                     <Button size='md' bg={'#02B1AB'} className=' text-white' onClick={() => deleteCategoryMutation.mutate(item?._id || '')}>Xác nhận</Button>
