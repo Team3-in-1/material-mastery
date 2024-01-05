@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { Bill_Product } from "@/utils/object";
 import { useState } from "react";
 import { number } from "zod";
-import { IconCurrencyDram, IconX } from "@tabler/icons-react";
+import { IconCurrencyDong, IconCurrencyDram, IconX } from "@tabler/icons-react";
 
 const mockData: Bill_Product = {
     _id: "655f10ef4bf37f313fb9552e",
@@ -38,7 +38,8 @@ export default function BillProduct({
     refBills,
     refSetBills,
     deleteFn,
-    calBillFn
+    calBillFn,
+    type = 'export'
 }: {
     data?: Bill_Product,
     order: number,
@@ -46,7 +47,8 @@ export default function BillProduct({
     refBills: Bill_Product[],
     refSetBills: any,
     deleteFn: any,
-    calBillFn: any
+    calBillFn: any,
+    type?: string
 }) {
     const [quantity, setQuantity] = useState<number | string>(1)
 
@@ -92,21 +94,23 @@ export default function BillProduct({
             </Group>
             <Group align="flex-center">
                 <ProductInfo label='Đơn vị tính' content={data.product_unit} />
-                {/* <ProductInfo label='Đơn giá' content={`${formatMoney(data.product_price)} đ`} /> */}
-                <Input.Wrapper>
-                    <Text fw={700} size='sm' c='dimmed'>Đơn giá</Text>
-                    <NumberInput
-                        rightSection={<IconCurrencyDram style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
-                        placeholder="100000"
-                        onChange={(value) => {
-                            const tmp = refBills
-                            tmp[order].product_price = value as number
-                            tmp[order].totalPrice = tmp[order].quantity * tmp[order].product_price
-                            refSetBills(tmp)
-                            calBillFn()
-                        }}
-                    />
-                </Input.Wrapper>
+                {type === 'export' ?
+                    <ProductInfo label='Đơn giá' content={`${formatMoney(data.product_price)} đ`} /> :
+                    <Input.Wrapper>
+                        <Text fw={700} size='sm' c='dimmed'>Đơn giá</Text>
+                        <NumberInput
+                            rightSection={<IconCurrencyDong style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
+                            value={refBills[order].product_price}
+                            onChange={(value) => {
+                                const tmp = refBills
+                                tmp[order].product_price = value as number
+                                tmp[order].totalPrice = tmp[order].quantity * tmp[order].product_price
+                                refSetBills(tmp)
+                                calBillFn()
+                            }}
+                        />
+                    </Input.Wrapper>
+                }
                 <ProductInfo label='Thành tiền' content={`${formatMoney(data.totalPrice)} đ`} />
             </Group>
         </Stack>

@@ -7,6 +7,7 @@ import {
   Group,
   Loader,
   Pagination,
+  ScrollArea,
   Skeleton,
   Stack,
   Title,
@@ -49,8 +50,8 @@ export default function InboundPage() {
     return Math.ceil(num / numOfBillInDisplay);
   };
   return (
-    <Stack w='100%' h='100%' py='1rem' px='2rem' justify='flex-start'>
-      <Group justify='space-between'>
+    <ScrollArea w='100%' h='100%' py='1rem' px='2rem'>
+      <Group justify='space-between' mb='md'>
         <Title order={4}>Danh sách phiếu nhập kho</Title>
         <Button
           // className='bg-0-primary-color-6 text-white'
@@ -82,6 +83,6 @@ export default function InboundPage() {
           />
         </div>
       )}
-    </Stack>
+    </ScrollArea>
   );
 }

@@ -187,6 +187,7 @@ export default function InstockPage({
   return (
     <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
       <Tabs
+        defaultValue='publish'
         value={activedTab as string | null | undefined}
         onChange={(value) => {
           setActivedTab(value as string);

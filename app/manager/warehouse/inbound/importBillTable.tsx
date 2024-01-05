@@ -43,7 +43,7 @@ export default function ImportBillTable({ bills }: { bills: Bill_Import[] | unde
 
     ))
     return (
-        <Table stickyHeader stickyHeaderOffset={60} highlightOnHover highlightOnHoverColor='turquoise.0' verticalSpacing="sm">
+        <Table highlightOnHover highlightOnHoverColor='turquoise.0' verticalSpacing="sm">
             <Table.Thead>
                 <Table.Tr key='head'>
                     {tableHead}
