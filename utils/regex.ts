@@ -10,6 +10,8 @@ const checkNameFormat = (value: string) : any => {
     return (value.length < 2 || value.length > 30 ? "Name must have at least 2 letters" : null)
 }
 
+
+
 const checkPhoneFormat = (value: string) : any => {
     // if(value.length > 11)
     //     return "Phone must not exceed 11 characters";

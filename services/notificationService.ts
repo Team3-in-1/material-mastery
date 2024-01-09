@@ -19,7 +19,7 @@ class NotificationService {
             headers: this.headers
         })
             .then(res => res.data.metadata[0].noti_options)
-            .catch(error => error.response.status)
+            .catch(error => {throw new Error();})
     }
 }
 
