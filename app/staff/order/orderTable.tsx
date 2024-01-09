@@ -55,7 +55,7 @@ export default function OrderTable({ orders }: Props) {
   let currentPath = usePathname();
   const router = useRouter();
 
-  const orderData: tableType = orders.map((i: Order) => ({
+  const orderData: tableType = orders?.map((i: Order) => ({
     id: i._id,
     createAt: dayjs(i.createdAt).format('DD/MM/YYYY'),
     customer: i.order_username,
@@ -66,7 +66,7 @@ export default function OrderTable({ orders }: Props) {
 
   const tableHead = tableHeadList.map((i) => <Table.Th key={i}>{i}</Table.Th>);
 
-  const tableBody = orderData.map((i) => (
+  const tableBody = orderData?.map((i) => (
     <Table.Tr key={i.id}>
       <Table.Td>{formatOrderId(i.id, i.createAt)}</Table.Td>
       <Table.Td>{i.createAt}</Table.Td>
@@ -74,14 +74,14 @@ export default function OrderTable({ orders }: Props) {
       <Table.Td>
         {
           paymentStatusMapping[
-            i.paymentStatus as keyof typeof paymentStatusMapping
+          i.paymentStatus as keyof typeof paymentStatusMapping
           ]
         }
       </Table.Td>
       <Table.Td>
         {
           shipmentStatusMapping[
-            i.shipmentStatus as keyof typeof shipmentStatusMapping
+          i.shipmentStatus as keyof typeof shipmentStatusMapping
           ]
         }
       </Table.Td>

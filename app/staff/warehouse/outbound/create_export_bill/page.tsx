@@ -8,7 +8,7 @@ import { Bill_Address, Bill_Payment, Bill_Product, Customer_In_Bill } from "@/ut
 import { checkNameFormat, checkPhoneFormat } from "@/utils/regex";
 import { Bill_Export_Request, Item_Products, Products } from "@/utils/request";
 import { Product } from "@/utils/response";
-import { ActionIcon, Button, Flex, Group, NativeSelect, ScrollArea, Stack, Text, TextInput, Textarea, Title } from "@mantine/core";
+import { ActionIcon, Button, Divider, Flex, Group, NativeSelect, ScrollArea, Stack, Text, TextInput, Textarea, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconArrowLeft } from "@tabler/icons-react";
@@ -17,6 +17,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import Loading from "./loading";
+import dayjs from "dayjs";
 
 
 
@@ -149,11 +150,9 @@ export default function CreateExportBillPage() {
     return (
         <ScrollArea className='h-full w-full z-[0]' >
             <div className='flex flex-col gap-[24px] py-[16px] px-[16px] h-full w-full '>
-                <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
-                    onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
-                {createExportBillMutation.isPending ? <Loading /> :
-                    <form onSubmit={form.onSubmit(handleCreateBill)}>
-                        <Flex direction='column-reverse'>
+                <form onSubmit={form.onSubmit(handleCreateBill)}>
+                    <Flex direction='column-reverse' gap='16'>
+                        {createExportBillMutation.isPending ? <Loading /> :
                             <Flex className="rounded-[8px] border-[1px] " p='16'>
                                 <Stack w='250' className="basis-1/3">
                                     <TextInput
@@ -200,20 +199,54 @@ export default function CreateExportBillPage() {
 
                                 </ScrollArea>
                             </Flex>
-                            <Group justify="space-between" >
-                                <Stack gap='0' px='32px'>
-                                    <Title order={2} mb='4'>Phiếu xuất kho</Title>
-                                </Stack>
-                                <Button.Group>
-                                    <Button variant='outline' onClick={() => {
-                                        form.reset()
-                                        setAddedProduct([])
-                                    }}>Xóa phiếu</Button>
-                                    <Button className="bg-0-primary-color-6 text-white" type='submit'>Tạo phiếu</Button>
-                                </Button.Group>
+                        }
+                        <Group justify='space-between' align='flex-end'>
+                            <Group>
+                                <ActionIcon
+                                    variant='light'
+                                    size='lg'
+                                    aria-label='Back to Order page'
+                                    onClick={() => router.back()}
+                                >
+                                    <IconArrowLeft />
+                                </ActionIcon>
+                                <Group align='flex-end'>
+                                    <Stack gap='0' px='32px'>
+                                        <Title order={2} mb='4'>
+                                            Phiếu xuất kho
+                                        </Title>
+                                        <Text fs='italic' size='sm'>
+                                            *Tạo phiếu khi cần xuất hàng
+                                        </Text>
+                                    </Stack>
+                                    <Group>
+                                        <Divider orientation='vertical' size='sm' />
+                                        <Text fs='italic'>
+                                            Ngày tạo thiếu: {dayjs(new Date()).format('DD/MM/YYYY')}
+                                        </Text>
+                                    </Group>
+                                </Group>
                             </Group>
-                        </Flex>
-                    </form>}
+                            <Button.Group>
+                                <Button
+                                    variant='outline'
+                                    onClick={() => {
+                                        form.reset();
+                                        setAddedProduct([]);
+                                    }}
+                                >
+                                    Xóa phiếu
+                                </Button>
+                                <Button
+                                    type='submit'
+                                    className="bg-0-primary-color-6 text-white"
+                                >
+                                    Tạo phiếu
+                                </Button>
+                            </Button.Group>
+                        </Group>
+                    </Flex>
+                </form>
             </div >
         </ScrollArea>
     )

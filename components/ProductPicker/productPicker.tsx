@@ -109,7 +109,7 @@ export default function ProductPicker({
   const searchMutation = useMutation({
     mutationKey: ['search', keyword],
     mutationFn: () => {
-      return productService.search(keyword);
+      return productService.search(keyword, true);
     },
     onSuccess: (data) => {
       if (data.length != 0) {

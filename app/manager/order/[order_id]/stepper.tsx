@@ -15,6 +15,7 @@ import DeliveryTimeline from '@/components/DeliveryTimeline/deliveryTimeline';
 import { IconTruckDelivery } from '@tabler/icons-react';
 import { Bill_Address, Bill_Payment, Customer_In_Bill } from '@/utils/object';
 import { Bill_Export_Request, Item_Products, Products } from '@/utils/request';
+import { useState } from 'react';
 
 enum statusOrder {
   'pending' = 0,
@@ -36,7 +37,8 @@ export default function OrderStepper({
 }) {
   const [opened, handlers] = useDisclosure(false);
   const [failOpened, failedHandlers] = useDisclosure(false);
-
+  const [isPay, setIsPay] = useState(false)
+  const [payOpened, payHandlers] = useDisclosure(false);
   const handleConfirmOrder = (id: string | undefined) => {
     const tmp = {
       orderId: id,
@@ -96,6 +98,14 @@ export default function OrderStepper({
     mutate(tmp);
     failedHandlers.close();
   };
+  const handlePaySuccessful = (id: string | undefined) => {
+    // const tmp = {
+    //   orderId: id,
+    //   status: 'failed',
+    // };
+    // mutate(tmp);
+    payHandlers.close();
+  };
   const stepper_cancelled = (
     <Stepper color='red' active={2} px='1rem' w='600'>
       <Stepper.Step
@@ -117,12 +127,12 @@ export default function OrderStepper({
       </Stepper.Step>
     </Stepper>
   );
-  if (data.order_status === 'cancelled') return stepper_cancelled;
+  if (data?.order_status === 'cancelled') return stepper_cancelled;
   else
     return (
       <Stepper
         color={data?.order_status === 'failed' ? 'red' : 'turquoise'}
-        active={statusOrder[data.order_status as keyof typeof statusOrder]}
+        active={statusOrder[data?.order_status as keyof typeof statusOrder]}
         px='1rem'
         allowNextStepsSelect={false}
       >
@@ -224,6 +234,8 @@ export default function OrderStepper({
             <DeliveryTimeline
               onSuccess={() => handlers.open()}
               onFailed={() => failedHandlers.open()}
+              isPay={isPay}
+              onPayment={() => payHandlers.open()}
             />
             <Divider />
             <OrderInformation data={data} />
@@ -283,10 +295,38 @@ export default function OrderStepper({
                 </Button>
               </Group>
             </Modal>
+            <Modal
+              className='absolute z-[10000]'
+              size='sm'
+              opened={payOpened}
+              onClose={() => payHandlers.close()}
+              centered
+              withCloseButton={false}
+            >
+              <Text w='100%' size='lg' fw='700' ta='center' my='lg'>
+                Xác nhận thanh toán thành công
+              </Text>
+              <Group justify='center' mb='sm'>
+                <Button
+                  size='md'
+                  variant='outline'
+                  onClick={() => payHandlers.close()}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  className='bg-0-primary-color-6 text-white'
+                  size='md'
+                  onClick={() => handleFailedDelivery(data?._id)}
+                >
+                  Xác nhận
+                </Button>
+              </Group>
+            </Modal>
           </Stack>
         </Stepper.Step>
         {data?.order_status === 'shipped' ||
-        data?.order_status === 'delivered' ? (
+          data?.order_status === 'delivered' ? (
           <Stepper.Step
             label='Giao thành công'
             description='Giao hàng thành công'

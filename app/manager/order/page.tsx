@@ -16,6 +16,7 @@ import {
   Button,
   Skeleton,
   Loader,
+  Title,
 } from '@mantine/core';
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -47,7 +48,7 @@ const shipmentState = [
   'Giao thất bại',
   'Giao thành công',
 ];
-const filterMapping = {
+const shipmentStatusMapping = {
   'Tất cả': '',
   'Chờ xác nhận': 'pending',
   'Chuẩn bị hàng': 'confirmed',
@@ -56,6 +57,10 @@ const filterMapping = {
   'Đã hủy': 'cancelled',
   'Giao thất bại': 'failed',
   'Giao thành công': 'delivered',
+};
+
+const paymentStatusMapping = {
+  'Tất cả': '',
   'Chưa thanh toán': 'pending',
   'Đã thanh toán': 'paid',
 };
@@ -68,20 +73,29 @@ export default function OnlineOrderSegment() {
   const [activePage, setPage] = useState(1);
   // filter
   const [date, setDate] = useState<string | null>(dates[0]);
-  const [filter, setFilter] = useState<string>('Tất cả');
+  const [paymentFilter, setPaymentFilter] = useState<string | null>(
+    paymentState[0]
+  );
+  const [shipmentFilter, setShipmentFilter] = useState<string | null>(
+    shipmentState[0]
+  );
   const { user } = useContext(UserContext);
   const orders = useQuery({
     queryKey: [
       'orders',
       activePage,
-      filterMapping[filter as keyof typeof filterMapping],
+      shipmentStatusMapping[
+      shipmentFilter as keyof typeof shipmentStatusMapping
+      ],
     ],
     queryFn: () => {
       const orderService = new OrderService(user);
       return orderService.getAllOrder(
         10,
         activePage,
-        filterMapping[filter as keyof typeof filterMapping]
+        shipmentStatusMapping[
+        shipmentFilter as keyof typeof shipmentStatusMapping
+        ]
       );
     },
     enabled: !!user,
@@ -96,34 +110,41 @@ export default function OnlineOrderSegment() {
     enabled: !!user,
   });
 
+  // const handleFilter = (data: any) => {
+  //     return data.filter((item: any) => {
+  //         if (paymentFilter === paymentState[0])
+  //             return true
+  //         else
+  //             return item.order_payment.status === paymentStatusMapping[paymentFilter as keyof typeof paymentStatusMapping]
+  //     })
+  // }
   const calPages = (num: any) => {
-    switch (filter) {
+    let total: number;
+    switch (shipmentFilter) {
       case shipmentState[0]:
-        return Math.ceil(
-          (num.pending +
-            num.confirmed +
-            num.cancelled +
-            num.shipping +
-            num.shipped +
-            num.failed) /
-            10
+        return (
+          num.pending +
+          num.confirmed +
+          num.cancelled +
+          num.shipping +
+          num.shipped +
+          num.failed +
+          num.delivered
         );
       case shipmentState[1]:
-        return Math.ceil(num.pending / 10);
+        return num.pending;
       case shipmentState[2]:
-        return Math.ceil(num.confirmed / 10);
+        return num.confirmed;
       case shipmentState[3]:
-        return Math.ceil(num.cancelled / 10);
+        return num.cancelled;
       case shipmentState[4]:
-        return Math.ceil(num.shipping / 10);
+        return num.shipping;
       case shipmentState[5]:
-        return Math.ceil(num.shipped / 10);
+        return num.shipped;
       case shipmentState[6]:
-        return Math.ceil(num.failed / 10);
+        return num.failed;
       case shipmentState[7]:
-        return Math.ceil(num.pending / 10);
-      case shipmentState[8]:
-        return Math.ceil(num.paid / 10);
+        return num.delivered;
       default:
         break;
     }
@@ -132,52 +153,49 @@ export default function OnlineOrderSegment() {
   return (
     <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
       <Stack className='flex flex-col gap-[16px]'>
-        <Fieldset className='flex gap-[16px] items-end w-fit' legend='Bộ lọc'>
-          {/* <Group gap='0.5rem'>
-                        <Select
-                            w='100'
-                            data={dates}
-                            value={date}
-                            onChange={setDate}
-                            rightSectionWidth={0}
-                            comboboxProps={comboboxStyles}
-                        />
-                        <CalendarInput type={dateMapping[date as keyof typeof dateMapping]} />
-                    </Group> */}
-          <Select
-            w='fit-content'
-            label='Trạng thái thanh toán'
-            data={paymentState}
-            value={filter}
-            onChange={(value) => setFilter(value as string)}
-            comboboxProps={comboboxStyles}
-          />
-          <Select
-            w='fit-content'
-            label='Trạng thái giao hàng'
-            data={shipmentState}
-            value={filter}
-            onChange={(value) => setFilter(value as string)}
-            comboboxProps={comboboxStyles}
-          />
-        </Fieldset>
+        <Group justify='space-between'>
+          <Title order={4}>Quản lí đơn hàng</Title>
+          <Group>
+            <Text size='sm' fw='700'>Trạng thái giao hàng: </Text>
+            <Select
+              w='fit-content'
+              data={shipmentState}
+              value={shipmentFilter}
+              onChange={(value) => {
+                setShipmentFilter(value)
+                setPage(1)
+              }}
+              comboboxProps={comboboxStyles}
+            />
+          </Group>
+        </Group>
+
+
         {orders.isPending || numberOfOrder.isPending ? (
           <div className='w-full h-[500px] flex justify-center items-center'>
             <Loader type='dots' />
           </div>
         ) : (
-          <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]'>
-            <OrderTable orders={orders.data} />
-            <Pagination
-              className='self-center'
-              classNames={{
-                control: 'pagination-control',
-              }}
-              total={calPages(numberOfOrder.data) as number}
-              value={activePage}
-              onChange={setPage}
-              mt='sm'
-            />
+          <div>
+            <Text>Số đơn hàng hiện có:
+              <span style={{ fontWeight: '700', color: 'var(--mantine-color-turquoise-6)' }}>
+                {calPages(numberOfOrder.data)}
+              </span>
+            </Text>
+            <div className='flex flex-col border-[0.5px] border-solid rounded-[4px] w-full py-[12px] px-[16px]'>
+
+              <OrderTable orders={orders.data} />
+              <Pagination
+                classNames={{
+                  control: 'pagination-control',
+                }}
+                className='self-center'
+                total={Math.ceil(calPages(numberOfOrder.data) as number / 10)}
+                value={activePage}
+                onChange={setPage}
+                mt='sm'
+              />
+            </div>
           </div>
         )}
       </Stack>

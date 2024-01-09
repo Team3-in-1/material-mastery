@@ -64,7 +64,7 @@ export default function OrderInformation({ data }: { data: Order | undefined }) 
                         {
                             (data?.order_status == 'shipping' || data?.order_status == 'shipped') &&
                             <Button className='mt-3' onClick={() =>
-                                router.push(`/manager/order/offline/${data.order_exportId}`)}
+                                router.push(`/manager/warehouse/outbound/${data.order_exportId}`)}
                             >
                                 Thông tin phiếu xuất kho
                             </Button>

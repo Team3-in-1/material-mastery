@@ -27,9 +27,8 @@ class OrderService {
             'authorization': this.user.accessToken,
         }
         const time = new Date();
-
         this.currentTime = `${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}`;
-        this.startTime = `1/1/1900`;
+        this.startTime = `01/01/1900`;
     }
     checkOut = async (orders: any = []): Promise<any> => {
         return await axios.post(`${constant.BASE_URL}/checkout/review`, {
@@ -72,6 +71,12 @@ class OrderService {
             customer: body.customer
         }, { headers: this.hearders })
         return await axios.patch(`${constant.BASE_URL}/order/status/${orderId}?status=${'shipping'}&exportId=${exportBill.data.metadata._id}`, {}, { headers: this.hearders })
+            .then((res) => { return res.data })
+            .catch((err) => { err.response.status })
+    }
+
+    updateOrderPaymentStatus = async (orderId: string | undefined, status: string = 'paid'): Promise<any> => {
+        return await axios.patch(`${constant.BASE_URL}/order/status/payment/${orderId}?status=${status}`, {}, { headers: this.hearders })
             .then((res) => { return res.data })
             .catch((err) => { err.response.status })
     }
