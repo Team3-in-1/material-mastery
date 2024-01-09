@@ -12,6 +12,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import queryClient from '@/helpers/client';
 import LoggedHeader from './loggedHeader';
 import UserContext from '@/contexts/UserContext';
+import { usePathname } from 'next/navigation';
 
 // interface OnClickInterface {
 //   [index: string]: Function;
@@ -21,6 +22,7 @@ export default function Header() {
   const appName = 'Material Mastery';
   const { user, setUser } = useContext(UserContext);
   const [link, setLink] = useState('/');
+  const currentPath = usePathname()
   const setLinkBaseRole = (role: string = 'customer', setLink: any) => {
     switch (role) {
       case 'manager':
@@ -75,30 +77,33 @@ export default function Header() {
       </Link>
       {((user.userId &&
         user?.roles[0] != 'manager' &&
-        user?.roles[0] != 'staff') ||
-        !user.userId) && <Search content='' />}
+        user?.roles[0] != 'staff') || (!user.userId && currentPath != '/sign-in' && currentPath != '/sign-up')) && <Search content='' />}
 
       {user?.userId ? (
-          <LoggedHeader user={user} setUser={setUser} />
+        <LoggedHeader user={user} setUser={setUser} />
       ) : (
         <Flex gap='1rem' align='center'>
           {/* <LanguagePicker /> */}
-          <Link
-            href='/sign-in'
-            onClick={() => {
-              queryClient.clear();
-            }}
-          >
-            Đăng nhập
-          </Link>
-          <Link
-            href='/sign-up'
-            onClick={() => {
-              queryClient.clear();
-            }}
-          >
-            Đăng ký
-          </Link>
+          {currentPath != '/sign-in' &&
+            <Link
+              href='/sign-in'
+              onClick={() => {
+                queryClient.clear();
+              }}
+            >
+              Đăng nhập
+            </Link>}
+          {currentPath != '/sign-up' &&
+            <Link
+              href='/sign-up'
+              onClick={() => {
+                queryClient.clear();
+              }}
+            >
+              Đăng ký
+            </Link>
+          }
+
         </Flex>
       )}
     </Flex>

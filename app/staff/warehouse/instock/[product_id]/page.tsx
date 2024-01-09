@@ -164,9 +164,9 @@ export default function WarehouseProductPage({
   return (
     <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
       {target_product.isPending ||
-      comments.isPending ||
-      publishMutation.isPending ||
-      unpublishMutation.isPending ? (
+        comments.isPending ||
+        publishMutation.isPending ||
+        unpublishMutation.isPending ? (
         <div className='w-full h-[500px] flex justify-center items-center'>
           <Loader type='dots' />
         </div>
@@ -194,10 +194,9 @@ export default function WarehouseProductPage({
               <Group gap='16'>
                 <Text>*Sản phẩm này đã được trưng bày</Text>
                 <Button
-                  className='bg-0-primary-color-6 text-white'
+                  className='bg-rose-500 text-white'
                   variant='filled'
                   size='md'
-                  color='red'
                   onClick={() => unpublishMutation.mutate()}
                 >
                   <IconArrowDown />

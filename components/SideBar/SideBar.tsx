@@ -50,16 +50,7 @@ const staffData = [
         slug: 'order',
         icon: IconChecklist,
         label: 'Đơn hàng',
-        child: [
-            {
-                slug: 'online',
-                label: 'Trực tuyến',
-            },
-            {
-                slug: 'offline',
-                label: 'Tại cửa hàng',
-            },
-        ],
+        child: [],
     },
     {
         slug: 'category',
@@ -113,16 +104,7 @@ const managerData = [
         slug: 'order',
         icon: IconChecklist,
         label: 'Đơn hàng',
-        child: [
-            {
-                slug: 'online',
-                label: 'Trực tuyến',
-            },
-            {
-                slug: 'offline',
-                label: 'Tại cửa hàng',
-            },
-        ],
+        child: [],
     },
     {
         slug: 'staff',
@@ -169,6 +151,7 @@ export default function SideBar({ from }: { from: string }) {
         let href = targetSlug.length > 1 ? `/${targetSlug[1]}` : '';
         href = params !== undefined && key !== undefined ? href + '?' + key + '=' + params : href
         router.push(`/${active[0]}/${targetSlug[0]}` + href);
+
     };
 
     const data = from === 'staff' ? staffData : managerData;
@@ -199,11 +182,12 @@ export default function SideBar({ from }: { from: string }) {
             // } : {}}
             fw={500}
             onClick={() => {
+                console.log(from)
                 const tmp = defaultSearchParams[item.slug as keyof typeof defaultSearchParams]
                 if (tmp === undefined)
                     handleOnclick(item)
                 else
-                    handleOnclick(item, undefined, tmp.key, tmp.param)
+                    handleOnclick(item, 0, tmp.key, tmp.param)
             }}
             rightSection={<></>}
             opened={item.slug === active[1]}

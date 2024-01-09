@@ -1,7 +1,7 @@
 'use client';
 import UserContext from '@/contexts/UserContext';
 import BillService from '@/services/billService';
-import { Button, Group, Loader, Pagination, Stack, Title } from '@mantine/core';
+import { Button, Group, Loader, Pagination, ScrollArea, Stack, Title } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
 import { useContext, useState } from 'react';
@@ -39,13 +39,11 @@ export default function OfflineOrderSegment() {
     return Math.ceil(num / numOfBillInDisplay);
   };
   return (
-    <Stack w='100%' h='100%' py='1rem' px='2rem' justify='flex-start'>
-      <Group justify='space-between'>
+    <ScrollArea w='100%' h='100%' py='1rem' px='2rem'>
+      <Group justify='space-between' mb='md'>
         <Title order={4}>Danh sách phiếu xuất kho</Title>
         <Button
-          // className='bg-0-primary-color-6 text-white'
-          bg={'#02B1AB'}
-          className=' text-white'
+          className='bg-0-primary-color-6 text-white'
           onClick={() => {
             router.push(`${currentPath}/create_export_bill`);
           }}
@@ -72,6 +70,6 @@ export default function OfflineOrderSegment() {
           />
         </div>
       )}
-    </Stack>
+    </ScrollArea>
   );
 }

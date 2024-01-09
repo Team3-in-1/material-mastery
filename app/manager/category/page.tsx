@@ -83,6 +83,7 @@ export default function ManageStaffPage() {
         },
         onError(error) {
             console.log(error)
+            toast.error(error.message)
         },
     })
 
@@ -94,13 +95,13 @@ export default function ManageStaffPage() {
             createCategoryMutation.mutate(formData.name);
         }
     }
-    
+
     const handleUpdateSubmit = (formData: any) => {
         if (
             formData &&
             formData.name
         ) {
-            updateCategoryMutation.mutate({id: item?._id || '', name: formData.name});
+            updateCategoryMutation.mutate({ id: item?._id || '', name: formData.name });
         }
     }
 
@@ -177,7 +178,10 @@ export default function ManageStaffPage() {
                                             <Text c='turquoise' >Sửa</Text>
                                         </Table.Td>
                                         <Table.Td className='cursor-pointer'>
-                                            <Text c='red' onClick={deleteHandlers.open}>Xóa</Text>
+                                            <Text c='red' onClick={() => {
+                                                setItem(item)
+                                                deleteHandlers.open()
+                                            }}>Xóa</Text>
                                         </Table.Td>
                                     </Table.Tr>
                                 ))}
