@@ -96,7 +96,7 @@ export default function OrderInformation({
             {(data?.order_status == 'shipping' ||
               data?.order_status == 'shipped') && (
               <Button
-                className='mt-3 bg-0-primary-color-6 text-white'
+                className='mt-3'
                 onClick={() =>
                   router.push(`/manager/order/offline/${data.order_exportId}`)
                 }

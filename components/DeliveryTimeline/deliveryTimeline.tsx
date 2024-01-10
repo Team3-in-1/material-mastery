@@ -1,14 +1,16 @@
-import { Timeline, Text, Group, Button, Stack } from "@mantine/core";
-import { IconArrowNarrowRight, IconChecklist, IconChecks, IconCircleCheck, IconTruckDelivery, IconTruckReturn } from "@tabler/icons-react";
+import { Timeline, Text, Group, Button, Stack, Divider } from "@mantine/core";
+import { IconArrowNarrowRight, IconCash, IconChecklist, IconChecks, IconCircleCheck, IconTruckDelivery, IconTruckReturn } from "@tabler/icons-react";
 
 type Props = {
     staffName?: string,
     customerName?: string,
     create_time?: string,
     confirm_time?: string,
-    delivery_time?: string
+    delivery_time?: string,
+    isPay: boolean,
     onSuccess: any,
-    onFailed: any
+    onFailed: any,
+    onPayment: any
 }
 export default function DeliveryTimeline(
     {
@@ -17,8 +19,10 @@ export default function DeliveryTimeline(
         create_time = '12:00',
         confirm_time = '1:00',
         delivery_time = '2:00',
+        isPay,
         onSuccess,
-        onFailed
+        onFailed,
+        onPayment
     }: Props
 ) {
     return (
@@ -37,7 +41,13 @@ export default function DeliveryTimeline(
                 </Timeline.Item>
             </Timeline>
             <Stack >
-                <Button variant='light' size='lg'
+                <Button variant='light' size='lg' color='green' disabled={isPay}
+                    // leftSection={<IconArrowNarrowRight />}
+                    rightSection={<IconCash />}
+                    onClick={onPayment}
+                >Xác nhận thanh toán thành công</Button>
+                <Divider />
+                <Button variant='light' size='lg' disabled={!isPay}
                     leftSection={<IconArrowNarrowRight />}
                     rightSection={<IconTruckDelivery />}
                     onClick={onSuccess}

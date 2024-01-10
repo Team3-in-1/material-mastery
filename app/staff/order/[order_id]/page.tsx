@@ -43,6 +43,19 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
         }
     })
 
+    const updateOrderPaymentStatusMutation = useMutation({
+        mutationKey: ['update_order_payment_status'],
+        mutationFn: ({ orderId }: { orderId: string | undefined }) => {
+            const orderService = new OrderService(user);
+            return orderService.updateOrderPaymentStatus(orderId)
+        },
+        onSuccess: () => {
+            return queryClient.invalidateQueries({
+                queryKey: ['target_order', params.order_id],
+            });
+        }
+    })
+
     const updateOrderStatusToShippingMutation = useMutation({
         mutationFn: ({ orderId, body }: { orderId: string | undefined, body: Bill_Export_Request }) => {
             const orderService = new OrderService(user);
@@ -57,7 +70,8 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
 
     return (
         <ScrollArea className='h-full w-full z-[0]' >
-            {target_order.isPending || updateOrderStatusMutation.isPending || updateOrderStatusToShippingMutation.isPending ?
+            {target_order.isPending || updateOrderStatusMutation.isPending || updateOrderStatusToShippingMutation.isPending
+                || updateOrderPaymentStatusMutation.isPending ?
                 (<Loading />) :
                 (
 
@@ -65,7 +79,9 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
                         <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
                             onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
                         <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate}
-                            updateToShippingMutate={updateOrderStatusToShippingMutation.mutate} />
+                            updateToShippingMutate={updateOrderStatusToShippingMutation.mutate}
+                            updatePaymentStatusMutate={updateOrderPaymentStatusMutation.mutate}
+                        />
                     </div>
 
                 )

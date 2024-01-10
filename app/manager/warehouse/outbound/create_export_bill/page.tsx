@@ -216,7 +216,7 @@ export default function CreateExportBillPage() {
                                             Phiếu xuất kho
                                         </Title>
                                         <Text fs='italic' size='sm'>
-                                            *Tạo phiếu khi nhập hàng về cửa hàng
+                                            *Tạo phiếu khi cần xuất hàng
                                         </Text>
                                     </Stack>
                                     <Group>

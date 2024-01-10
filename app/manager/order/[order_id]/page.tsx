@@ -6,17 +6,18 @@ import UserContext from '@/contexts/UserContext';
 import { useMutation, useQuery } from '@tanstack/react-query'
 import OrderService from '@/services/orderService'
 import Loading from './loading';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import OrderStepper from './stepper';
 import queryClient from '@/helpers/client';
 import { Bill_Export_Request } from '@/utils/request';
 
+
+
 export default function OrderDetailsForStaffPage({ params }: { params: { order_id: string } }) {
 
     const router = useRouter()
     const { user } = useContext(UserContext);
-    const currentPath = usePathname()
 
     const target_order = useQuery({
         queryKey: ['target_order', params.order_id],
@@ -28,11 +29,25 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
         refetchOnMount: 'always'
     })
 
+
     const updateOrderStatusMutation = useMutation({
         mutationKey: ['update_order_status'],
         mutationFn: ({ orderId, status }: { orderId: string | undefined, status: string }) => {
             const orderService = new OrderService(user);
             return orderService.modifyOrderStatus(orderId, status)
+        },
+        onSuccess: () => {
+            return queryClient.invalidateQueries({
+                queryKey: ['target_order', params.order_id],
+            });
+        }
+    })
+
+    const updateOrderPaymentStatusMutation = useMutation({
+        mutationKey: ['update_order_payment_status'],
+        mutationFn: ({ orderId }: { orderId: string | undefined }) => {
+            const orderService = new OrderService(user);
+            return orderService.updateOrderPaymentStatus(orderId)
         },
         onSuccess: () => {
             return queryClient.invalidateQueries({
@@ -55,7 +70,8 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
 
     return (
         <ScrollArea className='h-full w-full z-[0]' >
-            {target_order.isPending || updateOrderStatusMutation.isPending || updateOrderStatusToShippingMutation.isPending ?
+            {target_order.isPending || updateOrderStatusMutation.isPending || updateOrderStatusToShippingMutation.isPending
+                || updateOrderPaymentStatusMutation.isPending ?
                 (<Loading />) :
                 (
 
@@ -63,7 +79,9 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
                         <ActionIcon variant="light" size='lg' aria-label="Back to Order page"
                             onClick={() => router.back()}><IconArrowLeft /></ActionIcon>
                         <OrderStepper data={target_order.data} mutate={updateOrderStatusMutation.mutate}
-                            updateToShippingMutate={updateOrderStatusToShippingMutation.mutate} />
+                            updateToShippingMutate={updateOrderStatusToShippingMutation.mutate}
+                            updatePaymentStatusMutate={updateOrderPaymentStatusMutation.mutate}
+                        />
                     </div>
 
                 )
@@ -71,6 +89,7 @@ export default function OrderDetailsForStaffPage({ params }: { params: { order_i
             < Toaster position='bottom-center' reverseOrder={false} />
         </ScrollArea >
     )
+
 
 }
 

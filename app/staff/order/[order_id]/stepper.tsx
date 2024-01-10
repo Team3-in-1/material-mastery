@@ -10,12 +10,12 @@ import {
   ThemeIcon,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useState } from 'react';
 import OrderInformation from './orderInformation';
 import DeliveryTimeline from '@/components/DeliveryTimeline/deliveryTimeline';
 import { IconTruckDelivery } from '@tabler/icons-react';
 import { Bill_Address, Bill_Payment, Customer_In_Bill } from '@/utils/object';
 import { Bill_Export_Request, Item_Products, Products } from '@/utils/request';
+import { useState } from 'react';
 
 enum statusOrder {
   'pending' = 0,
@@ -29,17 +29,18 @@ enum statusOrder {
 export default function OrderStepper({
   data,
   mutate,
-  updateToShippingMutate
+  updateToShippingMutate,
+  updatePaymentStatusMutate,
 }: {
   data: Order;
   mutate: any;
   updateToShippingMutate: any;
+  updatePaymentStatusMutate: any
 }) {
   const [opened, handlers] = useDisclosure(false);
   const [failOpened, failedHandlers] = useDisclosure(false);
-
-  // console.log('data', data);
-
+  const [isPay, setIsPay] = useState(data?.order_payment.status === 'paid' ? true : false)
+  const [payOpened, payHandlers] = useDisclosure(false);
   const handleConfirmOrder = (id: string | undefined) => {
     const tmp = {
       orderId: id,
@@ -99,6 +100,13 @@ export default function OrderStepper({
     mutate(tmp);
     failedHandlers.close();
   };
+  const handlePaySuccessful = (id: string | undefined) => {
+    const tmp = {
+      orderId: id
+    };
+    updatePaymentStatusMutate(tmp)
+    payHandlers.close();
+  };
   const stepper_cancelled = (
     <Stepper color='red' active={2} px='1rem' w='600'>
       <Stepper.Step
@@ -120,12 +128,12 @@ export default function OrderStepper({
       </Stepper.Step>
     </Stepper>
   );
-  if (data.order_status === 'cancelled') return stepper_cancelled;
+  if (data?.order_status === 'cancelled') return stepper_cancelled;
   else
     return (
       <Stepper
         color={data?.order_status === 'failed' ? 'red' : 'turquoise'}
-        active={statusOrder[data.order_status as keyof typeof statusOrder]}
+        active={statusOrder[data?.order_status as keyof typeof statusOrder]}
         px='1rem'
         allowNextStepsSelect={false}
       >
@@ -134,19 +142,13 @@ export default function OrderStepper({
             <OrderInformation data={data} />
             <Divider my='sm' />
             <Group gap='1rem' justify='center' pb='lg'>
-              <Button
-                variant='outline'
-                size='md'
-                color='red'
-                bg={'transparent'}
-              >
+              <Button variant='outline' size='md' color='red'>
                 Hủy đơn
               </Button>
               <Button
+                className='bg-0-primary-color-6 text-white'
                 size='md'
                 onClick={() => handlers.open()}
-                bg={'#02B1AB'}
-                className=' text-white'
               >
                 Xác nhận
               </Button>
@@ -171,10 +173,9 @@ export default function OrderStepper({
                   Hủy
                 </Button>
                 <Button
+                  className='bg-0-primary-color-6 text-white'
                   size='md'
                   onClick={() => handleConfirmOrder(data?._id)}
-                  bg={'#02B1AB'}
-                  className=' text-white'
                 >
                   Xác nhận
                 </Button>
@@ -192,10 +193,9 @@ export default function OrderStepper({
             <Group gap='1rem' justify='center' pb='lg'>
               {/* <Button variant='outline' size='md' color='red'>Hủy đơn</Button> */}
               <Button
+                className='bg-0-primary-color-6 text-white'
                 size='md'
                 onClick={() => handlers.open()}
-                bg={'#02B1AB'}
-                className=' text-white'
               >
                 Giao hàng
               </Button>
@@ -216,15 +216,13 @@ export default function OrderStepper({
                   size='md'
                   variant='outline'
                   onClick={() => handlers.close()}
-                  bg={'transparent'}
                 >
                   Hủy
                 </Button>
                 <Button
+                  className='bg-0-primary-color-6 text-white'
                   size='md'
                   onClick={() => handleConfirmDelivery(data?._id)}
-                  bg={'#02B1AB'}
-                  className=' text-white'
                 >
                   Xác nhận
                 </Button>
@@ -237,6 +235,8 @@ export default function OrderStepper({
             <DeliveryTimeline
               onSuccess={() => handlers.open()}
               onFailed={() => failedHandlers.open()}
+              isPay={isPay}
+              onPayment={() => payHandlers.open()}
             />
             <Divider />
             <OrderInformation data={data} />
@@ -260,10 +260,9 @@ export default function OrderStepper({
                   Hủy
                 </Button>
                 <Button
+                  className='bg-0-primary-color-6 text-white'
                   size='md'
                   onClick={() => handleSuccessfulDelivery(data?._id)}
-                  bg={'#02B1AB'}
-                  className=' text-white'
                 >
                   Xác nhận{' '}
                 </Button>
@@ -289,10 +288,37 @@ export default function OrderStepper({
                   Hủy
                 </Button>
                 <Button
+                  className='bg-0-primary-color-6 text-white'
                   size='md'
                   onClick={() => handleFailedDelivery(data?._id)}
-                  bg={'#02B1AB'}
-                  className=' text-white'
+                >
+                  Xác nhận
+                </Button>
+              </Group>
+            </Modal>
+            <Modal
+              className='absolute z-[10000]'
+              size='sm'
+              opened={payOpened}
+              onClose={() => payHandlers.close()}
+              centered
+              withCloseButton={false}
+            >
+              <Text w='100%' size='lg' fw='700' ta='center' my='lg'>
+                Xác nhận thanh toán thành công
+              </Text>
+              <Group justify='center' mb='sm'>
+                <Button
+                  size='md'
+                  variant='outline'
+                  onClick={() => payHandlers.close()}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  className='bg-0-primary-color-6 text-white'
+                  size='md'
+                  onClick={() => handlePaySuccessful(data?._id)}
                 >
                   Xác nhận
                 </Button>
@@ -301,7 +327,7 @@ export default function OrderStepper({
           </Stack>
         </Stepper.Step>
         {data?.order_status === 'shipped' ||
-        data?.order_status === 'delivered' ? (
+          data?.order_status === 'delivered' ? (
           <Stepper.Step
             label='Giao thành công'
             description='Giao hàng thành công'

@@ -37,10 +37,6 @@ const staffData = [
                 label: 'Tồn kho',
             },
             {
-                slug: 'inbound',
-                label: 'Nhập kho',
-            },
-            {
                 slug: 'outbound',
                 label: 'Xuất kho',
             },

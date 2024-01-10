@@ -35,7 +35,9 @@ export default function OrderInformation({ data }: { data: Order | undefined }) 
                     </Group>
                     <Group justify='space-between'>
                         <Text>Phương thức</Text>
-                        <Text>{paymentMethodMapping[data?.order_payment.method as keyof typeof paymentMethodMapping]}</Text>
+                        {data?.order_payment.method === undefined ? 'Thanh toán khi nhận hàng' :
+                            <Text>{paymentMethodMapping[data?.order_payment.method as keyof typeof paymentMethodMapping]}</Text>
+                        }
                     </Group>
                     <Group justify='space-between'>
                         <Text>Trạng thái</Text>
@@ -64,7 +66,7 @@ export default function OrderInformation({ data }: { data: Order | undefined }) 
                         {
                             (data?.order_status == 'shipping' || data?.order_status == 'shipped') &&
                             <Button className='mt-3' onClick={() =>
-                                router.push(`/manager/order/offline/${data.order_exportId}`)}
+                                router.push(`/manager/warehouse/outbound/${data.order_exportId}`)}
                             >
                                 Thông tin phiếu xuất kho
                             </Button>
