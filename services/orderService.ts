@@ -77,7 +77,7 @@ class OrderService {
 
     updateOrderPaymentStatus = async (orderId: string | undefined, status: string = 'paid'): Promise<any> => {
         return await axios.patch(`${constant.BASE_URL}/order/status/payment/${orderId}?status=${status}`, {}, { headers: this.hearders })
-            .then((res) => { return res.data })
+            .then((res) => { return res.data.metadata })
             .catch((err) => { err.response.status })
     }
 

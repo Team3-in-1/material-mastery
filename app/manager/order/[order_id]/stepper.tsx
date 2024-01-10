@@ -30,14 +30,16 @@ export default function OrderStepper({
   data,
   mutate,
   updateToShippingMutate,
+  updatePaymentStatusMutate,
 }: {
   data: Order;
   mutate: any;
   updateToShippingMutate: any;
+  updatePaymentStatusMutate: any
 }) {
   const [opened, handlers] = useDisclosure(false);
   const [failOpened, failedHandlers] = useDisclosure(false);
-  const [isPay, setIsPay] = useState(false)
+  const [isPay, setIsPay] = useState(data?.order_payment.status === 'paid' ? true : false)
   const [payOpened, payHandlers] = useDisclosure(false);
   const handleConfirmOrder = (id: string | undefined) => {
     const tmp = {
@@ -99,11 +101,10 @@ export default function OrderStepper({
     failedHandlers.close();
   };
   const handlePaySuccessful = (id: string | undefined) => {
-    // const tmp = {
-    //   orderId: id,
-    //   status: 'failed',
-    // };
-    // mutate(tmp);
+    const tmp = {
+      orderId: id
+    };
+    updatePaymentStatusMutate(tmp)
     payHandlers.close();
   };
   const stepper_cancelled = (
@@ -317,7 +318,7 @@ export default function OrderStepper({
                 <Button
                   className='bg-0-primary-color-6 text-white'
                   size='md'
-                  onClick={() => handleFailedDelivery(data?._id)}
+                  onClick={() => handlePaySuccessful(data?._id)}
                 >
                   Xác nhận
                 </Button>

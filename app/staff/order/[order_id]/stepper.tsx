@@ -39,7 +39,7 @@ export default function OrderStepper({
 }) {
   const [opened, handlers] = useDisclosure(false);
   const [failOpened, failedHandlers] = useDisclosure(false);
-  const [isPay, setIsPay] = useState(false)
+  const [isPay, setIsPay] = useState(data?.order_payment.status === 'paid' ? true : false)
   const [payOpened, payHandlers] = useDisclosure(false);
   const handleConfirmOrder = (id: string | undefined) => {
     const tmp = {
@@ -101,7 +101,10 @@ export default function OrderStepper({
     failedHandlers.close();
   };
   const handlePaySuccessful = (id: string | undefined) => {
-    updatePaymentStatusMutate(id)
+    const tmp = {
+      orderId: id
+    };
+    updatePaymentStatusMutate(tmp)
     payHandlers.close();
   };
   const stepper_cancelled = (

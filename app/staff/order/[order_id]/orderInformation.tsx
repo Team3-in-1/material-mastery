@@ -35,7 +35,9 @@ export default function OrderInformation({ data }: { data: Order | undefined }) 
                     </Group>
                     <Group justify='space-between'>
                         <Text>Phương thức</Text>
-                        <Text>{paymentMethodMapping[data?.order_payment.method as keyof typeof paymentMethodMapping]}</Text>
+                        {data?.order_payment.method === undefined ? 'Thanh toán khi nhận hàng' :
+                            <Text>{paymentMethodMapping[data?.order_payment.method as keyof typeof paymentMethodMapping]}</Text>
+                        }
                     </Group>
                     <Group justify='space-between'>
                         <Text>Trạng thái</Text>
