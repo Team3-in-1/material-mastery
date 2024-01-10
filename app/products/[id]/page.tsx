@@ -25,7 +25,7 @@ import CommentService from '@/services/commentService';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { productService } from '@/services/productService';
-import { formatMoney } from '@/utils/string';
+import { formatDate, formatMoney } from '@/utils/string';
 import { categoryService } from '@/services/categoryService';
 import queryClient from '@/helpers/client';
 import useCart from '@/helpers/useCart';
@@ -472,11 +472,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                       size='12px'
                       className=' ml-[55px] text-[#BBB] text-[12px]'
                     >
-                      {person.createdAt.split('T')[0].split('-')[2] +
-                        '/' +
-                        person.createdAt.split('T')[0].split('-')[1] +
-                        '/' +
-                        person.createdAt.split('T')[0].split('-')[0]}
+                      {formatDate(person.createdAt)}
                     </Text>
                   </Stack>
                   <Text ml={60} className=' ml-[60px] text-overflow: ellipsis;'>

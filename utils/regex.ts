@@ -6,8 +6,8 @@ const checkNameFormat = (value: string) : any => {
     //     return "Name must not exceed 30 characters";
     // return (value.length < 2 ? "Name must have at least 2 letters" : null)
     if(value.length > 30)
-        return "Name must not exceed 30 characters";
-    return (value.length < 2 || value.length > 30 ? "Name must have at least 2 letters" : null)
+        return "Tên đăng nhập không được vượt quá 30 ký tự";
+    return (value.length < 2 || value.length > 30 ? "Tên đăng nhập không được ngắn hơn 2 ký tự" : null)
 }
 
 
@@ -22,7 +22,7 @@ const checkPhoneFormat = (value: string) : any => {
 
 
     if(value.length > 11 || value.length < 8 || !phoneRegex.test(value))
-        return "Invalid phone"    
+        return "Sai định dạng số điện thoại"    
     return null;
 }
 
@@ -36,7 +36,7 @@ const checkEmailFormat = (value: string) : any => {
 
 
     if(!emailRegex.test(value) || value.length < 6 || value.length > 100)
-        return "Invalid email"    
+        return "Sai định dạng email"    
     return null;
 }
 
@@ -55,9 +55,9 @@ const checkPasswordFormat = (value: string) : any => {
     //     return "Password must contain lowercase letters"
 
     if(value.length > 30)
-        return "Password must not exceed 30 characters";
-    // if(value.length < 8)
-    //     return "Password must have at least 8 characters";
+        return "Mật khẩu không được vượt quá 30 ký tự";
+    if(value.length < 8)
+        return "Mật khẩu không được ngắn hơn 8 ký tự";
     
     return null;
 }
@@ -77,7 +77,7 @@ const checkAddressFormat = (value: string) : any => {
     //     return "Password must contain lowercase letters"
 
     if(value.length > 200)
-        return "Address must not exceed 200 characters";
+        return "Địa chỉ không được vượt quá 200 ký tự";
     // if(value.length < 8)
     //     return "Password must have at least 8 characters";
     

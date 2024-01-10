@@ -23,6 +23,7 @@ import {
   Transition,
   rem,
   Loader,
+  TextInput,
 } from '@mantine/core';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { useContext, useEffect, useRef, useState } from 'react';
@@ -42,6 +43,7 @@ import DescInfoForm from './descInfoForm';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import queryClient from '@/helpers/client';
+import Comments from './comments';
 
 const ImageLink = 'https://blog.alliedmarketresearch.com/images/user_icon.png';
 function GeneralInfoField({
@@ -164,9 +166,9 @@ export default function WarehouseProductPage({
   return (
     <ScrollArea className='h-full w-full z-[0]' py='1rem' px='2rem'>
       {target_product.isPending ||
-        comments.isPending ||
-        publishMutation.isPending ||
-        unpublishMutation.isPending ? (
+      comments.isPending ||
+      publishMutation.isPending ||
+      unpublishMutation.isPending ? (
         <div className='w-full h-[500px] flex justify-center items-center'>
           <Loader type='dots' />
         </div>
@@ -304,8 +306,8 @@ export default function WarehouseProductPage({
           <Flex className=' flex-col ml-[100px] mr-[100px] bg-white rounded-[10px] p-[20px] mt-[10px] mb-[20px]'>
             <Text fw='700'>Đánh giá sản phẩm</Text>
             <Group className='ml-[100px] mr-[100px] justify-center align-middle'>
-              <Stack className=' gap-1 justify-center items-center'>
-                <Text className=' font-bold text-[50px]'>
+              <Stack gap={'0.25rem'} justify='center' align='center'>
+                <Text fw={700} size='30px'>
                   {target_product.data?.product_ratingAverage}/5
                 </Text>
                 <Rating
@@ -314,7 +316,7 @@ export default function WarehouseProductPage({
                   readOnly
                 />
                 <Text className=' font-normal'>
-                  {'(' + (comments.data?.length || 0) + ' đánh giá)'}
+                  {'(' + (comments.data?.length || 1) + ' đánh giá)'}
                 </Text>
               </Stack>
               <Group>
@@ -342,41 +344,11 @@ export default function WarehouseProductPage({
               </Group>
             </Group>
             <Stack>
-              {comments.data?.map((person: any) => {
-                return (
-                  (isRateChoosing == 0 ||
-                    isRateChoosing == (person.comment_rating || 3)) && (
-                    <Group
-                      key={person._id}
-                      className='border-b-[1px]'
-                      gap='16'
-                      align='flex-center'
-                      py='1rem'
-                      wrap='nowrap'
-                    >
-                      <Image
-                        alt='avt'
-                        w='32'
-                        h='32'
-                        src={
-                          person.user_avatar == null || person.user_avatar == ''
-                            ? ImageLink
-                            : person.user_avatar
-                        }
-                        className=' rounded-full w-[35px]'
-                      />
-                      <Stack gap='sm'>
-                        <Text>{person.comment_userName}</Text>
-                        <Stack gap='0'>
-                          <Rating value={person.comment_rating || 3} readOnly />
-                          <Text c='gray.6'>{person.createdAt}</Text>
-                        </Stack>
-                        <Text lineClamp={4}>{person.comment_content}</Text>
-                      </Stack>
-                    </Group>
-                  )
-                );
-              })}
+              <Comments
+                comments={comments}
+                isRateChoosing={isRateChoosing}
+                ImageLink={ImageLink}
+              />
             </Stack>
           </Flex>
         </div>

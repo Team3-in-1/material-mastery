@@ -31,4 +31,12 @@ const formatProductId = (id: string, price: string) => {
     return 'PD' + id.slice(0, 3) + price.slice(0, 3) + id.slice(-3)
 }
 
-export { formatMoney, formatOrderId, formatProductId, formatExportBillId, formatImportBillId }
+const formatDate = (date: string) => {
+    return date.split('T')[0].split('-')[2] +
+                        '/' +
+                        date.split('T')[0].split('-')[1] +
+                        '/' +
+                       date.split('T')[0].split('-')[0]
+}
+
+export { formatMoney, formatOrderId, formatProductId, formatExportBillId, formatImportBillId, formatDate }
