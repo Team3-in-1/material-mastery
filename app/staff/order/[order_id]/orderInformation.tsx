@@ -98,7 +98,9 @@ export default function OrderInformation({
               <Button
                 className='mt-3 bg-0-primary-color-6 text-white'
                 onClick={() =>
-                  router.push(`/manager/order/offline/${data.order_exportId}`)
+                  router.push(
+                    `/staff/warehouse/outbound/${data.order_exportId}`
+                  )
                 }
               >
                 Thông tin phiếu xuất kho
