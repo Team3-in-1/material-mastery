@@ -1,11 +1,15 @@
-const BASE_URL = 'https://mm.khangnt.space/v1/api'
-const API_KEY = '8f07a25f2b0b6d30f9895090c579178ca93b5d53ad83d1deb4f12dc41678babdf60572e005b0d5de933b17ea167968c2f7398ebb1b484e5a4f500adaf42f7ea7'
-const USER_COOKIE_NAME = 'user'
-const SOCKET_URL = 'http://mm.khangdev.id.vn/';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost/v1/api'
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY || 'your api key'
+const USER_COOKIE_NAME = process.env.NEXT_PUBLIC_USER_COOKIE_NAME || 'user'
+const SOCKET_URL =
+  process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost/v1/api'
+
+console.log('BASE_URL', BASE_URL)
+console.log('API_KEY', API_KEY)
 
 export const constant = {
-    BASE_URL,
-    API_KEY,
-    USER_COOKIE_NAME,
-    SOCKET_URL,
+  BASE_URL,
+  API_KEY,
+  USER_COOKIE_NAME,
+  SOCKET_URL,
 }
