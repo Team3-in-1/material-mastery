@@ -1,13 +1,13 @@
-'use client';
-import SideBar from '@/components/SideBar/SideBar';
-import UserContext from '@/contexts/UserContext';
-import { constant } from '@/utils/constant';
-import { Button, Group } from '@mantine/core';
-import { DefaultEventsMap } from '@socket.io/component-emitter';
-import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
-import { Socket, io } from 'socket.io-client';
+'use client'
+import SideBar from '@/components/SideBar/SideBar'
+import UserContext from '@/contexts/UserContext'
+import { constant } from '@/utils/constant'
+import { Button, Group } from '@mantine/core'
+import { DefaultEventsMap } from '@socket.io/component-emitter'
+import axios from 'axios'
+import { useContext, useEffect, useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
+import { Socket, io } from 'socket.io-client'
 
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>
 
@@ -32,16 +32,15 @@ const socketInitializer = () => {
 export default function ManagerLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-
-  useEffect(() => {
-    socketInitializer()
-    return () => {
-      socket.disconnect()
-    }
-  }, [])
-
+  // useEffect(() => {
+  //   socketInitializer()
+  //   return () => {
+  //     socket.disconnect()
+  //   }
+  // }, [])
+  //
   return (
     <Group
       w='100%'
@@ -55,10 +54,8 @@ export default function ManagerLayout({
     >
       <SideBar from='manager' />
       {children}
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
+      <Toaster position='top-center' reverseOrder={false} />
     </Group>
-  );
+  )
 }
+

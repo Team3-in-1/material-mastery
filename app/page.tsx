@@ -1,6 +1,6 @@
-'use client';
-import '@/styles/global.css';
-import Link from 'next/link';
+'use client'
+import '@/styles/global.css'
+import Link from 'next/link'
 import {
   Grid,
   Container,
@@ -9,24 +9,24 @@ import {
   Divider,
   Image,
   LoadingOverlay,
-} from '@mantine/core';
-import banner from '@/public/pic/banner.png';
-import NextImage from 'next/image';
-import { useQuery } from '@tanstack/react-query';
-import { categoryService } from '@/services/categoryService';
-import { Carousel } from '@mantine/carousel';
-import { splitArray } from '@/utils/array';
-import { Product } from '@/utils/response';
-import { ProductCards } from '@/components/Product/productCards';
-import queryClient from '@/helpers/client';
-import dynamic from 'next/dynamic';
-import { useContext } from 'react';
-import UserContext from '@/contexts/UserContext';
-import { productService } from '@/services/productService';
+} from '@mantine/core'
+import banner from '@/public/pic/banner.png'
+import NextImage from 'next/image'
+import { useQuery } from '@tanstack/react-query'
+import { categoryService } from '@/services/categoryService'
+import { Carousel } from '@mantine/carousel'
+import { splitArray } from '@/utils/array'
+import { Product } from '@/utils/response'
+import { ProductCards } from '@/components/Product/productCards'
+import queryClient from '@/helpers/client'
+import dynamic from 'next/dynamic'
+import { useContext } from 'react'
+import UserContext from '@/contexts/UserContext'
+import { productService } from '@/services/productService'
 
-const data: Product[] = [];
+const dataExample: Product[] = []
 for (let index = 0; index < 14; index++) {
-  data.push({
+  dataExample.push({
     _id: Math.random() + '',
     product_name: "1/2\" x 4' x 8' Drywall Panel",
     product_thumb: 'https://biiibo.com/files/p_1000149007_small.jpg',
@@ -41,7 +41,7 @@ for (let index = 0; index < 14; index++) {
     updatedAt: '2023-11-02T14:10:58.765Z',
     product_slug: "12\"-x-4'-x-8'-drywall-panel",
     __v: 0,
-  });
+  })
 }
 
 function Home() {
@@ -50,17 +50,17 @@ function Home() {
     queryFn: categoryService.getAllCategories,
     staleTime: Infinity,
     gcTime: Infinity,
-  });
+  })
 
-  const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext)
 
   const promotionalProducts = useQuery({
     queryKey: ['Promotional Products'],
     queryFn: () => {
-      return productService.getAllProducts();
+      return productService.getAllProducts()
     },
-    initialData: data,
-  });
+    initialData: dataExample,
+  })
 
   return (
     <Container
@@ -121,6 +121,7 @@ function Home() {
             <Image
               component={NextImage}
               radius='md'
+              fit='contain'
               src={banner}
               alt='banner'
               w='71.75rem'
@@ -139,7 +140,7 @@ function Home() {
                       selectedSort={'Sản phẩm mới'}
                     />
                   </Carousel.Slide>
-                );
+                )
               })}
             </Carousel>
           </Container>
@@ -163,7 +164,7 @@ function Home() {
                       selectedSort={null}
                     />
                   </Carousel.Slide>
-                );
+                )
               })}
             </Carousel>
           </Container>
@@ -179,7 +180,7 @@ function Home() {
         />
       )}
     </Container>
-  );
+  )
 }
 
-export default Home;
+export default Home
