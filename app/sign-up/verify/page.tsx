@@ -1,6 +1,6 @@
-'use client';
-import UserContext from '@/contexts/UserContext';
-import { userService } from '@/services/userService';
+'use client'
+import UserContext from '@/contexts/UserContext'
+import { userService } from '@/services/userService'
 import {
   Alert,
   Button,
@@ -11,104 +11,107 @@ import {
   Stack,
   Text,
   TextInput,
-} from '@mantine/core';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { useContext, useEffect, useState } from 'react';
-import { IconInfoCircle } from '@tabler/icons-react';
-import queryClient from '@/helpers/client';
-import toast from 'react-hot-toast';
-import { relative } from 'path';
-import Timer from './timer';
+} from '@mantine/core'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+import { useContext, useEffect, useState } from 'react'
+import { IconInfoCircle } from '@tabler/icons-react'
+import queryClient from '@/helpers/client'
+import toast from 'react-hot-toast'
+import { relative } from 'path'
+import Timer from './timer'
 const VerifyPage = () => {
-  const { user, setUser } = useContext(UserContext);
-  const router = useRouter();
-  const [disableResendButton, setDisableResendButton] = useState(true);
-  const [code, setCode] = useState('');
+  const { user, setUser } = useContext(UserContext)
+  const router = useRouter()
+  const [disableResendButton, setDisableResendButton] = useState(true)
+  const [code, setCode] = useState('')
 
   const formDataQuery = useQuery({
     queryKey: ['signUpData'],
     queryFn: (): any => queryClient.getQueryData(['signUpData']),
     gcTime: 0,
     staleTime: Infinity,
-  });
+  })
 
   useEffect(() => {
     if (!formDataQuery.data) {
-      router.back();
+      router.back()
     }
-  }, [formDataQuery.isPending]);
+  }, [formDataQuery.isPending])
 
   useEffect(() => {
-    setTimeout(() => {
-      setDisableResendButton(true);
-    }, 1000 * 60 * 5);
-  }, []);
+    setTimeout(
+      () => {
+        setDisableResendButton(true)
+      },
+      1000 * 60 * 5,
+    )
+  }, [])
 
   const verifyMutation = useMutation({
     mutationFn: async (code: string) => {
-      return await userService.verifyEmail(code);
+      return await userService.verifyEmail(code)
     },
     onSuccess: (res) => {
       if (res.statusCode === 200) {
-        toast.success('Xác thực thành công.');
-        registerMutation.mutateAsync(formDataQuery.data);
+        toast.success('Xác thực thành công.')
+        registerMutation.mutateAsync(formDataQuery.data)
       }
     },
     onError(error) {
-      toast.error('Xác thực thất bại.');
+      toast.error('Xác thực thất bại.')
     },
-  });
+  })
 
   const sendEmail = useMutation({
     mutationFn: async (email: string) => {
-      return await userService.sendEmail(email);
+      return await userService.sendEmail(email)
     },
     onSuccess: async (res) => {
       if (res.statusCode === 200) {
-        toast.success('Gửi lại emai thành công.');
+        toast.success('Gửi lại emai thành công.')
       } else {
-        router.back();
+        router.back()
       }
     },
     onError(error) {
-      console.log(error);
-      toast.error('Gửi lại email thất bại.');
+      console.log(error)
+      toast.error('Gửi lại email thất bại.')
     },
-  });
+  })
 
   const registerMutation = useMutation({
     mutationFn: async (formdata: any) => {
-      return await userService.register(formdata);
+      return await userService.register(formdata)
     },
     onSuccess: (res) => {
       if (!res.error) {
-        setUser(res);
-        router.push('/');
+        setUser(res)
+        router.push('/')
       } else {
-        toast.error(res.error);
+        toast.error(res.error)
       }
     },
     onError(error) {
-      console.log(error);
+      console.log(error)
     },
-  });
+  })
 
   const handleVerify = (code: string = '') => {
     if (code !== '') {
-      verifyMutation.mutateAsync(code);
+      verifyMutation.mutateAsync(code)
     } else {
-      toast.error('Vui lòng nhập mã.');
+      toast.error('Vui lòng nhập mã.')
     }
-  };
+  }
 
   const handleSendEmail = (email: string = '') => {
     if (email !== '') {
-      sendEmail.mutateAsync(email);
+      sendEmail.mutateAsync(email)
     } else {
-      router.back();
+      router.back()
     }
-  };
+  }
   return (
     <>
       <Group
@@ -140,7 +143,7 @@ const VerifyPage = () => {
             size='60px'
             value={code}
             onChange={(event) => {
-              setCode(event.currentTarget.value);
+              setCode(event.currentTarget.value)
             }}
           />
           <Group w={'100%'} justify='center' align='center' mt={30}>
@@ -153,7 +156,7 @@ const VerifyPage = () => {
                 bg={'#02B1AB'}
                 disabled={disableResendButton}
                 onClick={() => {
-                  handleSendEmail(formDataQuery.data?.email);
+                  handleSendEmail(formDataQuery.data?.email)
                 }}
               >
                 Gửi lại mã xác nhận
@@ -162,7 +165,7 @@ const VerifyPage = () => {
                 w={'100%'}
                 bg={'#02B1AB'}
                 onClick={() => {
-                  handleVerify(code);
+                  handleVerify(code)
                 }}
               >
                 Xác nhận
@@ -179,7 +182,7 @@ const VerifyPage = () => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default VerifyPage;
+export default VerifyPage

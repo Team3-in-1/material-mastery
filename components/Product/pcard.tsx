@@ -1,5 +1,5 @@
-'use client';
-import '@/styles/global.css';
+'use client'
+import '@/styles/global.css'
 import {
   Card,
   Image,
@@ -13,72 +13,71 @@ import {
   Overlay,
   AspectRatio,
   Stack,
-} from '@mantine/core';
-import { IconShoppingCartPlus } from '@tabler/icons-react';
-import { useContext, useEffect, useState } from 'react';
-import Styles from './pcard.module.css';
-import Link from 'next/link';
-import { Product } from '@/utils/response';
-import useRQGlobalState from '@/helpers/useRQGlobalState';
-import { formatMoney } from '@/utils/string';
-import { useMutation } from '@tanstack/react-query';
-import useCart from '@/helpers/useCart';
-import CartService from '@/services/cartService';
-import queryClient from '@/helpers/client';
-import toast, { Toaster } from 'react-hot-toast';
-import UserContext from '@/contexts/UserContext';
-import NImage from 'next/image';
+} from '@mantine/core'
+import { IconShoppingCartPlus } from '@tabler/icons-react'
+import { useContext, useEffect, useState } from 'react'
+import Styles from './pcard.module.css'
+import Link from 'next/link'
+import { Product } from '@/utils/response'
+import useRQGlobalState from '@/helpers/useRQGlobalState'
+import { formatMoney } from '@/utils/string'
+import { useMutation } from '@tanstack/react-query'
+import useCart from '@/helpers/useCart'
+import CartService from '@/services/cartService'
+import queryClient from '@/helpers/client'
+import toast, { Toaster } from 'react-hot-toast'
+import UserContext from '@/contexts/UserContext'
+import NImage from 'next/image'
 
 export const PCard = ({ data }: PCardProps) => {
-  const { user } = useContext(UserContext);
-  const [cart, setCart] = useCart();
-  const [discount, setDiscount] = useState(0);
+  const { user } = useContext(UserContext)
+  const [cart, setCart] = useCart()
+  const [discount, setDiscount] = useState(0)
 
   const addMutation = useMutation({
     mutationKey: ['addProductCart'],
     mutationFn: (productId: string) => {
-      const cartServices = new CartService(user);
-      console.log('productId', productId);
-      return cartServices.addProduct(productId, 1);
+      const cartServices = new CartService(user)
+      console.log('productId', productId)
+      return cartServices.addProduct(productId, 1)
     },
     onSuccess: () => {},
     onError: () => {},
     onSettled: () => {},
-  });
+  })
 
   const productQuantity =
     data.product_quantity < 1000
       ? data.product_quantity
-      : Math.floor(data.product_quantity / 1000) + 'K';
+      : Math.floor(data.product_quantity / 1000) + 'K'
 
-  let quantityNumber = 0;
+  let quantityNumber = 0
   if (data.product_quantity && data.product_quantity != 0) {
-    quantityNumber = data.product_quantity;
+    quantityNumber = data.product_quantity
   }
 
   const random = (max: number = 80, min: number = 0) => {
-    return Math.floor(Math.random() * (max - min)) + min;
-  };
+    return Math.floor(Math.random() * (max - min)) + min
+  }
 
   const randomDiscount = (setDiscount: any) => {
     useEffect(() => {
-      setDiscount(random());
-    }, []);
-  };
+      setDiscount(random())
+    }, [])
+  }
 
   const calPriceBefore = (
     discount: any = 0,
-    priceAfter: number = 0
+    priceAfter: number = 0,
   ): number => {
-    return Math.ceil(priceAfter / ((100 - discount) * 0.01));
-  };
+    return Math.ceil(priceAfter / ((100 - discount) * 0.01))
+  }
 
-  randomDiscount(setDiscount);
+  randomDiscount(setDiscount)
 
   return (
     <Card
-      className={`${Styles.containerCard} shadow-md mt-[10px] border-[1px] border-gray-300`}
-      pos='relative'
+      className={`${Styles.containerCard}  shadow-md mt-[10px] border-[1px] border-gray-300`}
       radius='4'
       withBorder
     >
@@ -169,10 +168,10 @@ export const PCard = ({ data }: PCardProps) => {
             bg={'transparent'}
             onClick={() => {
               if (quantityNumber == 0) {
-                toast.error('Sản phẩm đã hết hàng.');
+                toast.error('Sản phẩm đã hết hàng.')
               } else if (user?.userId) {
                 if (cart) {
-                  const newCart = structuredClone(cart);
+                  const newCart = structuredClone(cart)
                   if (newCart.cart_products == 0) {
                     newCart.cart_products.push({
                       product_name: data.product_name,
@@ -185,19 +184,19 @@ export const PCard = ({ data }: PCardProps) => {
                       product_ratingAverage: null,
                       product_categories: null,
                       productId: data._id,
-                    });
+                    })
                   } else {
-                    let temp = 0;
+                    let temp = 0
                     newCart.cart_products.every(
                       (value: any, index: any, array: any) => {
                         if (value.productId == data._id && temp == 0) {
-                          value.product_quantity++;
-                          temp = 1;
-                          return false;
+                          value.product_quantity++
+                          temp = 1
+                          return false
                         }
-                        return true;
-                      }
-                    );
+                        return true
+                      },
+                    )
                     if (temp == 0) {
                       newCart.cart_products.push({
                         product_name: data.product_name,
@@ -210,19 +209,19 @@ export const PCard = ({ data }: PCardProps) => {
                         product_ratingAverage: null,
                         product_categories: null,
                         productId: data._id,
-                      });
+                      })
                     }
                   }
-                  addMutation.mutate(data._id);
-                  setCart(newCart);
-                  toast.success('Thêm sản phẩm thành công');
+                  addMutation.mutate(data._id)
+                  setCart(newCart)
+                  toast.success('Thêm sản phẩm thành công')
                 } else {
-                  toast.error('Thêm sản phẩm thất bại.');
+                  toast.error('Thêm sản phẩm thất bại.')
                 }
               } else {
                 toast.error(
-                  'Bạn cần phải đăng nhập để thực hiện chức năng này.'
-                );
+                  'Bạn cần phải đăng nhập để thực hiện chức năng này.',
+                )
               }
             }}
           >
@@ -246,9 +245,9 @@ export const PCard = ({ data }: PCardProps) => {
         </Badge>
       )}
     </Card>
-  );
-};
+  )
+}
 
 interface PCardProps {
-  data: Product;
+  data: Product
 }

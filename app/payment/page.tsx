@@ -1,5 +1,5 @@
-'use client';
-import '@/styles/global.css';
+'use client'
+import '@/styles/global.css'
 import {
   Flex,
   Stack,
@@ -17,145 +17,173 @@ import {
   Box,
   Loader,
   Popover,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { IconMapPinFilled, IconArrowNarrowLeft } from '@tabler/icons-react';
-import NImage from 'next/image';
-import exampleImage from '@/public/pic/gach.jpg';
-import { CartProduct, User } from '@/utils/response';
-import queryClient from '@/helpers/client';
-import { formatMoney } from '@/utils/string';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
-import Link from 'next/link';
-import { add } from 'cypress/types/lodash';
-import { checkPhoneFormat } from '@/utils/regex';
-import Voucher from '@/components/Vouchers/voucher';
-import dynamic from 'next/dynamic';
-import UserContext from '@/contexts/UserContext';
-import VoucherPayment from './voucher';
-import OrderService from '@/services/orderService';
-import { userService } from '@/services/userService';
+} from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
+import { IconMapPinFilled, IconArrowNarrowLeft } from '@tabler/icons-react'
+import NImage from 'next/image'
+import exampleImage from '@/public/pic/gach.jpg'
+import { CartProduct, User } from '@/utils/response'
+import queryClient from '@/helpers/client'
+import { formatMoney } from '@/utils/string'
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import Link from 'next/link'
+import { checkPhoneFormat } from '@/utils/regex'
+import Voucher from '@/components/Vouchers/voucher'
+import dynamic from 'next/dynamic'
+import UserContext from '@/contexts/UserContext'
+import VoucherPayment from './voucher'
+import OrderService from '@/services/orderService'
+import { userService } from '@/services/userService'
+import { constant } from '@/utils/constant'
+import { Pos } from '@/types/mapType'
+import { useDebouncedCallback } from 'use-debounce'
 
 const Payment = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   // check login status
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext)
   if (!user) {
-    return <></>;
+    return <></>
   }
 
   // control dialog
-  const [opened, { toggle, close }] = useDisclosure(false);
-  const [openedVoucher, setOpenedVoucher] = useState(false);
+  const [opened, { toggle, close }] = useDisclosure(false)
+  const [openedVoucher, setOpenedVoucher] = useState(false)
 
   // cal cost
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [feeShip, setFeeShip] = useState(0);
-  const [totalDiscount, setTotalDiscount] = useState(0);
-  const [finalPrice, setFinalPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0)
+  const [feeShip, setFeeShip] = useState(0)
+  const [totalDiscount, setTotalDiscount] = useState(0)
+  const [finalPrice, setFinalPrice] = useState(0)
 
+  const Map = useMemo(
+    () =>
+      dynamic(() => import('@/components/Map/LeafletMap'), {
+        loading: () => <p>A map is loading</p>,
+        ssr: false,
+      }),
+    [],
+  )
   // get product from cart page
   const products: CartProduct[] =
-    queryClient.getQueryData(['productsChosen']) || [];
+    queryClient.getQueryData(['productsChosen']) || []
   const productsQuery = useQuery({
     queryKey: ['productsChosen'],
     queryFn: () => products,
-  });
+  })
 
   //get user infor
   const userInfor = useQuery({
     queryKey: ['userInfor'],
     queryFn: () => {
-      return userService.getUserById(user);
+      return userService.getUserById(user)
     },
     enabled: !!user,
     staleTime: Infinity,
     gcTime: 0,
-  });
+  })
 
   // control text input in dialog\
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('')
+
+  const [address, setAddress] = useState('')
+  const [coordinates, setCoordinates] = useState<Pos[]>([
+    { lat: 11.0355624, lng: 107.1881076 },
+  ])
 
   // if user address null
-  const [enableButton, setEnableButton] = useState(false);
+  const [enableButton, setEnableButton] = useState(false)
 
-  const isSet = useRef(false);
+  const isSet = useRef(false)
 
   if (!userInfor.isPending && !isSet.current) {
-    setPhone(userInfor.data.phone);
-    setAddress(userInfor.data.user_attributes.address);
-    setEnableButton(!!userInfor.data.user_attributes.address);
-    isSet.current = true;
+    setPhone(userInfor.data.phone)
+    setAddress(userInfor.data.user_attributes.address)
+    const coordinate = userInfor.data.user_attributes?.address_info
+    if (coordinate) {
+      setCoordinates([coordinate])
+    } else {
+      userInfor.data.user_attributes.address_info = coordinates[0]
+    }
+    setEnableButton(!!userInfor.data.user_attributes.address)
+    isSet.current = true
   }
 
   // Estimated delivery date is equal to the current date plus 5
   const getDay = () => {
-    const d = new Date();
-    let date = d.getDate() + 5;
-    let month = d.getMonth() + 1;
-    let year = d.getFullYear();
+    const d = new Date()
+    let date = d.getDate() + 5
+    let month = d.getMonth() + 1
+    let year = d.getFullYear()
 
     if (date > 28) {
       if (date == 29) {
         if (month == 2) {
           if (year % 4 != 0) {
-            date--;
+            date--
           }
         }
       } else if (date == 30) {
         if (month == 2) {
-          date = date - 2;
+          date = date - 2
         }
       } else if (date == 31) {
         if (month == 2) {
-          date = date - 3;
+          date = date - 3
         } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-          date--;
+          date--
         }
       } else {
         if (month == 2) {
-          month++;
+          month++
           if (year % 4 == 0) {
-            date = date - 29;
+            date = date - 29
           } else {
-            date = date - 29;
+            date = date - 29
           }
         } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-          month++;
-          date = date - 30;
+          month++
+          date = date - 30
         } else {
-          month++;
+          month++
           if (month == 13) {
-            month = 1;
-            year++;
+            month = 1
+            year++
           }
-          date = date - 31;
+          date = date - 31
         }
       }
     }
 
-    return date + '-' + month + '-' + year;
-  };
+    return date + '-' + month + '-' + year
+  }
 
   //const [checkedVoucher, setCheckedVoucher] = useState('');
-  const [checkedProduct, setCheckedProduct] = useState('');
-  const [note, setNote] = useState('');
+  const [checkedProduct, setCheckedProduct] = useState('')
+  const [note, setNote] = useState('')
+  const [listAddresses, setListAddresses] = useState<string[]>([])
 
-  const voucherChosen: any = [];
-  const id2Index: any = {};
+  const voucherChosen: any = []
+  const id2Index: any = {}
   for (let i = 0; i < products.length; i++) {
-    const b = useState('');
-    const c = useState('');
+    const b = useState('')
+    const c = useState('')
 
-    voucherChosen.push(b);
+    voucherChosen.push(b)
 
-    const key: any = products[i].productId ? products[i].productId : -1;
-    id2Index[key] = i;
+    const key: any = products[i].productId ? products[i].productId : -1
+    id2Index[key] = i
   }
 
   const orderMutation = useMutation({
@@ -165,46 +193,58 @@ const Payment = () => {
       status = 'pending',
       method = 'upon receipt',
       note = '',
+      coordinate,
       orders,
     }: {
-      address: string;
-      status: string;
-      method: string;
-      note: string;
-      orders: any;
+      address: string
+      status: string
+      method: string
+      note: string
+      orders: any
+      coordinate: {
+        longitude: string
+        latitude: string
+      }
     }) => {
-      const orderService = new OrderService(user);
-      return orderService.order(address, status, method, note, orders);
+      const orderService = new OrderService(user)
+      return orderService.order(
+        address,
+        coordinate,
+        status,
+        method,
+        note,
+        orders,
+      )
     },
     onSuccess: async (res) => {
       if (res == 200) {
-        toast.success('Đặt hàng thành công.');
+        toast.success('Đặt hàng thành công.')
 
         await queryClient.invalidateQueries({
           queryKey: ['cart'],
-        });
+        })
 
-        router.replace('/account/orders');
+        router.replace('/account/orders')
       } else if (res == 400) {
-        toast.error('Sản phẩm không còn đủ hàng. ');
-        router.back();
+        toast.error('Sản phẩm không còn đủ hàng. ')
+        router.back()
       }
     },
     onError: (error) => {
-      console.log('error', error);
-      toast.error('Đặt hàng thất bại.');
-      router.back();
+      console.log('error', error)
+      toast.error('Đặt hàng thất bại.')
+      router.back()
     },
-  });
+  })
 
-  const [method, setMethod] = useState(true);
+  const [method, setMethod] = useState(true)
 
   const checkOut = useMutation({
     mutationKey: ['checkout'],
     mutationFn: () => {
-      const payload: any = [];
+      const payload: any = []
       products.map((product) => {
-        const id: any = product.productId ? product.productId : 0;
+        const id: any = product.productId ? product.productId : 0
 
         if (voucherChosen[id2Index[id]][0]._id) {
           payload.push({
@@ -221,7 +261,7 @@ const Payment = () => {
                 productId: product.productId,
               },
             ],
-          });
+          })
         } else {
           payload.push({
             discounts: [],
@@ -232,30 +272,47 @@ const Payment = () => {
                 productId: product.productId,
               },
             ],
-          });
+          })
         }
-      });
-      const orderService = new OrderService(user);
-      return orderService.checkOut(payload);
+      })
+      const orderService = new OrderService(user)
+      return orderService.checkOut(payload)
     },
     onSuccess: (res) => {
-      setTotalPrice(res.totalPrice);
-      setFeeShip(res.feeShip);
-      setTotalDiscount(res.totalDiscount);
-      setFinalPrice(res.finalPrice);
+      setTotalPrice(res.totalPrice)
+      setFeeShip(res.feeShip)
+      setTotalDiscount(res.totalDiscount)
+      setFinalPrice(res.finalPrice)
     },
     gcTime: 0,
-  });
+  })
 
   if (products.length == 0) {
-    router.replace('/cart');
+    router.replace('/cart')
   } else {
     useEffect(() => {
-      checkOut.mutate();
-    }, []);
+      checkOut.mutate()
+    }, [])
   }
+  const searchAddress = useDebouncedCallback((searchString: string) => {
+    const params = new URLSearchParams()
+    params.set('q', searchString)
+    params.set('format', 'json')
+    params.set('addressdetails', '1')
+    params.set('polygon_geojson', '0')
+    params.set('limit', '10')
+    const queryString = params.toString()
+    fetch(`${constant.NOMINATIM_BASE_URL}${queryString}`)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(JSON.parse(result))
+        setListAddresses(JSON.parse(result))
+        // setListPlace(JSON.parse(result))
+      })
+      .catch((err) => console.log('err: ', err))
+  }, 300)
 
-  const [isOrderProcessing, setIsOrderProcessing] = useState(false);
+  const [isOrderProcessing, setIsOrderProcessing] = useState(false)
   // if (checkOut.isPending) {
   //   return (
   //     <LoadingOverlay
@@ -267,7 +324,7 @@ const Payment = () => {
   // }
 
   if (userInfor.isPending) {
-    return <></>;
+    return <></>
   }
   return (
     // devide page into 2 col
@@ -289,7 +346,7 @@ const Payment = () => {
                 className=' absolute top-[8px] left-[50px] h-[30px] cursor-pointer'
                 color='#02B1AB'
                 onClick={() => {
-                  router.back();
+                  router.back()
                 }}
               />
               <Text color='#02B1AB'>Thông tin nhận hàng</Text>
@@ -381,7 +438,10 @@ const Payment = () => {
             )}
           </Stack>
         </Stack>
-
+        {/* TODO */}
+        <div className='w-full h-[500px]'>
+          <Map allPositions={coordinates} zoom={15} />
+        </div>
         {/*scheduled time*/}
         <Group className='gap-10 px-[32px] py-[24px] border-[#02B1AB] border-[1px] w-full'>
           <Text color='#02B1AB'>Dự kiến giao hàng:</Text>
@@ -489,7 +549,7 @@ const Payment = () => {
                   <Group align='start' gap={0}>
                     <Text color='#252525'>
                       {formatMoney(
-                        product.product_price * product.product_quantity
+                        product.product_price * product.product_quantity,
                       )}
                     </Text>
                     <Text color='#252525' size='10px'>
@@ -511,15 +571,15 @@ const Payment = () => {
                         color='#02B1AB'
                         onClick={() => {
                           if (!openedVoucher) {
-                            setCheckedProduct(product.productId || '');
-                            setOpenedVoucher(true);
+                            setCheckedProduct(product.productId || '')
+                            setOpenedVoucher(true)
                           } else {
-                            setOpenedVoucher(false);
+                            setOpenedVoucher(false)
                             if (product.productId != checkedProduct) {
-                              setCheckedProduct(product.productId || '');
-                              setOpenedVoucher(true);
+                              setCheckedProduct(product.productId || '')
+                              setOpenedVoucher(true)
                             } else {
-                              setOpenedVoucher(false);
+                              setOpenedVoucher(false)
                             }
                           }
                         }}
@@ -531,8 +591,8 @@ const Payment = () => {
                       <Text
                         color='#02B1AB'
                         onClick={() => {
-                          setCheckedProduct(product.productId || '');
-                          setOpenedVoucher(!openedVoucher);
+                          setCheckedProduct(product.productId || '')
+                          setOpenedVoucher(!openedVoucher)
                         }}
                         className=' cursor-pointer'
                       >
@@ -542,7 +602,7 @@ const Payment = () => {
                   </Group>
                 </Grid.Col>
               </Grid>
-            );
+            )
           })}
         </Stack>
 
@@ -645,9 +705,9 @@ const Payment = () => {
             onClick={() => {
               if (enableButton) {
                 if (method) {
-                  const orders: any = [];
+                  const orders: any = []
                   products.map((product) => {
-                    const id: any = product.productId ? product.productId : 0;
+                    const id: any = product.productId ? product.productId : 0
 
                     if (voucherChosen[id2Index[id]][0]._id) {
                       orders.push({
@@ -664,7 +724,7 @@ const Payment = () => {
                             productId: product.productId,
                           },
                         ],
-                      });
+                      })
                     } else {
                       orders.push({
                         discounts: [],
@@ -675,9 +735,9 @@ const Payment = () => {
                             productId: product.productId,
                           },
                         ],
-                      });
+                      })
                     }
-                  });
+                  })
                   //address: string = '', status: string = 'pending', method: string = 'upon receipt', note: string = '', orders: any
 
                   orderMutation.mutate({
@@ -685,16 +745,20 @@ const Payment = () => {
                     status: 'pending',
                     method: 'upon receipt',
                     note,
+                    coordinate: {
+                      longitude: coordinates[0].lng.toString(),
+                      latitude: coordinates[0].lat.toString(),
+                    },
                     orders,
-                  });
-                  setIsOrderProcessing(true);
+                  })
+                  setIsOrderProcessing(true)
                 } else {
-                  toast.error('Bạn chưa chọn hình thức thanh toán.');
+                  toast.error('Bạn chưa chọn hình thức thanh toán.')
                 }
               } else {
                 toast.error(
-                  'Bạn không thể đặt hàng khi không có đỉa chỉ giao hàng.'
-                );
+                  'Bạn không thể đặt hàng khi không có đỉa chỉ giao hàng.',
+                )
               }
             }}
           >
@@ -708,7 +772,7 @@ const Payment = () => {
             placeholder='Ghi chú'
             value={note}
             onChange={(event) => {
-              setNote(event.currentTarget.value);
+              setNote(event.currentTarget.value)
             }}
           />
         </Stack>
@@ -720,11 +784,10 @@ const Payment = () => {
         withCloseButton
         withBorder
         onClose={() => {
-          close();
-          setTimeout(() => {
-            setPhone(userInfor.data.phone);
-            setAddress(userInfor.data.user_attributes.address);
-          }, 500);
+          close()
+          setCoordinates([userInfor.data.user_attributes.address_info])
+          setPhone(userInfor.data.phone)
+          setAddress(userInfor.data.user_attributes.address)
         }}
         radius='md'
         size={500}
@@ -734,46 +797,64 @@ const Payment = () => {
           Thay đổi thông tin nhận hàng
         </Text>
 
-        <Stack align='center' justify='center'>
-          <TextInput
-            label='Số điện thoại nhận hàng'
-            withAsterisk
-            className='w-full'
-            value={phone}
-            onChange={(event) => {
-              setPhone(event.currentTarget.value);
-            }}
-          />
-          <Textarea
-            label='Địa chỉ nhận hàng'
-            withAsterisk
-            className='w-full'
-            disabled={!enableButton}
-            value={address}
-            onChange={(event) => {
-              setAddress(event.currentTarget.value);
-            }}
-          />
-          <Button
-            onClick={() => {
-              if (checkPhoneFormat(phone)) {
-                toast.error('Số điện thoại không hợp lệ');
-              } else if (enableButton && address.length == 0) {
-                toast.error('Địa chỉ giao hàng không được để trống.');
-              } else {
-                userInfor.data.phone = phone;
-                if (enableButton) {
-                  userInfor.data.user_attributes.address = address;
+        <div className='w-full h-full'>
+          <Stack align='center' justify='center' w={'100%'} h={'100%'}>
+            <TextInput
+              label='Số điện thoại nhận hàng'
+              withAsterisk
+              className='w-full'
+              value={phone}
+              onChange={(event) => {
+                setPhone(event.currentTarget.value)
+              }}
+            />
+            <Textarea
+              label='Địa chỉ nhận hàng'
+              withAsterisk
+              className='w-full'
+              disabled={!enableButton}
+              value={address}
+              onChange={(event) => {
+                searchAddress(event.currentTarget.value)
+                setAddress(event.currentTarget.value)
+              }}
+            />
+            {listAddresses.map((item: any, index) => (
+              <div
+                key={index}
+                className='cursor-pointer'
+                onClick={() => {
+                  setAddress(item.name)
+                  setCoordinates([{ lng: item.lon, lat: item.lat }])
+                  setListAddresses([])
+                }}
+              >
+                <p>{item.name}</p>
+              </div>
+            ))}
+
+            <Button
+              onClick={() => {
+                if (checkPhoneFormat(phone)) {
+                  toast.error('Số điện thoại không hợp lệ')
+                } else if (enableButton && address.length == 0) {
+                  toast.error('Địa chỉ giao hàng không được để trống.')
+                } else {
+                  userInfor.data.phone = phone
+                  if (enableButton) {
+                    userInfor.data.user_attributes.address = address
+                    userInfor.data.user_attributes.address_info = coordinates[0]
+                  }
+                  close()
+                  toast.success('Thay đổi thành công.')
                 }
-                close();
-                toast.success('Thay đổi thành công.');
-              }
-            }}
-            className=' w-full bg-0-primary-color-6 '
-          >
-            Chỉnh sửa
-          </Button>
-        </Stack>
+              }}
+              className=' w-full bg-0-primary-color-6 '
+            >
+              Chỉnh sửa
+            </Button>
+          </Stack>
+        </div>
       </Dialog>
 
       <Dialog
@@ -781,7 +862,7 @@ const Payment = () => {
         withCloseButton
         withBorder
         onClose={() => {
-          setOpenedVoucher(false);
+          setOpenedVoucher(false)
         }}
         radius='md'
         size={500}
@@ -820,7 +901,7 @@ const Payment = () => {
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
     </Group>
-  );
-};
+  )
+}
 
-export default Payment;
+export default Payment

@@ -11,7 +11,14 @@ module.exports = {
   theme: {
     extend: {
       colors: [{ 'primary-color-6': '#02B1AB' }],
+      gridTemplateColumns: {
+        15: 'repeat(15, minmax(0, 1fr))',
+        16: 'repeat(16, minmax(0, 1fr))',
+      },
+      gridColumn: {
+        'span-15': 'span 15 / span 15',
+      },
     },
   },
   plugins: [],
-};
+}

@@ -1,12 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer tailwind {
   @tailwind base;
 }
 @tailwind components;
 @tailwind utilities;
+
+@import 'leaflet/dist/leaflet.css';
 
 .pagination-control {
   &[data-active] {
@@ -78,4 +76,3 @@ a:visited:active {
   z-index: 1;
   background-color: var(--mantine-color-gray-1);
 }
-
