@@ -1,11 +1,11 @@
-'use client';
-import '@/styles/global.css';
-import { Button, Group, Text } from '@mantine/core';
-import { useState } from 'react';
+'use client'
+import '@/styles/global.css'
+import { Button, Group, Text } from '@mantine/core'
+import { useState } from 'react'
 
 interface ItemInterface {
-  id: number;
-  label: string;
+  id: number
+  label: string
 }
 
 const Nav = ({
@@ -14,12 +14,12 @@ const Nav = ({
   setStart,
   setPage,
 }: {
-  orderStatus: any;
-  setOrderStatus: any;
-  setStart: any;
-  setPage: any;
+  orderStatus: any
+  setOrderStatus: any
+  setStart: any
+  setPage: any
 }) => {
-  const [positionChecked, setPositionChecked] = useState(0);
+  const [positionChecked, setPositionChecked] = useState(0)
   const items: ItemInterface[] = [
     { id: 0, label: 'Tất cả' },
     { id: 1, label: 'Chờ xác nhận' },
@@ -27,7 +27,7 @@ const Nav = ({
     { id: 3, label: 'Vận chuyển' },
     { id: 4, label: 'Hoàn thành' },
     { id: 5, label: 'Đã hủy' },
-  ];
+  ]
   return (
     <Group
       justify='between'
@@ -53,13 +53,13 @@ const Nav = ({
                   borderColor: '#02B1AB',
                   borderRadius: 0,
                 }
-              : { flex: 1 }
+              : {}
           }
           onClick={() => {
-            setStart(1);
-            setPage(1);
-            setPositionChecked(item.id);
-            setOrderStatus(item.id);
+            setStart(1)
+            setPage(1)
+            setPositionChecked(item.id)
+            setOrderStatus(item.id)
           }}
         >
           <Text
@@ -76,7 +76,7 @@ const Nav = ({
         </Button>
       ))}
     </Group>
-  );
-};
+  )
+}
 
-export default Nav;
+export default Nav
