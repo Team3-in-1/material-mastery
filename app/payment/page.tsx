@@ -96,11 +96,14 @@ const Payment = () => {
 
   // control text input in dialog\
   const [phone, setPhone] = useState('')
-
   const [address, setAddress] = useState('')
   const [coordinates, setCoordinates] = useState<Pos[]>([
     { lat: 11.0355624, lng: 107.1881076 },
   ])
+
+  const [tempAddress, setTempAddress] = useState<string>()
+  const [tempPhone, setTempPhone] = useState<string>()
+  const tempCoordinate = useRef<Pos>()
 
   // if user address null
   const [enableButton, setEnableButton] = useState(false)
@@ -118,12 +121,9 @@ const Payment = () => {
       coordinate = userAttributes.address_info
       setAddress(userAttributes.address)
     }
-    if (coordinate) {
-      setCoordinates([{ lng: coordinate.longitude, lat: coordinate.latitude }])
-    } else {
-      userInfor.data.user_attributes.address_info = coordinates[0]
-    }
-    setEnableButton(!!userInfor.data.user_attributes.address)
+
+    setCoordinates([{ lng: coordinate.longitude, lat: coordinate.latitude }])
+    setEnableButton(true)
     isSet.current = true
   }
 
@@ -362,7 +362,12 @@ const Payment = () => {
             <Button
               c='#02B1AB'
               bg='white'
-              onClick={toggle}
+              onClick={() => {
+                setTempPhone(phone)
+                setTempAddress(address)
+                tempCoordinate.current = coordinates[0]
+                toggle()
+              }}
               // className=' cursor-pointer'
             >
               Thay đổi
@@ -428,8 +433,8 @@ const Payment = () => {
           </Group>
           <Stack>
             <Group>
-              <Text>{userInfor.data.display_name}</Text>
-              <Text>{userInfor.data.phone}</Text>
+              <Text>{userInfor.data.display_name || 'Customer'}</Text>
+              <Text>{phone}</Text>
             </Group>
             {!!address ? (
               <Text>{address}</Text>
@@ -792,9 +797,6 @@ const Payment = () => {
         withBorder
         onClose={() => {
           close()
-          setCoordinates([userInfor.data.user_attributes.address_info])
-          setPhone(userInfor.data.phone)
-          setAddress(userInfor.data.user_attributes.address)
         }}
         radius='md'
         size={500}
@@ -810,9 +812,9 @@ const Payment = () => {
               label='Số điện thoại nhận hàng'
               withAsterisk
               className='w-full'
-              value={phone}
+              value={tempPhone}
               onChange={(event) => {
-                setPhone(event.currentTarget.value)
+                setTempPhone(event.currentTarget.value)
               }}
             />
             <Textarea
@@ -820,10 +822,10 @@ const Payment = () => {
               withAsterisk
               className='w-full'
               disabled={!enableButton}
-              value={address}
+              value={tempAddress}
               onChange={(event) => {
                 searchAddress(event.currentTarget.value)
-                setAddress(event.currentTarget.value)
+                setTempAddress(event.currentTarget.value)
               }}
             />
             {listAddresses.map((item: any, index) => (
@@ -831,8 +833,8 @@ const Payment = () => {
                 key={index}
                 className='cursor-pointer'
                 onClick={() => {
-                  setAddress(item.name)
-                  setCoordinates([{ lng: item.lon, lat: item.lat }])
+                  setTempAddress(item.name)
+                  tempCoordinate.current = { lng: item.lon, lat: item.lat }
                   setListAddresses([])
                 }}
               >
@@ -842,15 +844,20 @@ const Payment = () => {
 
             <Button
               onClick={() => {
-                if (checkPhoneFormat(phone)) {
+                if (tempPhone && checkPhoneFormat(tempPhone)) {
                   toast.error('Số điện thoại không hợp lệ')
-                } else if (enableButton && address.length == 0) {
+                } else if (
+                  enableButton &&
+                  tempAddress &&
+                  tempAddress.length == 0
+                ) {
                   toast.error('Địa chỉ giao hàng không được để trống.')
                 } else {
-                  userInfor.data.phone = phone
                   if (enableButton) {
-                    userInfor.data.user_attributes.address = address
-                    userInfor.data.user_attributes.address_info = coordinates[0]
+                    if (tempAddress) setAddress(tempAddress)
+                    if (tempPhone) setPhone(tempPhone)
+                    if (tempCoordinate.current)
+                      setCoordinates([tempCoordinate.current])
                   }
                   close()
                   toast.success('Thay đổi thành công.')
