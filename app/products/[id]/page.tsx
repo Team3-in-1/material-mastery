@@ -1,5 +1,5 @@
-'use client';
-import '@/styles/global.css';
+'use client'
+import '@/styles/global.css'
 import {
   Center,
   Flex,
@@ -16,66 +16,66 @@ import {
   NumberInputHandlers,
   Divider,
   LoadingOverlay,
-} from '@mantine/core';
-import { IconPlus, IconMinus } from '@tabler/icons-react';
-import exampleImage from '@/public/pic/gach.jpg';
-import NImage from 'next/image';
-import Link from 'next/link';
-import CommentService from '@/services/commentService';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { productService } from '@/services/productService';
-import { formatDate, formatMoney } from '@/utils/string';
-import { categoryService } from '@/services/categoryService';
-import queryClient from '@/helpers/client';
-import useCart from '@/helpers/useCart';
-import toast from 'react-hot-toast';
-import useRQGlobalState from '@/helpers/useRQGlobalState';
-import { useRouter } from 'next/navigation';
-import CartService from '@/services/cartService';
-import UserContext from '@/contexts/UserContext';
+} from '@mantine/core'
+import { IconPlus, IconMinus } from '@tabler/icons-react'
+import exampleImage from '@/public/pic/gach.jpg'
+import NImage from 'next/image'
+import Link from 'next/link'
+import CommentService from '@/services/commentService'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { productService } from '@/services/productService'
+import { formatDate, formatMoney } from '@/utils/string'
+import { categoryService } from '@/services/categoryService'
+import queryClient from '@/helpers/client'
+import useCart from '@/helpers/useCart'
+import toast from 'react-hot-toast'
+import useRQGlobalState from '@/helpers/useRQGlobalState'
+import { useRouter } from 'next/navigation'
+import CartService from '@/services/cartService'
+import UserContext from '@/contexts/UserContext'
 
 const ImageLink =
-  'https://drive.google.com/uc?id=16VD2AxgmTUVt9uIzz_SQo_JSw1gltxjK';
+  'https://res.cloudinary.com/dqcsednbr/image/upload/v1732502600/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5_pyvagm.jpg'
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   if (typeof window == 'undefined') {
-    return <></>;
+    return <></>
   }
-  const router = useRouter();
-  const { user } = useContext(UserContext);
-  const [quantity, setQuantity] = useState<string | number>(1);
+  const router = useRouter()
+  const { user } = useContext(UserContext)
+  const [quantity, setQuantity] = useState<string | number>(1)
 
   const product = useQuery({
     queryKey: ['product', params.id],
     queryFn: () => productService.getProductById(params.id),
     refetchOnWindowFocus: false,
     staleTime: Infinity,
-  });
+  })
 
-  const productId = params.id;
+  const productId = params.id
 
   const comments = useQuery({
     queryKey: ['comments', params.id],
     queryFn: () => {
-      const commentService = new CommentService();
-      return commentService.getAllComments(productId);
+      const commentService = new CommentService()
+      return commentService.getAllComments(productId)
     },
     refetchOnWindowFocus: false,
     staleTime: Infinity,
-  });
+  })
 
-  const [cart, setCart] = useCart();
+  const [cart, setCart] = useCart()
   const [productChosen, setProductChosen] = useRQGlobalState(
     'productsChosen',
-    []
-  );
+    [],
+  )
 
-  const people: any = comments.data;
+  const people: any = comments.data
   const number =
     '(' +
     (people?.length && people?.length > 0 ? people?.length : 1) +
-    ' đánh giá)';
+    ' đánh giá)'
 
   const data = [
     { id: 0, label: 'Tất cả' },
@@ -84,11 +84,11 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
     { id: 3, label: '3 sao' },
     { id: 2, label: '2 sao' },
     { id: 1, label: '1 sao' },
-  ];
-  const [isChoosing, setIschoosing] = useState(0);
+  ]
+  const [isChoosing, setIschoosing] = useState(0)
   const handleOnclick = (id: number) => {
-    setIschoosing(id);
-  };
+    setIschoosing(id)
+  }
 
   const addMutation = useMutation({
     mutationKey: ['addProductCart'],
@@ -96,14 +96,14 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
       productId,
       quantity,
     }: {
-      productId: string;
-      quantity: number;
+      productId: string
+      quantity: number
     }) => {
-      const cartService = new CartService(user);
-      return cartService.addProduct(productId, quantity);
+      const cartService = new CartService(user)
+      return cartService.addProduct(productId, quantity)
     },
     onSuccess: (res) => {},
-  });
+  })
 
   return (
     <div className='min-h-full relative h-fit z-[1]'>
@@ -191,9 +191,9 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                       const temp =
                         typeof quantity == 'string'
                           ? parseInt(quantity)
-                          : quantity;
+                          : quantity
 
-                      if (temp > 1) setQuantity(temp - 1);
+                      if (temp > 1) setQuantity(temp - 1)
                     }}
                     variant='default'
                     disabled={quantity == 1}
@@ -216,9 +216,9 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                       const temp =
                         typeof quantity == 'string'
                           ? parseInt(quantity)
-                          : quantity;
+                          : quantity
 
-                      setQuantity(temp + 1);
+                      setQuantity(temp + 1)
                     }}
                   >
                     <IconPlus color='#111111' />
@@ -253,12 +253,12 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                         product_categories: null,
                         productId: product.data?._id,
                       },
-                    ]);
-                    router.push('/payment');
+                    ])
+                    router.push('/payment')
                   } else {
                     toast.error(
-                      'Bạn cần phải đăng nhập để thực hiện chức năng này.'
-                    );
+                      'Bạn cần phải đăng nhập để thực hiện chức năng này.',
+                    )
                   }
                 }}
               >
@@ -271,7 +271,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                 onClick={() => {
                   if (user?.userId) {
                     if (cart) {
-                      const newCart = structuredClone(cart);
+                      const newCart = structuredClone(cart)
                       if (newCart.cart_products == 0) {
                         newCart.cart_products.push({
                           product_name: product.data?.product_name,
@@ -284,22 +284,22 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                           product_ratingAverage: null,
                           product_categories: null,
                           productId: product.data?._id,
-                        });
+                        })
                       } else {
-                        let temp = 0;
+                        let temp = 0
                         newCart.cart_products.every(
                           (value: any, index: any, array: any) => {
                             if (
                               value.productId == product.data?._id &&
                               temp == 0
                             ) {
-                              value.product_quantity += quantity;
-                              temp = 1;
-                              return false;
+                              value.product_quantity += quantity
+                              temp = 1
+                              return false
                             }
-                            return true;
-                          }
-                        );
+                            return true
+                          },
+                        )
                         if (temp == 0) {
                           newCart.cart_products.push({
                             product_name: product.data?.product_name,
@@ -312,26 +312,26 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                             product_ratingAverage: null,
                             product_categories: null,
                             productId: product.data?._id,
-                          });
+                          })
                         }
                       }
                       const temp: number =
                         typeof quantity == 'string'
                           ? parseInt(quantity)
-                          : quantity;
-                      addMutation.mutate({ productId, quantity: temp });
+                          : quantity
+                      addMutation.mutate({ productId, quantity: temp })
 
-                      setCart(newCart);
+                      setCart(newCart)
                       toast.success(
-                        `Thêm ${quantity} sản phẩm vào giỏ hàng thành công.`
-                      );
+                        `Thêm ${quantity} sản phẩm vào giỏ hàng thành công.`,
+                      )
                     } else {
-                      toast.error('Thêm sản phẩm thất bại.');
+                      toast.error('Thêm sản phẩm thất bại.')
                     }
                   } else {
                     toast.error(
-                      'Bạn cần phải đăng nhập để thực hiện chức năng này.'
-                    );
+                      'Bạn cần phải đăng nhập để thực hiện chức năng này.',
+                    )
                   }
                 }}
               >
@@ -430,7 +430,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                     : 'text-[10px] w-[67px] h-[36px] rounded-[20px] border-[#02B1AB] text-black bg-inherit'
                 }
                 onClick={() => {
-                  handleOnclick(item.id);
+                  handleOnclick(item.id)
                 }}
               >
                 {item.label}
@@ -440,7 +440,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         </Group>
 
         {/* load comments base on rating score */}
-        <Stack>
+        <Stack mt={50}>
           {people?.map((person: any) => {
             return (
               (isChoosing == 0 ||
@@ -451,9 +451,9 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                       <Image
                         alt='avt'
                         src={
-                          people.user_avatar == null || people.user_avatar == ''
+                          !person?.user_avatar || person?.user_avatar == ''
                             ? ImageLink
-                            : people.user_avatar
+                            : person?.user_avatar
                         }
                         w={35}
                         h={35}
@@ -481,7 +481,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                   <Divider my='sm' />
                 </Stack>
               )
-            );
+            )
           })}
         </Stack>
       </Flex>
@@ -496,5 +496,5 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
         />
       )}
     </div>
-  );
+  )
 }
