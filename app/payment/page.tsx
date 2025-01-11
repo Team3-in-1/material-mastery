@@ -109,10 +109,17 @@ const Payment = () => {
 
   if (!userInfor.isPending && !isSet.current) {
     setPhone(userInfor.data.phone)
-    setAddress(userInfor.data.user_attributes.address)
-    const coordinate = userInfor.data.user_attributes?.address_info
+    let coordinate
+    if (userInfor.data?.user_attributes?.address) {
+      coordinate = userInfor.data.user_attributes.address_info
+      setAddress(userInfor.data.user_attributes.address)
+    } else {
+      const userAttributes = JSON.parse(userInfor.data.user_attributes)
+      coordinate = userAttributes.address_info
+      setAddress(userAttributes.address)
+    }
     if (coordinate) {
-      setCoordinates([coordinate])
+      setCoordinates([{ lng: coordinate.longitude, lat: coordinate.latitude }])
     } else {
       userInfor.data.user_attributes.address_info = coordinates[0]
     }
@@ -424,8 +431,8 @@ const Payment = () => {
               <Text>{userInfor.data.display_name}</Text>
               <Text>{userInfor.data.phone}</Text>
             </Group>
-            {!!userInfor.data.user_attributes.address ? (
-              <Text>{userInfor.data.user_attributes.address}</Text>
+            {!!address ? (
+              <Text>{address}</Text>
             ) : (
               <Stack gap={0}>
                 <Text className='text-[red]' size='xs'>
