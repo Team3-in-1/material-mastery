@@ -12,17 +12,17 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import '@/styles/map.css'
 import { LeafletMapProps } from '@/types/mapType'
 
-function Map({ allPositions, zoom }: LeafletMapProps) {
+function Map({ pos, zoom, changePos }: LeafletMapProps) {
   const mapContainer = useRef<any>(null)
   const map = useRef<any>(null)
   const [zoomState] = useState(zoom)
 
   useEffect(() => {
-    if (!allPositions) return
+    if (!pos) return
     if (map.current) return
 
     map.current = new L.Map(mapContainer.current, {
-      center: L.latLng(allPositions[0].lat, allPositions[0].lng),
+      center: L.latLng(pos.lat, pos.lng),
       zoom: zoomState,
     })
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -30,60 +30,6 @@ function Map({ allPositions, zoom }: LeafletMapProps) {
       attribution:
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map.current)
-
-    // var taxiIcon = L.icon({
-    //   iconUrl: 'https://img.icons8.com/fluency/48/truck.png',
-    //   iconSize: [30, 30],
-    // })
-
-    // let marker = L.marker([allPositions[0].lng, allPositions[0].lat], {
-    //   icon: taxiIcon,
-    // }).addTo(map.current)
-
-    allPositions.forEach((pos) => {
-      L.marker(L.latLng(pos.lat, pos.lng), {
-        draggable: true,
-      }).addTo(map.current)
-    })
-
-    // @ts-ignore
-    // L.Routing.control({
-    //   waypoints: allPositions.map((pos) => L.latLng(pos.lat, pos.lng)),
-    //   show: true,
-    // })
-    //   .on('routesfound', function (e: any) {
-    //     var routes = e.routes
-    //     e.routes[0].coordinates.forEach(function (coord: any, index: any) {
-    //       setTimeout(function () {
-    //         marker.setLatLng([coord.lat, coord.lng])
-    //       }, 50 * index)
-    //     })
-    //   })
-    //   .addTo(map.current)
-
-    // map.current.on('click', function (e: any) {
-    //   var newMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map.current)
-    //   // @ts-ignore
-    //   L.Routing.control({
-    //     waypoints: [
-    //       L.latLng(center.lat, center.lng),
-    //       L.latLng(center.lat - 1, center.lng),
-    //       L.latLng(e.latlng.lat, e.latlng.lng),
-    //     ],
-    //     show: true,
-    //   })
-    //     .on('routesfound', function (e: any) {
-    //       var routes = e.routes
-    //       e.routes[0].coordinates.forEach(function (coord: any, index: any) {
-    //         setTimeout(function () {
-    //           marker.setLatLng([coord.lat, coord.lng])
-    //         }, 100 * index)
-    //       })
-    //     })
-    //     .addTo(map.current)
-
-    // @ts-ignore
-    // })
   }, [])
 
   useEffect(() => {
@@ -92,13 +38,15 @@ function Map({ allPositions, zoom }: LeafletMapProps) {
         layer.remove()
       }
     })
-    allPositions.forEach((pos) => {
-      L.marker(L.latLng(pos.lat, pos.lng), {
-        draggable: true,
-      }).addTo(map.current)
+    const marker = L.marker(L.latLng(pos.lat, pos.lng), {
+      draggable: true,
+    }).addTo(map.current)
+    marker.on('dragend', function (event) {
+      const newPosition = marker.getLatLng() // Lấy vị trí mới
+      changePos(newPosition)
     })
-    map.current.flyTo(L.latLng(allPositions[0].lat, allPositions[0].lng), zoom)
-  }, [allPositions, zoom])
+    map.current.flyTo(L.latLng(pos.lat, pos.lng), zoom)
+  }, [pos, zoom])
 
   return (
     <div className='map-wrap'>

@@ -58,9 +58,10 @@ const DetailsPage = () => {
   const [avatarInput, setAvatarInput] = useState<FilePreview>()
   const [email, setEmail] = useState('')
   const [listAddresses, setListAddresses] = useState<string[]>([])
-  const [coordinates, setCoordinates] = useState<Pos[]>([
-    { lat: 11.0355624, lng: 107.1881076 },
-  ])
+  const [coordinate, setCoordinate] = useState<Pos>({
+    lat: 11.0355624,
+    lng: 107.1881076,
+  })
 
   const [enableBox1, setEnableBox1] = useState(false)
   const [enableBox2, setEnableBox2] = useState(false)
@@ -82,12 +83,10 @@ const DetailsPage = () => {
       const userAttributes = JSON.parse(userInfor.data.user_attributes)
       initialAddress.current = userAttributes.address
       const userAddressInfo = userAttributes.address_info
-      setCoordinates([
-        {
-          lat: userAddressInfo?.latitude ?? 107.1881076,
-          lng: userAddressInfo?.longitude ?? 11.0355624,
-        },
-      ])
+      setCoordinate({
+        lat: userAddressInfo?.latitude ?? 107.1881076,
+        lng: userAddressInfo?.longitude ?? 11.0355624,
+      })
     }
     setName(initialName.current)
     setPhone(initialPhone.current)
@@ -125,8 +124,8 @@ const DetailsPage = () => {
         userId,
         token,
         address,
-        coordinates[0].lng,
-        coordinates[0].lat,
+        coordinate.lng,
+        coordinate.lat,
       )
       toast.promise(updateUserPromise, {
         success: "Cập nhập thành công'",
@@ -219,6 +218,11 @@ const DetailsPage = () => {
       })
       .catch((err) => console.log('err: ', err))
   }, 300)
+
+  const changePos = (newPos: Pos) => {
+    setCoordinate(newPos)
+    addressMutation.mutate()
+  }
 
   return (
     <Stack w={'100%'} h={'100%'} px={100}>
@@ -406,7 +410,7 @@ const DetailsPage = () => {
             className='cursor-pointer'
             onClick={() => {
               setAddress(item.name)
-              setCoordinates([{ lng: item.lon, lat: item.lat }])
+              setCoordinate({ lng: item.lon, lat: item.lat })
               setListAddresses([])
             }}
           >
@@ -423,7 +427,7 @@ const DetailsPage = () => {
           }}
         />
         <div className='w-full h-[500px]'>
-          <Map allPositions={coordinates} zoom={15} />
+          <Map pos={coordinate} zoom={15} changePos={changePos} />
         </div>
       </Stack>
       {userInfor.isPending && (
