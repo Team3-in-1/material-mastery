@@ -6,10 +6,6 @@ const SOCKET_URL =
 
 const NOMINATIM_BASE_URL = process.env.NEXT_PUBLIC_NOMINATIM_BASE_URL || ''
 
-console.log('BASE_URL', BASE_URL)
-console.log('API_KEY', API_KEY)
-console.log('NOMINATIM_BASE_URL', NOMINATIM_BASE_URL)
-
 export const constant = {
   BASE_URL,
   API_KEY,
