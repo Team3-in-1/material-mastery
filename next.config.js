@@ -15,25 +15,6 @@ const nextConfig = {
     ],
   },
   //http://mm.khangdev.id.vn/';
-  async redirects() {
-    return [
-      {
-        source: '/staff',
-        destination: '/staff/dashboard/revenue',
-        permanent: true,
-      },
-      {
-        source: '/manager',
-        destination: '/manager/dashboard/revenue',
-        permanent: true,
-      },
-      {
-        source: '/manager/warehouse',
-        destination: '/manager/warehouse/instock',
-        permanent: true,
-      },
-    ];
-  },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

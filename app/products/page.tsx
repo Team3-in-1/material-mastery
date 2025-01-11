@@ -1,15 +1,15 @@
-'use client';
-import '@/styles/global.css';
-import { ProductCards } from '@/components/Product/productCards';
-import { CategoryNav } from '@/components/CategoryNav/categoryNav';
-import { Grid, Pagination, Flex } from '@mantine/core';
+'use client'
+import '@/styles/global.css'
+import { ProductCards } from '@/components/Product/productCards'
+import { CategoryNav } from '@/components/CategoryNav/categoryNav'
+import { Grid, Pagination, Flex } from '@mantine/core'
 import {
   useQuery,
   useQueryClient,
   keepPreviousData,
-} from '@tanstack/react-query';
-import { categoryService } from '@/services/categoryService';
-import { productService } from '@/services/productService';
+} from '@tanstack/react-query'
+import { categoryService } from '@/services/categoryService'
+import { productService } from '@/services/productService'
 import {
   LoadingOverlay,
   Anchor,
@@ -18,10 +18,10 @@ import {
   Group,
   Select,
   Divider,
-} from '@mantine/core';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { useState } from 'react';
+} from '@mantine/core'
+import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { useState } from 'react'
 
 const RATING_DATA = [
   'Tất cả',
@@ -30,39 +30,39 @@ const RATING_DATA = [
   'Ba sao',
   'Bốn sao',
   'Năm sao',
-];
+]
 
 const SORT_DATA = [
   'Giá cao nhất',
   'Giá thấp nhất',
   'Đánh giá cao nhất',
   'Đánh giá thấp nhất',
-];
+]
 
 export default function ProductsPage() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()
 
   const categories = useQuery({
     queryKey: ['categories'],
     queryFn: categoryService.getAllCategories,
     gcTime: Infinity,
     staleTime: Infinity,
-  });
+  })
 
-  const id = searchParams.get('category') || '654272bffe4d153ff2b3078e';
+  const id = searchParams.get('category') || '654272bffe4d153ff2b3078e'
 
   const products = useQuery({
     queryKey: ['products', id],
     queryFn: () => productService.getAllProductsByCategory(id),
-  });
+  })
 
-  const [selectedRating, setSelectedRating] = useState<string | null>('Tất cả');
+  const [selectedRating, setSelectedRating] = useState<string | null>('Tất cả')
   const [selectedSort, setSelectedSort] = useState<string | null>(
-    'Giá cao nhất'
-  );
+    'Giá cao nhất',
+  )
 
   return (
-    <Container fluid>
+    <div className='w-full h-fit'>
       <Breadcrumbs my={30}>
         <Link href='/' key={0}>
           Trang chủ
@@ -70,20 +70,21 @@ export default function ProductsPage() {
         <Link href={`/products?category=${id}`} key={1}>
           {searchParams.get('category')
             ? categories.data?.find(
-                (category) => category._id == searchParams.get('category')
+                (category) => category._id == searchParams.get('category'),
               )?.category_name
             : categories.data?.[0].category_name}
         </Link>
       </Breadcrumbs>
-      <Grid w='100%'>
-        <Grid.Col span={2}>
+      <div className='w-full h-fit flex flex-row items-start gap-5'>
+        <div className='flex-[2]'>
           {categories.isSuccess && <CategoryNav data={categories.data || []} />}
-        </Grid.Col>
-        <Grid.Col span={10}>
+        </div>
+        <div className='flex-[10]'>
           <Group
             className='bg-white rounded-md'
             p={15}
             mb={10}
+            w={'100%'}
             justify='space-between'
           >
             <Group>
@@ -137,7 +138,7 @@ export default function ProductsPage() {
               /> */}
             </Flex>
           </Container>
-        </Grid.Col>
+        </div>
         {(categories.isPending || products.isPending) && (
           <LoadingOverlay
             visible={true}
@@ -145,7 +146,7 @@ export default function ProductsPage() {
             overlayProps={{ radius: 'sm', blur: 2 }}
           />
         )}
-      </Grid>
-    </Container>
-  );
+      </div>
+    </div>
+  )
 }
