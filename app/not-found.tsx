@@ -1,5 +1,5 @@
-import '@/styles/global.css';
-import Link from 'next/link';
+import '@/styles/global.css'
+import Link from 'next/link'
 
 export default function NotFound() {
   return (
@@ -7,5 +7,5 @@ export default function NotFound() {
       <h2 className=' text-[50px] font-mono opacity-50'>404 - Not Found</h2>
       <Link href='/'>Return Home</Link>
     </div>
-  );
+  )
 }

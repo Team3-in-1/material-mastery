@@ -32,7 +32,6 @@ export default function RootLayout({
       <head>
         <link rel='shortcut icon' href='/display-icon.svg' />
       </head>
-
       <body
         className={`${inter.className} h-full`}
         style={{ backgroundColor: '#f1f2f5' }}

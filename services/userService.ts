@@ -117,6 +117,7 @@ const getUserById = async (user: UserInterface): Promise<any> => {
     })
 }
 const updateAvatar = (user_id: string, token: string, avatar: File) => {
+  console.log(avatar)
   const newUserInfo = new FormData()
   if (avatar) newUserInfo.append('avatar', avatar)
   return axios

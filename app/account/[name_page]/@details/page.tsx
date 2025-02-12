@@ -13,6 +13,7 @@ import {
   Input,
   Textarea,
   Box,
+  FileInput,
 } from '@mantine/core'
 import NextImage from 'next/image'
 import { useDebounceCallback, useDisclosure } from '@mantine/hooks'
@@ -92,7 +93,7 @@ const DetailsPage = () => {
     setPhone(initialPhone.current)
     setAddress(initialAddress.current)
     setEmail(initialEmail.current)
-    setAvatar(userInfor.data.avatar)
+    setAvatar(userInfor.data?.avatar || constant.DEFAULT_AVATAR)
 
     isSet.current = true
   }
@@ -196,10 +197,12 @@ const DetailsPage = () => {
     throwOnError: false,
   })
 
-  const selectAvatarImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-    setAvatarInput({ file, previewUrl: URL.createObjectURL(file) })
+  const selectAvatarImage = (newAvatar: File | null) => {
+    if (!newAvatar) return
+    setAvatarInput({
+      file: newAvatar,
+      previewUrl: URL.createObjectURL(newAvatar),
+    })
   }
   const searchAddress = useDebouncedCallback((searchString: string) => {
     const params = new URLSearchParams()
@@ -212,7 +215,6 @@ const DetailsPage = () => {
     fetch(`${constant.NOMINATIM_BASE_URL}${queryString}`)
       .then((response) => response.text())
       .then((result) => {
-        console.log(JSON.parse(result))
         setListAddresses(JSON.parse(result))
         // setListPlace(JSON.parse(result))
       })
@@ -226,17 +228,30 @@ const DetailsPage = () => {
 
   return (
     <Stack w={'100%'} h={'100%'} px={100}>
-      <Modal opened={opened} onClose={close} centered>
+      <Modal
+        opened={opened}
+        onClose={() => {
+          close()
+          setAvatarInput(undefined)
+        }}
+        centered
+      >
         <Stack>
           <Stack>
-            <Text>Chọn ảnh</Text>
+            {/* <Text>Chọn ảnh</Text> */}
             {avatarInput && (
               <img
                 src={avatarInput?.previewUrl}
                 style={{ width: '200px', height: 'auto' }}
               />
             )}
-            <input type='file' accept='image/' onChange={selectAvatarImage} />
+            <FileInput
+              accept='image/*'
+              withAsterisk
+              clearable
+              onChange={selectAvatarImage}
+              placeholder='Chọn ảnh'
+            />
           </Stack>
           <Group w={'100%'} justify='space-evenly'>
             <Button
