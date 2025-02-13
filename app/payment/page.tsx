@@ -97,9 +97,10 @@ const Payment = () => {
   // control text input in dialog\
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
-  const [coordinates, setCoordinates] = useState<Pos[]>([
-    { lat: 11.0355624, lng: 107.1881076 },
-  ])
+  const [coordinate, setCoordinate] = useState<Pos>({
+    lat: 11.0355624,
+    lng: 107.1881076,
+  })
 
   const [tempAddress, setTempAddress] = useState<string>()
   const [tempPhone, setTempPhone] = useState<string>()
@@ -112,17 +113,20 @@ const Payment = () => {
 
   if (!userInfor.isPending && !isSet.current) {
     setPhone(userInfor.data.phone)
-    let coordinate
+    let currentCoordinate
     if (userInfor.data?.user_attributes?.address) {
-      coordinate = userInfor.data.user_attributes.address_info
+      currentCoordinate = userInfor.data.user_attributes.address_info
       setAddress(userInfor.data.user_attributes.address)
     } else {
       const userAttributes = JSON.parse(userInfor.data.user_attributes)
-      coordinate = userAttributes.address_info
+      currentCoordinate = userAttributes.address_info
       setAddress(userAttributes.address)
     }
 
-    setCoordinates([{ lng: coordinate.longitude, lat: coordinate.latitude }])
+    setCoordinate({
+      lng: currentCoordinate.longitude,
+      lat: currentCoordinate.latitude,
+    })
     setEnableButton(true)
     isSet.current = true
   }
@@ -365,7 +369,7 @@ const Payment = () => {
               onClick={() => {
                 setTempPhone(phone)
                 setTempAddress(address)
-                tempCoordinate.current = coordinates[0]
+                tempCoordinate.current = coordinate
                 toggle()
               }}
               // className=' cursor-pointer'
@@ -452,7 +456,7 @@ const Payment = () => {
         </Stack>
         {/* TODO */}
         <div className='w-full h-[500px]'>
-          <Map allPositions={coordinates} zoom={15} />
+          <Map pos={coordinate} zoom={15} changePos={setCoordinate} />
         </div>
         {/*scheduled time*/}
         <Group className='gap-10 px-[32px] py-[24px] border-[#02B1AB] border-[1px] w-full'>
@@ -758,8 +762,8 @@ const Payment = () => {
                     method: 'upon receipt',
                     note,
                     coordinate: {
-                      longitude: coordinates[0].lng.toString(),
-                      latitude: coordinates[0].lat.toString(),
+                      longitude: coordinate.lng.toString(),
+                      latitude: coordinate.lat.toString(),
                     },
                     orders,
                   })
@@ -857,7 +861,7 @@ const Payment = () => {
                     if (tempAddress) setAddress(tempAddress)
                     if (tempPhone) setPhone(tempPhone)
                     if (tempCoordinate.current)
-                      setCoordinates([tempCoordinate.current])
+                      setCoordinate(tempCoordinate.current)
                   }
                   close()
                   toast.success('Thay đổi thành công.')

@@ -34,9 +34,7 @@ import useRQGlobalState from '@/helpers/useRQGlobalState'
 import { useRouter } from 'next/navigation'
 import CartService from '@/services/cartService'
 import UserContext from '@/contexts/UserContext'
-
-const ImageLink =
-  'https://res.cloudinary.com/dqcsednbr/image/upload/v1732502600/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5_pyvagm.jpg'
+import { constant } from '@/utils/constant'
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   if (typeof window == 'undefined') {
@@ -452,7 +450,7 @@ export default function ProductDetails({ params }: { params: { id: string } }) {
                         alt='avt'
                         src={
                           !person?.user_avatar || person?.user_avatar == ''
-                            ? ImageLink
+                            ? constant.DEFAULT_AVATAR
                             : person?.user_avatar
                         }
                         w={35}

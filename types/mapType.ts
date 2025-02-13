@@ -3,6 +3,7 @@ export type Pos = {
   lng: number
 }
 export type LeafletMapProps = {
-  allPositions: Pos[]
+  pos: Pos
   zoom: number
+  changePos: Function
 }

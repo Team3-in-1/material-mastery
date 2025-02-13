@@ -13,6 +13,7 @@ import {
   Input,
   Textarea,
   Box,
+  FileInput,
 } from '@mantine/core'
 import NextImage from 'next/image'
 import { useDebounceCallback, useDisclosure } from '@mantine/hooks'
@@ -58,9 +59,10 @@ const DetailsPage = () => {
   const [avatarInput, setAvatarInput] = useState<FilePreview>()
   const [email, setEmail] = useState('')
   const [listAddresses, setListAddresses] = useState<string[]>([])
-  const [coordinates, setCoordinates] = useState<Pos[]>([
-    { lat: 11.0355624, lng: 107.1881076 },
-  ])
+  const [coordinate, setCoordinate] = useState<Pos>({
+    lat: 11.0355624,
+    lng: 107.1881076,
+  })
 
   const [enableBox1, setEnableBox1] = useState(false)
   const [enableBox2, setEnableBox2] = useState(false)
@@ -82,18 +84,16 @@ const DetailsPage = () => {
       const userAttributes = JSON.parse(userInfor.data.user_attributes)
       initialAddress.current = userAttributes.address
       const userAddressInfo = userAttributes.address_info
-      setCoordinates([
-        {
-          lat: userAddressInfo?.latitude ?? 107.1881076,
-          lng: userAddressInfo?.longitude ?? 11.0355624,
-        },
-      ])
+      setCoordinate({
+        lat: userAddressInfo?.latitude ?? 107.1881076,
+        lng: userAddressInfo?.longitude ?? 11.0355624,
+      })
     }
     setName(initialName.current)
     setPhone(initialPhone.current)
     setAddress(initialAddress.current)
     setEmail(initialEmail.current)
-    setAvatar(userInfor.data.avatar)
+    setAvatar(userInfor.data?.avatar || constant.DEFAULT_AVATAR)
 
     isSet.current = true
   }
@@ -125,8 +125,8 @@ const DetailsPage = () => {
         userId,
         token,
         address,
-        coordinates[0].lng,
-        coordinates[0].lat,
+        coordinate.lng,
+        coordinate.lat,
       )
       toast.promise(updateUserPromise, {
         success: "Cập nhập thành công'",
@@ -197,10 +197,12 @@ const DetailsPage = () => {
     throwOnError: false,
   })
 
-  const selectAvatarImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-    setAvatarInput({ file, previewUrl: URL.createObjectURL(file) })
+  const selectAvatarImage = (newAvatar: File | null) => {
+    if (!newAvatar) return
+    setAvatarInput({
+      file: newAvatar,
+      previewUrl: URL.createObjectURL(newAvatar),
+    })
   }
   const searchAddress = useDebouncedCallback((searchString: string) => {
     const params = new URLSearchParams()
@@ -213,26 +215,43 @@ const DetailsPage = () => {
     fetch(`${constant.NOMINATIM_BASE_URL}${queryString}`)
       .then((response) => response.text())
       .then((result) => {
-        console.log(JSON.parse(result))
         setListAddresses(JSON.parse(result))
         // setListPlace(JSON.parse(result))
       })
       .catch((err) => console.log('err: ', err))
   }, 300)
 
+  const changePos = (newPos: Pos) => {
+    setCoordinate(newPos)
+    addressMutation.mutate()
+  }
+
   return (
     <Stack w={'100%'} h={'100%'} px={100}>
-      <Modal opened={opened} onClose={close} centered>
+      <Modal
+        opened={opened}
+        onClose={() => {
+          close()
+          setAvatarInput(undefined)
+        }}
+        centered
+      >
         <Stack>
           <Stack>
-            <Text>Chọn ảnh</Text>
+            {/* <Text>Chọn ảnh</Text> */}
             {avatarInput && (
               <img
                 src={avatarInput?.previewUrl}
                 style={{ width: '200px', height: 'auto' }}
               />
             )}
-            <input type='file' accept='image/' onChange={selectAvatarImage} />
+            <FileInput
+              accept='image/*'
+              withAsterisk
+              clearable
+              onChange={selectAvatarImage}
+              placeholder='Chọn ảnh'
+            />
           </Stack>
           <Group w={'100%'} justify='space-evenly'>
             <Button
@@ -406,7 +425,7 @@ const DetailsPage = () => {
             className='cursor-pointer'
             onClick={() => {
               setAddress(item.name)
-              setCoordinates([{ lng: item.lon, lat: item.lat }])
+              setCoordinate({ lng: item.lon, lat: item.lat })
               setListAddresses([])
             }}
           >
@@ -423,7 +442,7 @@ const DetailsPage = () => {
           }}
         />
         <div className='w-full h-[500px]'>
-          <Map allPositions={coordinates} zoom={15} />
+          <Map pos={coordinate} zoom={15} changePos={changePos} />
         </div>
       </Stack>
       {userInfor.isPending && (

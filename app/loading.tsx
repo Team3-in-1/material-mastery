@@ -1,7 +1,6 @@
-import '@/styles/global.css';
-import { LoadingOverlay, Container } from '@mantine/core';
+import '@/styles/global.css'
+import { LoadingOverlay, Container } from '@mantine/core'
 export default function Loading() {
-  // You can add any UI inside Loading, including a Skeleton.
   return (
     <Container
       mt={70}
@@ -21,5 +20,5 @@ export default function Loading() {
         overlayProps={{ radius: 'sm', blur: 2 }}
       />
     </Container>
-  );
+  )
 }
